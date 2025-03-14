@@ -1,0 +1,95 @@
+Introduction 
+The aim of this report is to analyse and describe the design of the project in order to help 
+people be familiar with the fundamental purpose of the project and the design idea. It will 
+contain a project overview which includes the problem statement and target audience, and 
+what will be delivered in the project through user stories and acceptance criteria. 
+Project Overview 
+Problem Statement 
+Australia, a nation known for its outdoor lifestyle and a diverse population, faces the 
+challenge of developing sun safety guidelines that effectively balance the risks of skin cancer 
+with the crucial need for vitamin D, particularly for young adults with darker skin tones. 
+Prolonged sun exposure to harmful ultraviolet (UV) radiation is a leading cause of skin 
+cancer, including melanoma, which is on the rise in Australia. How might we encourage 
+young Australian adults to engage and maintain sun-safe behaviours, given the significant 
+risk of skin cancer including melanoma and the importance of vitamin D intake? 
+Target Audience 
+The target audience for this project are young Australians within Victoria, Australia who have 
+many outdoor activities and are exposed to the sun for a long period of time in their daily 
+lives.
+
+1.0 Epic - Track UV Levels and personalisation 
+As a young adult, I want to understand the balance between sun protection and vitamin D needs, so that I can make informed decisions about sun exposure to prevent skin cancer.
+ 
+User Story 1.1  
+US1.1 View UV Levels locations
+As a young adult I want to view UV index of different locations so that I can decide the right time to go outside and what sun protection is required.
+
+Acceptance Criteria:
+Given I am on the homepage of UV Defender website
+when I navigate to the UV Levels section from the tabs and see a search bar and I enter a string of characters or 4-digit numeric postcode (e.g., "Clayton, Melbourne") into the search bar and click on the “Search” button
+then a new “UV Results” page will display the current UV index of the selected location.
+
+Description:Must Have. Call API to view 
+the UV index based on 
+location. Colour code the 
+level of UV hazard 
+accordingly to the level of 
+danger.
+
+
+
+US1.2 Data about UV impacts
+As a young adult, I want to understand the danger that UV presents in Australia so that I can increase my understanding of the of age-appropriate tips and tricks.
+
+ 
+Acceptance Criteria:
+Given I am on the Homepage of UV Defender application,
+When I select the “UV Impact Info” tab,
+Then I see the visualization showing impacts of UV exposure based on Age Group and trend of heat in Australia
+
+Description:
+Must Have.To show 2 visualisations of the impacts of skin cancer and the trend of heat in Australia.  Database.
+
+
+US1.3 Personalisation
+As a young Australian adult,
+I want to understand the specific risks and benefits of sun exposure for my skin type,
+so that I can develop a personalized sun safety plan that meets my individual needs.
+
+Acceptance Criteria: 
+Given I am a user on the Homepage
+When I click the “Personalised Sun Safety Advice” tab from the Homepage
+Then a new page opens with a section for selecting my skin type using the slider.
+When I slide and select my skin tone
+Then the system processes my selection immediately and displays a detailed risk assessment, including UV exposure risk and personalised safe sun exposure guidelines.
+
+Description:
+Should Have. Calculate estimate of spoons of sunscreen depending on UV index and skin tone.
+
+2.1 User Story- Sunscreen reminders
+As a young Australian I would like to be reminded when I need to reapply sunscreen so that I remain protected from the sun throughout the day.
+
+Acceptance Criteria: 
+ Given I am a user on the Home Page who accesses the Sunscreen Reminders settings page
+When I select my sunscreen type (e.g., SPF 30) from the available options, enter the time I applied it (or click Start Now), and confirm the settings by clicking a Save button
+Then the system calculates the optimal reapplication interval based on the chosen SPF and the current UV index, and displays a confirmation summary on the settings page
+
+Description:
+Must have. To set reminders of when to apply .
+
+ 
+User Story 2.2:
+As a young Australian adult,
+I want to be able to easily find and access sun-safe products and clothing,
+so that I can protect myself from the sun effectively and conveniently.
+
+
+Acceptance Criteria:
+Given I am a user on the Home Page who selects the “Sun-Safe Products” tab to access the product recommendations page
+When I view the page and use filtering options (such as by category: sun-protective clothing, sunglasses, or sunscreen) or search for a specific product
+Then it displays a list of products that match my selection and links to purchase the products.
+
+Description:
+Should Have. Clothing 
+recommendations based on 
+UV levels. 
