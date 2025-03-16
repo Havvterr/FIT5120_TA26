@@ -1,30 +1,90 @@
 <template>
-  <div class="home-landing">
-    <!-- Logo & Title Container -->
-    <div class="logo-container">
-      <!-- Logo Image -->
-      <img
-        src="@/assets/uv_defender_logo.png"
-        alt="UV Defender Logo"
-        class="logo"
-      />
-      <!-- Name Next to Logo -->
-      <h1 class="app-name">UV Defender</h1>
-    </div>
+  <div class="home-container">
+    <!-- Full-screen background -->
+    <div class="hero-section">
+      <!-- Logo & Title -->
+      <div class="logo-container">
+        <img
+          src="@/assets/uv_defender_logo.png"
+          alt="UV Defender Logo"
+          class="logo"
+        />
+        <h1 class="app-name">UV Defender</h1>
+      </div>
 
-    <div class="landing-container">
-      <div class="info-box">
-        <h2>Welcome</h2>
-        <p>
-          UV Defender is your trusted resource for sun safety information. Learn
-          how to protect yourself from harmful UV rays while understanding the
-          balance between sun protection and vitamin D needs.
-        </p>
-        <p>
-          Our goal is to provide clear, up-to-date tips and advice on sun-safe
-          practices so you can stay informed and safe under the sun.
-        </p>
-        <button @click="goToCheckUV">Check Your UV Level</button>
+      <!-- Main content -->
+      <div class="hero-content">
+        <div class="info-box">
+          <h2>Protect Your Skin, Enjoy the Sun</h2>
+          <p>
+            UV Defender is your sun protection assistant, helping you understand
+            UV index, providing personalized sunscreen advice, and balancing
+            skin health with vitamin D needs.
+          </p>
+          <p>
+            Our goal is to provide young Australians with clear, practical sun
+            protection information, allowing you to enjoy outdoor activities
+            while effectively protecting your skin from UV damage.
+          </p>
+        </div>
+      </div>
+
+      <!-- Feature navigation cards -->
+      <div class="feature-cards">
+        <div class="feature-card" @click="navigateTo('/uv-levels')">
+          <div class="card-icon">
+            <i class="fas fa-sun"></i>
+          </div>
+          <h3>UV Index Check</h3>
+          <p>
+            Check UV index in different locations and find the best time for
+            outdoor activities
+          </p>
+        </div>
+
+        <div class="feature-card" @click="navigateTo('/uv-impact-info')">
+          <div class="card-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3>UV Impact Data</h3>
+          <p>
+            Learn about UV effects on skin and view Australian skin cancer data
+            and trends
+          </p>
+        </div>
+
+        <div class="feature-card" @click="navigateTo('/personalized-advice')">
+          <div class="card-icon">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <h3>Personalized Advice</h3>
+          <p>
+            Get customized sun protection plans and vitamin D recommendations
+            based on your skin type
+          </p>
+        </div>
+
+        <div class="feature-card" @click="navigateTo('/sunscreen-reminders')">
+          <div class="card-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <h3>Sunscreen Reminders</h3>
+          <p>
+            Set reminders to reapply sunscreen and maintain protection
+            throughout the day
+          </p>
+        </div>
+
+        <div class="feature-card" @click="navigateTo('/sun-safe-products')">
+          <div class="card-icon">
+            <i class="fas fa-shopping-bag"></i>
+          </div>
+          <h3>Sun-Safe Products</h3>
+          <p>
+            Browse and purchase quality sun protection products, including
+            sunscreen, clothing, and sunglasses
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -34,75 +94,146 @@
 export default {
   name: "Home",
   methods: {
-    goToCheckUV() {
-      this.$router.push("/check-uv");
+    navigateTo(route) {
+      this.$router.push(route);
     },
   },
 };
 </script>
 
 <style scoped>
-.home-landing {
-  height: 100vh;
+.home-container {
+  min-height: 100vh;
   width: 100%;
-  background: url("@/assets/uv_defender.jpg") no-repeat center center fixed;
-  background-size: cover;
-  display: flex;
-  flex-direction: column; /* Stack logo and box vertically */
-  align-items: center;
-  justify-content: flex-start; /* Logo at top, info box further down */
-  padding-top: 40px; /* Space for the logo area at the top */
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-/* Logo & Title Container */
+.hero-section {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("@/assets/uv_defender.jpg") no-repeat center center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 70px 20px 40px; /* Increased top padding to make room for navbar */
+  color: white;
+}
+
+/* Logo & Title */
 .logo-container {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .logo {
-  width: 80px; /* Adjust as needed */
+  width: 80px;
   height: auto;
-  margin-right: 10px;
+  margin-right: 15px;
 }
 
 .app-name {
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 700;
-  color: #fff; /* White text to stand out against the background */
+  color: white;
   margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.landing-container {
-  width: 90%;
+/* Main content */
+.hero-content {
+  width: 100%;
   max-width: 800px;
-  padding: 20px;
+  margin-bottom: 60px;
 }
 
 .info-box {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(0, 0, 0, 0.6);
   border-radius: 20px;
   padding: 40px;
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .info-box h2 {
-  font-size: 2rem;
+  font-size: 2.2rem;
   margin-bottom: 20px;
-  color: #333;
+  color: white;
 }
 
 .info-box p {
   font-size: 1.2rem;
   margin-bottom: 20px;
-  color: #555;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
 }
 
-.info-box button {
-  padding: 10px 20px;
-  font-size: 1rem;
+/* Feature navigation cards */
+.feature-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.feature-card {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
+  color: #333;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #007bff;
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.feature-card p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .feature-cards {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+
+  .info-box {
+    padding: 30px;
+  }
+
+  .info-box h2 {
+    font-size: 1.8rem;
+  }
+
+  .info-box p {
+    font-size: 1rem;
+  }
 }
 </style>
