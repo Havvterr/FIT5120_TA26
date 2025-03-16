@@ -50,7 +50,9 @@
       </div>
 
       <div v-else-if="error" class="error">
-        {{ error }}
+        <div class="error-icon"><i class="fas fa-exclamation-circle"></i></div>
+        <p>{{ error }}</p>
+        <button @click="retrySearch" class="retry-button">Retry</button>
       </div>
 
       <div v-else class="uv-info">
@@ -62,7 +64,6 @@
             <div class="scale-segment low">Low</div>
             <div class="scale-segment moderate">Moderate</div>
             <div class="scale-segment high">High</div>
-            <div class="scale-segment very-high">Very High</div>
             <div class="scale-segment extreme">Extreme</div>
           </div>
         </div>
@@ -72,29 +73,54 @@
           <p>{{ uvDescription }}</p>
         </div>
 
+        <!-- Safe Exposure Times (only shown when available) -->
+        <div v-if="safeExposureTimes" class="safe-exposure-times">
+          <h3>Safe Exposure Times</h3>
+          <p class="exposure-note">
+            Maximum time before sunburn based on skin type:
+          </p>
+          <div class="skin-types-grid">
+            <div
+              class="skin-type-item"
+              v-for="(time, type) in safeExposureTimes"
+              :key="type"
+            >
+              <div class="skin-type-label">{{ getSkinTypeLabel(type) }}</div>
+              <div class="skin-type-time">{{ formatExposureTime(time) }}</div>
+            </div>
+          </div>
+        </div>
+
         <div class="protection-recommendations">
           <h3>Recommended Protection:</h3>
           <ul class="protection-list">
             <li v-if="uvIndex >= 3">
-              <span class="icon">🧴</span> Apply SPF 30+ sunscreen
-            </li>
-            <li v-if="uvIndex >= 3"><span class="icon">👒</span> Wear a hat</li>
-            <li v-if="uvIndex >= 5">
-              <span class="icon">👕</span> Wear protective clothing
+              <span class="icon"><i class="fas fa-pump-medical"></i></span>
+              Apply SPF 30+ sunscreen
             </li>
             <li v-if="uvIndex >= 3">
-              <span class="icon">🕶️</span> Wear sunglasses
+              <span class="icon"><i class="fas fa-hat-cowboy"></i></span> Wear a
+              hat
+            </li>
+            <li v-if="uvIndex >= 5">
+              <span class="icon"><i class="fas fa-tshirt"></i></span> Wear
+              protective clothing
+            </li>
+            <li v-if="uvIndex >= 3">
+              <span class="icon"><i class="fas fa-glasses"></i></span> Wear
+              sunglasses
             </li>
             <li v-if="uvIndex >= 8">
-              <span class="icon">⛱️</span> Seek shade during peak hours
-              (10am-4pm)
+              <span class="icon"><i class="fas fa-umbrella-beach"></i></span>
+              Seek shade during peak hours (10am-4pm)
             </li>
             <li v-if="uvIndex >= 11">
-              <span class="icon">🏠</span> Stay indoors if possible
+              <span class="icon"><i class="fas fa-home"></i></span> Stay indoors
+              if possible
             </li>
             <li v-if="uvIndex < 3">
-              <span class="icon">✅</span> Minimal protection needed for short
-              exposure
+              <span class="icon"><i class="fas fa-check"></i></span> Minimal
+              protection needed for short exposure
             </li>
           </ul>
         </div>
@@ -120,19 +146,11 @@
           </p>
         </div>
         <div class="uv-scale-item high">
-          <h3>High (6-7)</h3>
+          <h3>High (6-10)</h3>
           <p>
             High risk of harm from unprotected sun exposure. Protection against
             skin and eye damage is needed. Reduce time in the sun between 10
-            a.m. and 4 p.m.
-          </p>
-        </div>
-        <div class="uv-scale-item very-high">
-          <h3>Very High (8-10)</h3>
-          <p>
-            Very high risk of harm from unprotected sun exposure. Take extra
-            precautions because unprotected skin and eyes will be damaged and
-            can burn quickly.
+            a.m. and 4 p.m. Apply sunscreen SPF 30+ every 2 hours.
           </p>
         </div>
         <div class="uv-scale-item extreme">
@@ -140,6 +158,7 @@
           <p>
             Extreme risk of harm from unprotected sun exposure. Take all
             precautions because unprotected skin and eyes can burn in minutes.
+            Avoid being outside during midday hours.
           </p>
         </div>
       </div>
@@ -148,7 +167,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/api"; // Import the API instance
 
 export default {
   data() {
@@ -160,6 +179,9 @@ export default {
       loading: false,
       error: null,
       uvIndex: null,
+      uvMaxToday: null,
+      safeExposureTimes: null,
+      sunInfo: null,
       uvMessage: "",
       uvDescription: "",
       coordinates: {
@@ -170,17 +192,15 @@ export default {
   },
   computed: {
     uvColor() {
-      // Return a color based on the UV index value
+      // Return a color based on the UV index value (4 levels)
       if (this.uvIndex < 3) {
         return "#3EA72D"; // Green for low
       } else if (this.uvIndex < 6) {
         return "#FFF300"; // Yellow for moderate
-      } else if (this.uvIndex < 8) {
-        return "#F18B00"; // Orange for high
       } else if (this.uvIndex < 11) {
-        return "#E53210"; // Red for very high
+        return "#F18B00"; // Orange for high
       } else {
-        return "#B567A4"; // Purple for extreme
+        return "#E53210"; // Red for extreme
       }
     },
   },
@@ -188,8 +208,8 @@ export default {
     async handleLocationInput() {
       if (this.searchLocation.length > 2) {
         try {
-          const response = await axios.get(
-            `/api/places/autocomplete?input=${encodeURIComponent(
+          const response = await api.get(
+            `/places/autocomplete?input=${encodeURIComponent(
               this.searchLocation
             )}`
           );
@@ -222,26 +242,31 @@ export default {
 
       try {
         // First get coordinates from the location
-        const geoResponse = await axios.get(
-          `/api/geocode/postcode?postcode=${encodeURIComponent(
+        const geoResponse = await api.get(
+          `/geocode/postcode?postcode=${encodeURIComponent(
             this.searchLocation
           )}`
         );
 
         this.coordinates = geoResponse.data;
-
-        // Then get UV index from coordinates
-        const uvResponse = await axios.get(
-          `/api/uv-index?lat=${this.coordinates.lat}&lon=${this.coordinates.lng}`
+        console.log(
+          "Location coordinates:",
+          this.coordinates.lat,
+          this.coordinates.lng
         );
 
-        this.uvIndex = uvResponse.data.uvIndex;
-        this.setUVMessages();
-
-        this.loading = false;
+        // Use the new fetchUVData method to get UV data
+        await this.fetchUVData(this.coordinates.lat, this.coordinates.lng);
       } catch (err) {
-        console.error("Error fetching UV data:", err);
-        this.error = "Failed to fetch UV data. Please try again.";
+        console.error("Error fetching data:", err);
+
+        if (err.response?.status === 404) {
+          this.error =
+            "Location not found. Please try a more specific location name or postcode.";
+        } else {
+          this.error = "Failed to fetch location data. Please try again.";
+        }
+
         this.loading = false;
       }
     },
@@ -257,52 +282,86 @@ export default {
             try {
               const { latitude, longitude } = position.coords;
               this.coordinates = { lat: latitude, lng: longitude };
+              console.log("Location coordinates:", latitude, longitude);
 
               // Get location name from coordinates (reverse geocoding)
-              const reverseGeoResponse = await axios.get(
-                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.VUE_APP_GOOGLE_MAPS_API_KEY}`
-              );
-
-              if (reverseGeoResponse.data.results.length > 0) {
-                // Get a readable location name from the results
-                const addressComponents =
-                  reverseGeoResponse.data.results[0].address_components;
-                const locality = addressComponents.find((component) =>
-                  component.types.includes("locality")
+              try {
+                // Use server-side proxy API instead of calling Google API directly
+                const reverseGeoResponse = await api.get(
+                  `/geocode/reverse?lat=${latitude}&lng=${longitude}`
                 );
-                const sublocality = addressComponents.find((component) =>
-                  component.types.includes("sublocality")
+                console.log(
+                  "Reverse geocoding response:",
+                  reverseGeoResponse.data
                 );
 
-                this.location = locality
-                  ? locality.long_name
-                  : sublocality
-                  ? sublocality.long_name
-                  : "Your Location";
-              } else {
+                // If server-side reverse geocoding API is not implemented, use default location name
+                if (
+                  reverseGeoResponse.data &&
+                  reverseGeoResponse.data.results &&
+                  reverseGeoResponse.data.results.length > 0
+                ) {
+                  // Get a readable location name from the results
+                  const addressComponents =
+                    reverseGeoResponse.data.results[0].address_components;
+                  const locality = addressComponents.find((component) =>
+                    component.types.includes("locality")
+                  );
+                  const sublocality = addressComponents.find((component) =>
+                    component.types.includes("sublocality")
+                  );
+
+                  this.location = locality
+                    ? locality.long_name
+                    : sublocality
+                    ? sublocality.long_name
+                    : "Your Location";
+                } else {
+                  this.location = "Your Location";
+                }
+              } catch (geoError) {
+                console.error("Reverse geocoding error:", geoError);
                 this.location = "Your Location";
+                // Continue to get UV index even if geocoding fails
               }
 
-              // Get UV index from coordinates
-              const uvResponse = await axios.get(
-                `/api/uv-index?lat=${latitude}&lon=${longitude}`
-              );
-
-              this.uvIndex = uvResponse.data.uvIndex;
-              this.setUVMessages();
-
-              this.loading = false;
+              // Use the new fetchUVData method to get UV data
+              await this.fetchUVData(latitude, longitude);
             } catch (error) {
-              console.error("Error fetching data:", error);
+              console.error(
+                "Error fetching data:",
+                error.response?.data || error.message
+              );
               this.error = "Failed to fetch UV data. Please try again.";
               this.loading = false;
             }
           },
           (error) => {
-            console.error("Geolocation error:", error);
-            this.error =
-              "Unable to access your location. Please allow location access or enter a location manually.";
+            console.error("Geolocation error:", error.code, error.message);
+            let errorMsg = "Unable to access your location. ";
+
+            // Provide more specific error message based on error code
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                errorMsg += "Please allow location access.";
+                break;
+              case error.POSITION_UNAVAILABLE:
+                errorMsg += "Location information is unavailable.";
+                break;
+              case error.TIMEOUT:
+                errorMsg += "Location request timed out.";
+                break;
+              default:
+                errorMsg += "Please enter a location manually.";
+            }
+
+            this.error = errorMsg;
             this.loading = false;
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
           }
         );
       } else {
@@ -311,7 +370,7 @@ export default {
     },
 
     setUVMessages() {
-      // Set UV message and description based on the UV index value
+      // Set UV message and description based on the UV index value (4 levels)
       if (this.uvIndex < 3) {
         this.uvMessage = "Low UV Level";
         this.uvDescription =
@@ -320,18 +379,118 @@ export default {
         this.uvMessage = "Moderate UV Level";
         this.uvDescription =
           "Take precautions - cover up, wear a hat, sunglasses and sunscreen, especially if you will be outside for 30 minutes or more.";
-      } else if (this.uvIndex < 8) {
+      } else if (this.uvIndex < 11) {
         this.uvMessage = "High UV Level";
         this.uvDescription =
-          "Protection required - UV damages skin and can cause sunburn. Reduce time in the sun between 10am and 4pm.";
-      } else if (this.uvIndex < 11) {
-        this.uvMessage = "Very High UV Level";
-        this.uvDescription =
-          "Extra protection required - unprotected skin can burn in minutes. Avoid being outside during midday hours.";
+          "Protection required - UV damages skin and can cause sunburn. Reduce time in the sun between 10am and 4pm. Apply SPF 30+ sunscreen every 2 hours.";
       } else {
         this.uvMessage = "Extreme UV Level";
         this.uvDescription =
           "Maximum protection required - avoid being outside during midday hours, shirt, hat, sunglasses and SPF 30+ sunscreen are essential.";
+      }
+    },
+
+    getSkinTypeLabel(type) {
+      const skinTypes = {
+        st1: "Type I (Very Fair)",
+        st2: "Type II (Fair)",
+        st3: "Type III (Medium)",
+        st4: "Type IV (Olive)",
+        st5: "Type V (Brown)",
+        st6: "Type VI (Dark Brown/Black)",
+      };
+      return skinTypes[type] || type;
+    },
+
+    formatExposureTime(minutes) {
+      if (minutes === null || minutes === undefined) return "N/A";
+
+      if (minutes < 60) {
+        return `${minutes} min`;
+      } else {
+        const hours = Math.floor(minutes / 60);
+        const remainingMinutes = minutes % 60;
+        return remainingMinutes > 0
+          ? `${hours}h ${remainingMinutes}m`
+          : `${hours}h`;
+      }
+    },
+
+    retrySearch() {
+      this.error = null;
+      if (this.coordinates.lat && this.coordinates.lng) {
+        // If we already have coordinates, directly retry fetching UV data
+        this.loading = true;
+        this.fetchUVData(this.coordinates.lat, this.coordinates.lng);
+      } else if (this.searchLocation) {
+        // If we have a search location, retry the search
+        this.searchUVLevel();
+      } else {
+        // If we have neither, prompt the user to enter a location
+        this.error = "Please enter a location or use current location";
+      }
+    },
+
+    // Add a new method to fetch UV data, avoid code duplication
+    async fetchUVData(lat, lng) {
+      try {
+        console.log(`Requesting UV index data for lat=${lat}, lon=${lng}`);
+        const uvResponse = await api.get(`/uv-index?lat=${lat}&lon=${lng}`);
+        console.log("UV index response:", uvResponse.data);
+
+        // Handle response from OpenUV API
+        if (uvResponse.data.uvIndex !== undefined) {
+          this.uvIndex = uvResponse.data.uvIndex;
+
+          // Check if we have additional data from OpenUV
+          if (!uvResponse.data.isBackupData) {
+            this.uvMaxToday = uvResponse.data.uvMaxToday;
+            this.safeExposureTimes = uvResponse.data.safeExposureTimes;
+            this.sunInfo = uvResponse.data.sunInfo;
+          } else {
+            // Reset additional fields if using backup data
+            this.uvMaxToday = null;
+            this.safeExposureTimes = null;
+            this.sunInfo = null;
+          }
+
+          this.setUVMessages();
+        } else {
+          throw new Error("Invalid response format");
+        }
+
+        this.loading = false;
+      } catch (err) {
+        console.error("Error fetching UV data:", err);
+
+        // Enhanced error handling
+        if (err.code === "ECONNABORTED" || err.message.includes("timeout")) {
+          this.error =
+            "Request timed out. Server might be busy, please try again.";
+        } else if (err.response?.status === 404) {
+          this.error =
+            "API endpoint not found. Please check server configuration.";
+        } else if (
+          err.response?.status === 401 ||
+          err.response?.status === 403
+        ) {
+          this.error =
+            "Invalid or expired API key. Please contact administrator to update the API key.";
+        } else {
+          this.error =
+            "Failed to fetch UV data. Please check your network connection and try again.";
+        }
+
+        // Log detailed error information
+        console.error("Error details:", {
+          message: err.message,
+          code: err.code,
+          status: err.response?.status,
+          statusText: err.response?.statusText,
+          data: err.response?.data,
+        });
+
+        this.loading = false;
       }
     },
   },
@@ -478,6 +637,33 @@ h1 {
   color: #dc3545;
   text-align: center;
   padding: 20px;
+  background-color: #f8d7da;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.error-icon {
+  margin-bottom: 10px;
+  font-size: 2rem;
+  color: #dc3545;
+}
+
+.retry-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 15px;
+}
+
+.retry-button:hover {
+  background-color: #0069d9;
 }
 
 .uv-meter {
@@ -533,12 +719,8 @@ h1 {
   background-color: #f18b00;
 }
 
-.very-high {
-  background-color: #e53210;
-}
-
 .extreme {
-  background-color: #b567a4;
+  background-color: #e53210;
 }
 
 .uv-message {
@@ -549,6 +731,54 @@ h1 {
 .uv-message h3 {
   margin-bottom: 10px;
   color: #2c3e50;
+}
+
+.safe-exposure-times {
+  background-color: #e8f4f8;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.safe-exposure-times h3 {
+  margin-bottom: 10px;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.exposure-note {
+  text-align: center;
+  margin-bottom: 15px;
+  font-style: italic;
+  color: #666;
+}
+
+.skin-types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.skin-type-item {
+  background-color: white;
+  border-radius: 6px;
+  padding: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.skin-type-label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+.skin-type-time {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #007bff;
 }
 
 .protection-recommendations {
@@ -576,6 +806,8 @@ h1 {
 .icon {
   margin-right: 10px;
   font-size: 1.2rem;
+  width: 25px;
+  text-align: center;
 }
 
 .uv-info-section {
@@ -629,6 +861,10 @@ h1 {
 
   .scale-segment {
     font-size: 0.6rem;
+  }
+
+  .skin-types-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>

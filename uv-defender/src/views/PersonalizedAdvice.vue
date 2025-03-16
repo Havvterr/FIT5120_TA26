@@ -36,7 +36,7 @@
       <p>Generating your personalized advice...</p>
     </div>
 
-    <div v-if="error" class="error-message">
+    <div v-if="error" class="error">
       <p>{{ error }}</p>
       <button @click="getSkinAdvice" class="retry-button">Retry</button>
     </div>
@@ -44,33 +44,13 @@
     <div v-if="advice && !loading" class="advice-container">
       <h2>Your Personalized Sun Protection Plan</h2>
 
-      <div class="advice-card risk-assessment">
+      <div class="advice-card">
         <div class="card-icon">
-          <i class="fas fa-exclamation-triangle"></i>
+          <i class="fas fa-shield-alt"></i>
         </div>
         <div class="card-content">
-          <h3>Risk Assessment</h3>
-          <p>{{ advice.riskAssessment }}</p>
-        </div>
-      </div>
-
-      <div class="advice-card exposure-guidelines">
-        <div class="card-icon">
-          <i class="fas fa-clock"></i>
-        </div>
-        <div class="card-content">
-          <h3>Safe Exposure Time</h3>
-          <p>{{ advice.exposureGuidelines }}</p>
-        </div>
-      </div>
-
-      <div class="advice-card vitamin-d-info">
-        <div class="card-icon">
-          <i class="fas fa-sun"></i>
-        </div>
-        <div class="card-content">
-          <h3>Vitamin D Recommendations</h3>
-          <p>{{ advice.vitaminDInfo }}</p>
+          <h3>Sun Protection Advice</h3>
+          <p>{{ advice.adviceText }}</p>
         </div>
       </div>
 
@@ -79,15 +59,18 @@
           <i class="fas fa-pump-soap"></i>
         </div>
         <div class="card-content">
-          <h3>Sunscreen Application</h3>
+          <h3>Recommended Sunscreen Amount</h3>
           <p>
             Based on your skin type and current UV index ({{ currentUVIndex }}):
           </p>
           <div class="sunscreen-amount">
-            <span class="amount">{{ advice.sunscreenAmount }}</span>
+            <span class="amount"
+              >{{ calculateSunscreenAmount() }} teaspoons</span
+            >
           </div>
           <p class="reapplication">
-            Reapply every {{ advice.reapplicationTime }} hours when outdoors.
+            Reapply every {{ calculateReapplicationTime() }} hours when
+            outdoors.
           </p>
         </div>
       </div>
@@ -174,6 +157,92 @@ export default {
         this.loading = false;
       }
     },
+
+    calculateSunscreenAmount() {
+      // Calculate recommended sunscreen amount based on UV index and skin type
+      let amount = 2; // Default amount
+
+      // Determine UV level
+      let uvLevel = "low";
+      if (this.currentUVIndex >= 8) {
+        uvLevel = "high";
+      } else if (this.currentUVIndex >= 3) {
+        uvLevel = "medium";
+      }
+
+      // Adjust based on skin type and UV level
+      if (uvLevel === "high") {
+        if (this.selectedSkinType <= 2) {
+          amount = 3;
+        } else if (this.selectedSkinType <= 4) {
+          amount = 2.5;
+        } else {
+          amount = 2;
+        }
+      } else if (uvLevel === "medium") {
+        if (this.selectedSkinType <= 2) {
+          amount = 2.5;
+        } else if (this.selectedSkinType <= 4) {
+          amount = 2;
+        } else {
+          amount = 1.5;
+        }
+      } else {
+        // low
+        if (this.selectedSkinType <= 2) {
+          amount = 2;
+        } else if (this.selectedSkinType <= 4) {
+          amount = 1.5;
+        } else {
+          amount = 1;
+        }
+      }
+
+      return amount;
+    },
+
+    calculateReapplicationTime() {
+      // Calculate reapplication time based on UV index and skin type
+      let hours = 2; // Default reapplication time
+
+      // Determine UV level
+      let uvLevel = "low";
+      if (this.currentUVIndex >= 8) {
+        uvLevel = "high";
+      } else if (this.currentUVIndex >= 3) {
+        uvLevel = "medium";
+      }
+
+      // Adjust based on skin type and UV level
+      if (uvLevel === "high") {
+        if (this.selectedSkinType <= 2) {
+          hours = 1;
+        } else if (this.selectedSkinType <= 4) {
+          hours = 1.5;
+        } else {
+          hours = 2;
+        }
+      } else if (uvLevel === "medium") {
+        if (this.selectedSkinType <= 2) {
+          hours = 1.5;
+        } else if (this.selectedSkinType <= 4) {
+          hours = 2;
+        } else {
+          hours = 2.5;
+        }
+      } else {
+        // low
+        if (this.selectedSkinType <= 2) {
+          hours = 2;
+        } else if (this.selectedSkinType <= 4) {
+          hours = 2.5;
+        } else {
+          hours = 3;
+        }
+      }
+
+      return hours;
+    },
   },
   mounted() {
     // Get advice when component is mounted
@@ -253,8 +322,8 @@ h3 {
 .skin-type-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #2467af;
   cursor: pointer;
@@ -309,16 +378,8 @@ h3 {
   flex: 1;
 }
 
-.risk-assessment .card-icon {
-  color: #e74c3c;
-}
-
-.exposure-guidelines .card-icon {
-  color: #f39c12;
-}
-
-.vitamin-d-info .card-icon {
-  color: #27ae60;
+.card-icon {
+  color: #2467af;
 }
 
 .sunscreen-recommendation .card-icon {
@@ -368,7 +429,7 @@ h3 {
   }
 }
 
-.error-message {
+.error {
   background-color: #f8d7da;
   color: #721c24;
   padding: 20px;

@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/Home.vue";
-import CheckUV from "@/views/CheckUV.vue";
 import UVLevels from "@/views/UVLevels.vue";
 import UVImpactInfo from "@/views/UVImpactInfo.vue";
 import PersonalizedAdvice from "@/views/PersonalizedAdvice.vue";
@@ -15,8 +14,7 @@ const routes = [
   },
   {
     path: "/check-uv",
-    name: "CheckUV",
-    component: CheckUV,
+    redirect: "/uv-levels",
   },
   {
     path: "/uv-levels",
