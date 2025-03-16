@@ -30,14 +30,14 @@
             <i class="fas fa-sun"></i> UV Levels
           </router-link>
           <router-link to="/uv-impact-info" class="nav-link" @click="closeMenu">
-            <i class="fas fa-chart-line"></i> UV Impact Info
+            <i class="fas fa-chart-line"></i> UV Impact
           </router-link>
           <router-link
             to="/personalized-advice"
             class="nav-link"
             @click="closeMenu"
           >
-            <i class="fas fa-user-shield"></i> Personalized Advice
+            <i class="fa-solid fa-handshake-angle"></i> Advice
           </router-link>
           <router-link
             to="/sunscreen-reminders"
@@ -51,7 +51,7 @@
             class="nav-link"
             @click="closeMenu"
           >
-            <i class="fas fa-shopping-bag"></i> Sun-Safe Products
+            <i class="fas fa-shopping-bag"></i> Products
           </router-link>
         </div>
       </div>
@@ -137,7 +137,7 @@ body.no-scroll {
 
 .container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -170,6 +170,7 @@ body.no-scroll {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 .navbar-brand {
@@ -178,7 +179,7 @@ body.no-scroll {
   text-decoration: none;
   color: #292727;
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .navbar-transparent .navbar-brand {
@@ -193,20 +194,26 @@ body.no-scroll {
 .nav-links {
   display: flex;
   align-items: center;
+  flex: 1;
+  justify-content: space-around;
+  margin-left: 20px;
 }
 
 .nav-link {
   color: #333;
   text-decoration: none;
-  padding: 10px 15px;
+  padding: 10px 8px;
   font-weight: 500;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
+  font-size: 0.9rem;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .nav-link i {
-  margin-right: 5px;
+  margin-right: 3px;
 }
 
 .nav-link:hover,
@@ -224,56 +231,6 @@ body.no-scroll {
 .menu-toggle {
   display: none;
   cursor: pointer;
-}
-
-.hamburger {
-  width: 30px;
-  height: 20px;
-  position: relative;
-}
-
-.hamburger span {
-  display: block;
-  position: absolute;
-  height: 3px;
-  width: 100%;
-  background: #333;
-  border-radius: 3px;
-  opacity: 1;
-  left: 0;
-  transform: rotate(0deg);
-  transition: 0.25s ease-in-out;
-}
-
-.navbar-transparent .hamburger span {
-  background: white;
-}
-
-.hamburger span:nth-child(1) {
-  top: 0px;
-}
-
-.hamburger span:nth-child(2) {
-  top: 8px;
-}
-
-.hamburger span:nth-child(3) {
-  top: 16px;
-}
-
-.hamburger.active span:nth-child(1) {
-  top: 8px;
-  transform: rotate(135deg);
-}
-
-.hamburger.active span:nth-child(2) {
-  opacity: 0;
-  left: -60px;
-}
-
-.hamburger.active span:nth-child(3) {
-  top: 8px;
-  transform: rotate(-135deg);
 }
 
 /* Main Content */
@@ -341,6 +298,7 @@ body:not(.home-page) main {
     transform: translateX(100%);
     transition: transform 0.3s ease;
     overflow-y: auto;
+    margin-left: 0;
   }
 
   .nav-links.active {

@@ -55,7 +55,7 @@
 
         <div class="feature-card" @click="navigateTo('/personalized-advice')">
           <div class="card-icon">
-            <i class="fas fa-user-shield"></i>
+            <i class="fa-solid fa-handshake-angle"></i>
           </div>
           <h3>Personalized Advice</h3>
           <p>
@@ -105,29 +105,50 @@ export default {
 .home-container {
   min-height: 100vh;
   width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 .hero-section {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("@/assets/uv_defender.jpg") no-repeat center center;
+  background: url("@/assets/uv_defender.jpg") no-repeat center center fixed;
   background-size: cover;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 70px 20px 40px; /* Increased top padding to make room for navbar */
+  padding: 105px 20px 40px;
   color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 0;
+}
+
+.logo-container,
+.hero-content,
+.feature-cards {
+  position: relative;
+  z-index: 1;
 }
 
 /* Logo & Title */
 .logo-container {
   display: flex;
   align-items: center;
-  margin-bottom: 40px;
+  margin-top: -10px;
+  margin-bottom: 50px;
 }
 
 .logo {
@@ -147,14 +168,15 @@ export default {
 /* Main content */
 .hero-content {
   width: 100%;
-  max-width: 800px;
-  margin-bottom: 60px;
+  max-width: 750px;
+  margin-top: -5px;
+  margin-bottom: 80px;
 }
 
 .info-box {
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 20px;
-  padding: 40px;
+  padding: 50px;
   text-align: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(5px);
@@ -162,13 +184,13 @@ export default {
 }
 
 .info-box h2 {
-  font-size: 2.2rem;
+  font-size: 2.3rem;
   margin-bottom: 20px;
   color: white;
 }
 
 .info-box p {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-bottom: 20px;
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.6;
@@ -189,20 +211,18 @@ export default {
   padding: 30px;
   text-align: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
   color: #333;
 }
 
 .feature-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
 .card-icon {
   font-size: 2.5rem;
   margin-bottom: 20px;
-  color: #007bff;
+  color: #2467af;
 }
 
 .feature-card h3 {
@@ -215,25 +235,5 @@ export default {
   font-size: 1rem;
   color: #555;
   line-height: 1.5;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .feature-cards {
-    grid-template-columns: 1fr;
-    max-width: 500px;
-  }
-
-  .info-box {
-    padding: 30px;
-  }
-
-  .info-box h2 {
-    font-size: 1.8rem;
-  }
-
-  .info-box p {
-    font-size: 1rem;
-  }
 }
 </style>
