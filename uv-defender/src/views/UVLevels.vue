@@ -12,9 +12,9 @@
         <input
           type="text"
           v-model="searchLocation"
-          placeholder="Enter location or postcode (e.g., Clayton, Melbourne or 3800)"
+          placeholder="Enter location or postcode (e.g., Clayton VIC, Australia or 3800)"
           class="search-input"
-          @input="handleLocationInput"
+          @input="locationInput"
         />
         <button @click="searchUVLevel" class="search-button">Search</button>
       </div>
@@ -58,7 +58,7 @@
       <div v-else class="uv-info">
         <div class="uv-meter">
           <div class="uv-value" :style="{ backgroundColor: uvColor }">
-            {{ uvIndex }}
+            {{ Number(uvIndex).toFixed(1) }}
           </div>
           <div class="uv-scale">
             <div class="scale-segment low">Low</div>
@@ -73,30 +73,12 @@
           <p>{{ uvDescription }}</p>
         </div>
 
-        <!-- Safe Exposure Times (only shown when available) -->
-        <div v-if="safeExposureTimes" class="safe-exposure-times">
-          <h3>Safe Exposure Times</h3>
-          <p class="exposure-note">
-            Maximum time before sunburn based on skin type:
-          </p>
-          <div class="skin-types-grid">
-            <div
-              class="skin-type-item"
-              v-for="(time, type) in safeExposureTimes"
-              :key="type"
-            >
-              <div class="skin-type-label">{{ getSkinTypeLabel(type) }}</div>
-              <div class="skin-type-time">{{ formatExposureTime(time) }}</div>
-            </div>
-          </div>
-        </div>
-
         <div class="protection-recommendations">
           <h3>Recommended Protection:</h3>
           <ul class="protection-list">
             <li v-if="uvIndex >= 3">
               <span class="icon"><i class="fas fa-pump-medical"></i></span>
-              Apply SPF 30+ sunscreen
+              Apply sunscreen
             </li>
             <li v-if="uvIndex >= 3">
               <span class="icon"><i class="fas fa-hat-cowboy"></i></span> Wear a
@@ -110,11 +92,11 @@
               <span class="icon"><i class="fas fa-glasses"></i></span> Wear
               sunglasses
             </li>
-            <li v-if="uvIndex >= 8">
+            <li v-if="uvIndex >= 10">
               <span class="icon"><i class="fas fa-umbrella-beach"></i></span>
-              Seek shade during peak hours (10am-4pm)
+              Seek shade during peak hours
             </li>
-            <li v-if="uvIndex >= 11">
+            <li v-if="uvIndex >= 10">
               <span class="icon"><i class="fas fa-home"></i></span> Stay indoors
               if possible
             </li>
@@ -132,33 +114,28 @@
       <div class="uv-scale-info">
         <div class="uv-scale-item low">
           <h3>Low (0-2)</h3>
-          <p>
-            Low danger from the sun's UV rays for the average person. Wear
-            sunglasses on bright days.
-          </p>
+          <p>Low danger from the sun's UV rays for the average person.</p>
         </div>
         <div class="uv-scale-item moderate">
           <h3>Moderate (3-5)</h3>
           <p>
-            Moderate risk of harm from unprotected sun exposure. Stay in shade
-            during midday hours, wear protective clothing, sunglasses, and
-            sunscreen.
+            Moderate risk of harm from unprotected sun exposure. Wear protective
+            clothing, sunglasses, and sunscreen.
           </p>
         </div>
         <div class="uv-scale-item high">
           <h3>High (6-10)</h3>
           <p>
             High risk of harm from unprotected sun exposure. Protection against
-            skin and eye damage is needed. Reduce time in the sun between 10
-            a.m. and 4 p.m. Apply sunscreen SPF 30+ every 2 hours.
+            skin and eye damage is needed. Try to avoid exposure outdoors the
+            hours of strongest sunlight, from 10 AM to 4 PM.
           </p>
         </div>
         <div class="uv-scale-item extreme">
-          <h3>Extreme (11+)</h3>
+          <h3>Extreme (10+)</h3>
           <p>
-            Extreme risk of harm from unprotected sun exposure. Take all
-            precautions because unprotected skin and eyes can burn in minutes.
-            Avoid being outside during midday hours.
+            Extreme risk of harm from unprotected sun exposure. Avoid being
+            outside during midday hours.
           </p>
         </div>
       </div>
@@ -180,7 +157,6 @@ export default {
       error: null,
       uvIndex: null,
       uvMaxToday: null,
-      safeExposureTimes: null,
       sunInfo: null,
       uvMessage: "",
       uvDescription: "",
@@ -197,7 +173,7 @@ export default {
         return "#3EA72D"; // Green for low
       } else if (this.uvIndex < 6) {
         return "#FFF300"; // Yellow for moderate
-      } else if (this.uvIndex < 11) {
+      } else if (this.uvIndex < 10) {
         return "#F18B00"; // Orange for high
       } else {
         return "#E53210"; // Red for extreme
@@ -205,7 +181,7 @@ export default {
     },
   },
   methods: {
-    async handleLocationInput() {
+    async locationInput() {
       if (this.searchLocation.length > 2) {
         try {
           const response = await api.get(
@@ -390,32 +366,6 @@ export default {
       }
     },
 
-    getSkinTypeLabel(type) {
-      const skinTypes = {
-        st1: "Type I (Very Fair)",
-        st2: "Type II (Fair)",
-        st3: "Type III (Medium)",
-        st4: "Type IV (Olive)",
-        st5: "Type V (Brown)",
-        st6: "Type VI (Dark Brown/Black)",
-      };
-      return skinTypes[type] || type;
-    },
-
-    formatExposureTime(minutes) {
-      if (minutes === null || minutes === undefined) return "N/A";
-
-      if (minutes < 60) {
-        return `${minutes} min`;
-      } else {
-        const hours = Math.floor(minutes / 60);
-        const remainingMinutes = minutes % 60;
-        return remainingMinutes > 0
-          ? `${hours}h ${remainingMinutes}m`
-          : `${hours}h`;
-      }
-    },
-
     retrySearch() {
       this.error = null;
       if (this.coordinates.lat && this.coordinates.lng) {
@@ -445,12 +395,10 @@ export default {
           // Check if we have additional data from OpenUV
           if (!uvResponse.data.isBackupData) {
             this.uvMaxToday = uvResponse.data.uvMaxToday;
-            this.safeExposureTimes = uvResponse.data.safeExposureTimes;
             this.sunInfo = uvResponse.data.sunInfo;
           } else {
             // Reset additional fields if using backup data
             this.uvMaxToday = null;
-            this.safeExposureTimes = null;
             this.sunInfo = null;
           }
 
@@ -499,7 +447,7 @@ export default {
 
 <style scoped>
 .uv-levels-container {
-  max-width: 800px;
+  max-width: 780px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -546,7 +494,7 @@ h1 {
 }
 
 .search-button:hover {
-  background-color: #0069d9;
+  background-color: #4d5966;
 }
 
 .predictions-dropdown {
@@ -582,10 +530,11 @@ h1 {
 }
 
 .location-button {
-  background-color: #6c757d;
+  background-color: #6485db;
   color: white;
   border: none;
   padding: 10px 15px;
+  margin-top: 15px;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -706,21 +655,21 @@ h1 {
 }
 
 .low {
-  background-color: #3ea72d;
+  background-color: #4abe2a;
 }
 
 .moderate {
-  background-color: #fff300;
+  background-color: #f0ee64;
   color: #333;
   text-shadow: none;
 }
 
 .high {
-  background-color: #f18b00;
+  background-color: #fa9911;
 }
 
 .extreme {
-  background-color: #e53210;
+  background-color: #f24623;
 }
 
 .uv-message {
@@ -731,54 +680,6 @@ h1 {
 .uv-message h3 {
   margin-bottom: 10px;
   color: #2c3e50;
-}
-
-.safe-exposure-times {
-  background-color: #e8f4f8;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.safe-exposure-times h3 {
-  margin-bottom: 10px;
-  color: #2c3e50;
-  text-align: center;
-}
-
-.exposure-note {
-  text-align: center;
-  margin-bottom: 15px;
-  font-style: italic;
-  color: #666;
-}
-
-.skin-types-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
-}
-
-.skin-type-item {
-  background-color: white;
-  border-radius: 6px;
-  padding: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.skin-type-label {
-  font-weight: 500;
-  margin-bottom: 5px;
-  color: #2c3e50;
-}
-
-.skin-type-time {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #007bff;
 }
 
 .protection-recommendations {
@@ -823,13 +724,14 @@ h1 {
 .uv-scale-info {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 11px;
 }
 
 .uv-scale-item {
-  padding: 15px;
+  padding: 18px;
   border-radius: 8px;
   color: white;
+  margin-bottom: 5px;
 }
 
 .uv-scale-item.moderate {
@@ -851,20 +753,12 @@ h1 {
   }
 
   .search-button {
-    border-radius: 4px;
+    border-radius: 5px;
     width: 100%;
   }
 
   .uv-scale {
     height: 30px;
-  }
-
-  .scale-segment {
-    font-size: 0.6rem;
-  }
-
-  .skin-types-grid {
-    grid-template-columns: 1fr;
   }
 }
 </style>

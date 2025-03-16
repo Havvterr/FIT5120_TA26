@@ -2,25 +2,83 @@
   <div class="sunscreen-reminders-container">
     <h1>Sunscreen Reminders</h1>
     <p class="description">
-      Set up reminders to reapply sunscreen based on your sunscreen type and the
-      current UV index. This will help you stay protected throughout the day.
+      Set up reminders to reapply sunscreen at your preferred intervals.
     </p>
 
     <div class="reminder-form">
-      <div class="form-group">
-        <label for="sunscreen-type">Select Sunscreen Type:</label>
-        <select
-          id="sunscreen-type"
-          v-model="sunscreenType"
-          class="form-control"
-        >
-          <option value="15">SPF 15</option>
-          <option value="30">SPF 30</option>
-          <option value="50">SPF 50</option>
-          <option value="50+">SPF 50+</option>
-        </select>
+      <!-- UV Index section with prompt -->
+      <div class="uv-section">
+        <p class="uv-prompt">
+          Get the UV index for your location to receive a recommended
+          reapplication interval.
+        </p>
+
+        <div class="form-group">
+          <label for="location">Your Location:</label>
+          <div class="location-input">
+            <input
+              type="text"
+              id="location"
+              v-model="searchLocation"
+              placeholder="Enter location or postcode"
+              class="form-control"
+              @input="locationInput"
+            />
+            <button @click="getCurrentUV" class="btn btn-primary">
+              Get UV Index
+            </button>
+          </div>
+
+          <!-- Predictions dropdown -->
+          <div v-if="predictions.length > 0" class="predictions-dropdown">
+            <ul>
+              <li
+                v-for="prediction in predictions"
+                :key="prediction.place_id"
+                @click="selectLocation(prediction)"
+              >
+                {{ prediction.description }}
+              </li>
+            </ul>
+          </div>
+
+          <button
+            @click="useCurrentLocation"
+            class="btn btn-secondary location-btn"
+          >
+            Use My Current Location
+          </button>
+        </div>
+
+        <!-- Current UV display -->
+        <div v-if="currentUVIndex !== null" class="current-uv">
+          <h3>
+            Current UV Index:
+            <span :style="{ color: getUVColor() }">{{
+              Number(currentUVIndex).toFixed(1)
+            }}</span>
+          </h3>
+          <p>{{ getUVMessage() }}</p>
+
+          <div class="recommendation-box">
+            <h3>Recommended Reapplication</h3>
+            <p>
+              Based on the current UV index ({{
+                Number(currentUVIndex).toFixed(1)
+              }}), we recommend reapplying sunscreen every
+              <strong>{{ recommendedInterval }} hours</strong> when outdoors.
+            </p>
+            <button
+              @click="applyRecommendation"
+              class="btn btn-outline-primary apply-btn"
+            >
+              Apply This Recommendation
+            </button>
+          </div>
+        </div>
       </div>
 
+      <!-- Application Time - Moved below UV section -->
       <div class="form-group">
         <label>Application Time:</label>
         <div class="time-options">
@@ -42,25 +100,27 @@
       </div>
 
       <div class="form-group">
-        <label for="activity-level">Activity Level:</label>
-        <select
-          id="activity-level"
-          v-model="activityLevel"
-          class="form-control"
+        <label for="reapplication-interval"
+          >Reapplication Interval (hours):</label
         >
-          <option value="low">Low (Mostly Indoors)</option>
-          <option value="moderate">Moderate (Some Outdoor Activity)</option>
-          <option value="high">High (Swimming, Sports, Heavy Sweating)</option>
-        </select>
+        <input
+          type="number"
+          id="reapplication-interval"
+          v-model.number="manualReapplicationInterval"
+          min="0.5"
+          max="8"
+          step="0.5"
+          class="form-control"
+        />
       </div>
 
       <div class="form-group">
         <button
-          @click="calculateReminder"
+          @click="setReminder"
           class="btn btn-success save-btn"
           :disabled="loading || !isFormValid"
         >
-          {{ loading ? "Calculating..." : "Save Reminder" }}
+          {{ loading ? "Processing..." : "Save Reminder" }}
         </button>
       </div>
     </div>
@@ -68,14 +128,15 @@
     <div v-if="reminderSet" class="reminder-summary">
       <h2>Your Sunscreen Reminder</h2>
       <div class="reminder-details">
-        <p><strong>Sunscreen Type:</strong> SPF {{ sunscreenType }}</p>
         <p><strong>Applied At:</strong> {{ formattedApplicationTime }}</p>
-        <p><strong>Current UV Index:</strong> {{ currentUVIndex }}</p>
+        <p v-if="currentUVIndex !== null">
+          <strong>Current UV Index:</strong>
+          {{ Number(currentUVIndex).toFixed(1) }}
+        </p>
         <p><strong>Reapply At:</strong> {{ formattedReapplicationTime }}</p>
-        <p class="reapplication-note">
-          Based on your sunscreen type (SPF {{ sunscreenType }}) and the current
-          UV index ({{ currentUVIndex }}), you should reapply sunscreen every
-          {{ reapplicationInterval }} hours when outdoors.
+        <p>
+          <strong>Reapplication Interval:</strong>
+          {{ manualReapplicationInterval }} hours
         </p>
       </div>
 
@@ -95,111 +156,40 @@
         <li>Apply sunscreen 15-30 minutes before going outside.</li>
         <li>Use approximately 1 teaspoon for your face and neck.</li>
         <li>Use approximately 1 teaspoon for each arm and leg.</li>
-        <li>Use approximately 1 teaspoon for your chest and abdomen.</li>
         <li>Use approximately 1 teaspoon for your back.</li>
-        <li>Reapply after swimming, sweating, or toweling off.</li>
-        <li>Even water-resistant sunscreen needs to be reapplied regularly.</li>
+        <li>Reapply after swimming.</li>
       </ul>
     </div>
   </div>
 </template>
 
 <script>
+import api from "@/api"; // Import the API instance
+
 export default {
   name: "SunscreenReminders",
   data() {
     return {
-      sunscreenType: "30",
+      searchLocation: "",
+      location: "",
+      predictions: [],
+      coordinates: {
+        lat: null,
+        lng: null,
+      },
       applicationTime: "",
-      activityLevel: "moderate",
-      currentUVIndex: 5, // Default UV index
-      reapplicationInterval: 2,
+      currentUVIndex: null,
+      manualReapplicationInterval: 2,
+      recommendedInterval: 2,
       reapplicationTime: null,
       reminderSet: false,
       loading: false,
-      // Embedded UV index data for different locations in Australia
-      uvData: {
-        Sydney: { uvIndex: 6, lat: -33.8688, lon: 151.2093 },
-        Melbourne: { uvIndex: 5, lat: -37.8136, lon: 144.9631 },
-        Brisbane: { uvIndex: 8, lat: -27.4698, lon: 153.0251 },
-        Perth: { uvIndex: 7, lat: -31.9505, lon: 115.8605 },
-        Adelaide: { uvIndex: 6, lat: -34.9285, lon: 138.6007 },
-        "Gold Coast": { uvIndex: 8, lat: -28.0167, lon: 153.4 },
-        Canberra: { uvIndex: 5, lat: -35.2809, lon: 149.13 },
-        Hobart: { uvIndex: 4, lat: -42.8821, lon: 147.3272 },
-        Darwin: { uvIndex: 10, lat: -12.4634, lon: 130.8456 },
-      },
-      // SPF reapplication intervals based on UV index and activity level
-      spfData: {
-        15: {
-          baseInterval: 1.5,
-          uvAdjustment: {
-            low: 1.0, // UV 0-2
-            moderate: 0.9, // UV 3-5
-            high: 0.8, // UV 6-7
-            veryHigh: 0.7, // UV 8-10
-            extreme: 0.6, // UV 11+
-          },
-          activityAdjustment: {
-            low: 1.2,
-            moderate: 1.0,
-            high: 0.7,
-          },
-        },
-        30: {
-          baseInterval: 2.0,
-          uvAdjustment: {
-            low: 1.0,
-            moderate: 0.9,
-            high: 0.8,
-            veryHigh: 0.7,
-            extreme: 0.6,
-          },
-          activityAdjustment: {
-            low: 1.2,
-            moderate: 1.0,
-            high: 0.7,
-          },
-        },
-        50: {
-          baseInterval: 2.5,
-          uvAdjustment: {
-            low: 1.0,
-            moderate: 0.9,
-            high: 0.8,
-            veryHigh: 0.7,
-            extreme: 0.6,
-          },
-          activityAdjustment: {
-            low: 1.2,
-            moderate: 1.0,
-            high: 0.7,
-          },
-        },
-        "50+": {
-          baseInterval: 3.0,
-          uvAdjustment: {
-            low: 1.0,
-            moderate: 0.9,
-            high: 0.8,
-            veryHigh: 0.7,
-            extreme: 0.6,
-          },
-          activityAdjustment: {
-            low: 1.2,
-            moderate: 1.0,
-            high: 0.7,
-          },
-        },
-      },
+      error: null,
     };
   },
   computed: {
     isFormValid() {
-      return (
-        this.sunscreenType &&
-        (this.applicationTime || this.applicationTime === "")
-      );
+      return this.applicationTime && this.manualReapplicationInterval > 0;
     },
     formattedApplicationTime() {
       if (!this.applicationTime) return "";
@@ -229,117 +219,208 @@ export default {
     },
   },
   methods: {
+    async locationInput() {
+      if (this.searchLocation.length > 2) {
+        try {
+          const response = await api.get(
+            `/places/autocomplete?input=${encodeURIComponent(
+              this.searchLocation
+            )}`
+          );
+          this.predictions = response.data.predictions;
+        } catch (error) {
+          console.error("Error fetching predictions:", error);
+          this.predictions = [];
+        }
+      } else {
+        this.predictions = [];
+      }
+    },
+
+    selectLocation(prediction) {
+      this.searchLocation = prediction.description;
+      this.location = prediction.description;
+      this.predictions = [];
+      this.getCurrentUV();
+    },
+
+    async getCurrentUV() {
+      if (this.searchLocation.trim() === "") {
+        alert("Please enter a valid location or postcode");
+        return;
+      }
+
+      this.loading = true;
+      this.error = null;
+
+      try {
+        // First get coordinates from the location
+        const geoResponse = await api.get(
+          `/geocode/postcode?postcode=${encodeURIComponent(
+            this.searchLocation
+          )}`
+        );
+
+        this.coordinates = geoResponse.data;
+        console.log(
+          "Location coordinates:",
+          this.coordinates.lat,
+          this.coordinates.lng
+        );
+
+        // Fetch UV data
+        await this.fetchUVData(this.coordinates.lat, this.coordinates.lng);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+
+        if (err.response?.status === 404) {
+          this.error =
+            "Location not found. Please try a more specific location name or postcode.";
+        } else {
+          this.error = "Failed to fetch location data. Please try again.";
+        }
+
+        this.loading = false;
+      }
+    },
+
+    async useCurrentLocation() {
+      if (navigator.geolocation) {
+        this.loading = true;
+        this.error = null;
+
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            try {
+              const { latitude, longitude } = position.coords;
+              this.coordinates = { lat: latitude, lng: longitude };
+
+              // Get location name from coordinates (reverse geocoding)
+              try {
+                const reverseGeoResponse = await api.get(
+                  `/geocode/reverse?lat=${latitude}&lng=${longitude}`
+                );
+
+                if (
+                  reverseGeoResponse.data &&
+                  reverseGeoResponse.data.results &&
+                  reverseGeoResponse.data.results.length > 0
+                ) {
+                  // Get a readable location name from the results
+                  const addressComponents =
+                    reverseGeoResponse.data.results[0].address_components;
+                  const locality = addressComponents.find((component) =>
+                    component.types.includes("locality")
+                  );
+                  const sublocality = addressComponents.find((component) =>
+                    component.types.includes("sublocality")
+                  );
+
+                  this.location = locality
+                    ? locality.long_name
+                    : sublocality
+                    ? sublocality.long_name
+                    : "Your Location";
+
+                  this.searchLocation = this.location;
+                } else {
+                  this.location = "Your Location";
+                  this.searchLocation = "Your Location";
+                }
+              } catch (geoError) {
+                console.error("Reverse geocoding error:", geoError);
+                this.location = "Your Location";
+                this.searchLocation = "Your Location";
+              }
+
+              // Fetch UV data
+              await this.fetchUVData(latitude, longitude);
+            } catch (error) {
+              console.error("Error fetching data:", error);
+              this.error = "Failed to fetch UV data. Please try again.";
+              this.loading = false;
+            }
+          },
+          (error) => {
+            console.error("Geolocation error:", error);
+            let errorMsg = "Unable to access your location. ";
+
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                errorMsg += "Please allow location access.";
+                break;
+              case error.POSITION_UNAVAILABLE:
+                errorMsg += "Location information is unavailable.";
+                break;
+              case error.TIMEOUT:
+                errorMsg += "Location request timed out.";
+                break;
+              default:
+                errorMsg += "Please enter a location manually.";
+            }
+
+            this.error = errorMsg;
+            this.loading = false;
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
+          }
+        );
+      } else {
+        this.error = "Geolocation is not supported by your browser.";
+      }
+    },
+
+    async fetchUVData(lat, lng) {
+      try {
+        console.log(`Requesting UV index data for lat=${lat}, lon=${lng}`);
+        const uvResponse = await api.get(`/uv-index?lat=${lat}&lon=${lng}`);
+        console.log("UV index response:", uvResponse.data);
+
+        // Handle response from UV API
+        if (uvResponse.data.uvIndex !== undefined) {
+          this.currentUVIndex = uvResponse.data.uvIndex;
+          this.calculateRecommendedInterval();
+        } else {
+          throw new Error("Invalid response format");
+        }
+
+        this.loading = false;
+      } catch (err) {
+        console.error("Error fetching UV data:", err);
+        this.error = "Failed to fetch UV data. Please try again.";
+        this.loading = false;
+      }
+    },
+
     useCurrentTime() {
       const now = new Date();
       const hours = now.getHours().toString().padStart(2, "0");
       const minutes = now.getMinutes().toString().padStart(2, "0");
       this.applicationTime = `${hours}:${minutes}`;
     },
-    async calculateReminder() {
-      if (!this.isFormValid) return;
 
-      this.loading = true;
-
-      try {
-        // Try to get current location for UV index
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              try {
-                const { latitude, longitude } = position.coords;
-
-                // Find the closest city in our embedded data
-                let closestCity = "Sydney"; // Default
-                let minDistance = Number.MAX_VALUE;
-
-                for (const [city, data] of Object.entries(this.uvData)) {
-                  const distance = this.calculateDistance(
-                    latitude,
-                    longitude,
-                    data.lat,
-                    data.lon
-                  );
-
-                  if (distance < minDistance) {
-                    minDistance = distance;
-                    closestCity = city;
-                  }
-                }
-
-                // Use the UV index from the closest city
-                this.currentUVIndex = this.uvData[closestCity].uvIndex;
-
-                // Calculate reapplication interval based on SPF, UV index, and activity level
-                this.calculateReapplicationInterval();
-
-                // Calculate reapplication time
-                this.calculateReapplicationTime();
-
-                this.reminderSet = true;
-                this.loading = false;
-              } catch (error) {
-                console.error("Error determining location:", error);
-                // Use default UV index
-                this.calculateReapplicationInterval();
-                this.calculateReapplicationTime();
-                this.reminderSet = true;
-                this.loading = false;
-              }
-            },
-            (error) => {
-              console.error("Geolocation error:", error);
-              // Use default UV index
-              this.calculateReapplicationInterval();
-              this.calculateReapplicationTime();
-              this.reminderSet = true;
-              this.loading = false;
-            }
-          );
-        } else {
-          // Browser doesn't support geolocation, use default UV index
-          this.calculateReapplicationInterval();
-          this.calculateReapplicationTime();
-          this.reminderSet = true;
-          this.loading = false;
-        }
-      } catch (error) {
-        console.error("Error setting reminder:", error);
-        this.loading = false;
-        alert("An error occurred. Please try again.");
-      }
-    },
-    calculateDistance(lat1, lon1, lat2, lon2) {
-      // Simple Euclidean distance calculation (sufficient for our purposes)
-      const latDiff = lat1 - lat2;
-      const lonDiff = lon1 - lon2;
-      return Math.sqrt(latDiff * latDiff + lonDiff * lonDiff);
-    },
-    calculateReapplicationInterval() {
-      // Get SPF data
-      const spfInfo = this.spfData[this.sunscreenType];
-      let baseInterval = spfInfo.baseInterval;
-
-      // Determine UV level
-      let uvLevel = "low";
+    calculateRecommendedInterval() {
+      // Simple calculation based on UV index
       if (this.currentUVIndex >= 11) {
-        uvLevel = "extreme";
+        this.recommendedInterval = 1;
       } else if (this.currentUVIndex >= 8) {
-        uvLevel = "veryHigh";
+        this.recommendedInterval = 1.5;
       } else if (this.currentUVIndex >= 6) {
-        uvLevel = "high";
+        this.recommendedInterval = 2;
       } else if (this.currentUVIndex >= 3) {
-        uvLevel = "moderate";
+        this.recommendedInterval = 2.5;
+      } else {
+        this.recommendedInterval = 3;
       }
-
-      // Apply UV adjustment
-      baseInterval *= spfInfo.uvAdjustment[uvLevel];
-
-      // Apply activity adjustment
-      baseInterval *= spfInfo.activityAdjustment[this.activityLevel];
-
-      // Round to nearest 0.5 hour
-      this.reapplicationInterval = Math.round(baseInterval * 2) / 2;
     },
+
+    applyRecommendation() {
+      this.manualReapplicationInterval = this.recommendedInterval;
+    },
+
     calculateReapplicationTime() {
       // Parse application time
       const [hours, minutes] = this.applicationTime.split(":").map(Number);
@@ -348,11 +429,11 @@ export default {
       const applicationDate = new Date();
       applicationDate.setHours(hours, minutes, 0, 0);
 
-      // Calculate reapplication time
+      // Calculate reapplication time using manual interval
       const reapplicationDate = new Date(applicationDate);
-      const intervalHours = Math.floor(this.reapplicationInterval);
+      const intervalHours = Math.floor(this.manualReapplicationInterval);
       const intervalMinutes = Math.round(
-        (this.reapplicationInterval - intervalHours) * 60
+        (this.manualReapplicationInterval - intervalHours) * 60
       );
 
       reapplicationDate.setHours(
@@ -362,6 +443,14 @@ export default {
 
       this.reapplicationTime = reapplicationDate;
     },
+
+    setReminder() {
+      if (!this.isFormValid) return;
+
+      this.calculateReapplicationTime();
+      this.reminderSet = true;
+    },
+
     setCalendarReminder() {
       if (!this.reapplicationTime) return;
 
@@ -385,14 +474,39 @@ export default {
         .toString()
         .padStart(2, "0")}${minutes}00`;
 
-      const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=Reapply+Sunscreen&dates=${startTime}/${endTime}&details=Time+to+reapply+your+SPF+${this.sunscreenType}+sunscreen.`;
+      const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=Reapply+Sunscreen&dates=${startTime}/${endTime}&details=Time+to+reapply+your+sunscreen.`;
 
       window.open(calendarUrl, "_blank");
     },
+
     resetForm() {
       this.reminderSet = false;
       this.applicationTime = "";
       this.reapplicationTime = null;
+    },
+
+    getUVColor() {
+      if (this.currentUVIndex < 3) {
+        return "#4abe2a"; // Green for low
+      } else if (this.currentUVIndex < 6) {
+        return "#f0ee64"; // Yellow for moderate
+      } else if (this.currentUVIndex < 10) {
+        return "#fa9911"; // Orange for high
+      } else {
+        return "#f24623"; // Red for extreme
+      }
+    },
+
+    getUVMessage() {
+      if (this.currentUVIndex < 3) {
+        return "Low UV Level - Minimal protection needed for most people";
+      } else if (this.currentUVIndex < 6) {
+        return "Moderate UV Level - Take precautions, wear sunscreen when outdoors";
+      } else if (this.currentUVIndex < 10) {
+        return "High UV Level - Protection required, reduce time in the sun";
+      } else {
+        return "Extreme UV Level - Maximum protection required, avoid sun exposure";
+      }
     },
   },
 };
@@ -443,6 +557,88 @@ h1 {
   border: 1px solid #ced4da;
   border-radius: 4px;
   font-size: 1rem;
+}
+
+.uv-section {
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+  border: 1px solid #d1e7ff;
+}
+
+.uv-prompt {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0056b3;
+  font-weight: 500;
+}
+
+.location-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.location-btn {
+  margin-top: 10px;
+}
+
+.predictions-dropdown {
+  position: absolute;
+  width: calc(100% - 50px);
+  background: white;
+  border: 1px solid #ced4da;
+  border-radius: 0 0 4px 4px;
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.predictions-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.predictions-dropdown li {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.predictions-dropdown li:hover {
+  background-color: #f8f9fa;
+}
+
+.current-uv {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 20px;
+  border: 1px solid #e9ecef;
+  text-align: center;
+}
+
+.current-uv h3 {
+  margin-bottom: 10px;
+}
+
+.recommendation-box {
+  background-color: #e8f4f8;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 20px 0;
+  border-left: 4px solid #007bff;
+}
+
+.recommendation-box h3 {
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.apply-btn {
+  margin-top: 10px;
 }
 
 .time-options {
@@ -496,6 +692,17 @@ h1 {
   background-color: #218838;
 }
 
+.btn-outline-primary {
+  background-color: transparent;
+  color: #007bff;
+  border: 1px solid #007bff;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: white;
+}
+
 .btn:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
@@ -517,14 +724,6 @@ h1 {
 
 .reminder-details {
   margin: 20px 0;
-}
-
-.reapplication-note {
-  background-color: #fff3cd;
-  border-left: 4px solid #ffc107;
-  padding: 15px;
-  margin-top: 20px;
-  border-radius: 4px;
 }
 
 .reminder-actions {
@@ -558,6 +757,15 @@ h1 {
 }
 
 @media (max-width: 576px) {
+  .location-input {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .predictions-dropdown {
+    width: 100%;
+  }
+
   .time-options {
     flex-direction: column;
     align-items: flex-start;
