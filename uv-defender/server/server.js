@@ -81,7 +81,7 @@ app.get('/api/geocode/postcode', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 8081;
+app.listen(PORT, 'localhost', () => {
   console.log(`Server is running on port ${PORT}`);
 });

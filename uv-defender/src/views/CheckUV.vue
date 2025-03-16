@@ -90,7 +90,7 @@ export default {
       if (this.address.length > 2) {
         try {
           const response = await axios.get(
-            `http://localhost:3000/api/places/autocomplete?input=${encodeURIComponent(
+            `http://localhost:8081/api/places/autocomplete?input=${encodeURIComponent(
               this.address
             )}`
           );
@@ -120,7 +120,7 @@ export default {
       try {
         // Get coordinates from address
         const geoResponse = await axios.get(
-          `http://localhost:3000/api/geocode/postcode?postcode=${encodeURIComponent(
+          `http://localhost:8081/api/geocode/postcode?postcode=${encodeURIComponent(
             this.address
           )}`
         );
@@ -128,7 +128,7 @@ export default {
 
         // Get UV index from coordinates
         const uvResponse = await axios.get(
-          `http://localhost:3000/api/uv-index?lat=${lat}&lon=${lng}`
+          `http://localhost:8081/api/uv-index?lat=${lat}&lon=${lng}`
         );
         this.uvIndex = uvResponse.data.uvIndex;
 
@@ -164,7 +164,7 @@ export default {
             try {
               const { latitude, longitude } = position.coords;
               const response = await axios.get(
-                `http://localhost:3000/api/uv-index?lat=${latitude}&lon=${longitude}`
+                `http://localhost:8081/api/uv-index?lat=${latitude}&lon=${longitude}`
               );
               this.uvIndex = response.data.uvIndex;
 
