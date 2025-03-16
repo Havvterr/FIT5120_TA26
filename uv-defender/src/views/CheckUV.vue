@@ -7,14 +7,25 @@
 
         <!-- Input Section -->
         <div class="input-area">
-          <label for="pincode-input">Enter your pincode:</label>
-          <input
-            id="pincode-input"
-            type="text"
-            v-model="pincode"
-            placeholder="e.g. 3000"
-            maxlength="4"
-          />
+          <label for="address-input">Enter your address:</label>
+          <div class="address-search">
+            <input
+              id="address-input"
+              type="text"
+              v-model="address"
+              placeholder="Enter an Australian address"
+              @input="handleAddressInput"
+            />
+            <ul v-if="predictions.length > 0" class="predictions-list">
+              <li
+                v-for="prediction in predictions"
+                :key="prediction.place_id"
+                @click="selectAddress(prediction)"
+              >
+                {{ prediction.description }}
+              </li>
+            </ul>
+          </div>
           <button @click="checkUVIndex">Check UV Index</button>
         </div>
 
@@ -25,8 +36,19 @@
           </button>
         </div>
 
+        <!-- Loading and Error States -->
+        <div v-if="loading" class="status-area mt-3">
+          <p>Loading...</p>
+        </div>
+        <div v-if="error" class="status-area mt-3 error">
+          <p>{{ error }}</p>
+        </div>
+
         <!-- UV Index Result Display -->
-        <div v-if="uvIndex !== null" class="result-area mt-5">
+        <div
+          v-if="!loading && !error && uvIndex !== null"
+          class="result-area mt-5"
+        >
           <h2 :style="{ color: uvColor }">Your UV Index: {{ uvIndex }}</h2>
           <p>{{ uvMessage }}</p>
         </div>
@@ -36,13 +58,18 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "CheckUV",
   data() {
     return {
-      pincode: "",
+      address: "",
+      predictions: [],
       uvIndex: null,
       uvMessage: "",
+      loading: false,
+      error: null,
     };
   },
   computed: {
@@ -59,60 +86,119 @@ export default {
     },
   },
   methods: {
-    checkUVIndex() {
-      // Validate that the pincode is exactly 4 digits
-      if (!/^\d{4}$/.test(this.pincode)) {
-        alert("Please enter a 4-digit Australian postcode (0200-9999).");
-        return;
-      }
-      // Convert to number and check if it is within the valid range
-      const numericPin = parseInt(this.pincode, 10);
-      if (numericPin < 200 || numericPin > 9999) {
-        alert("Postcode must be between 0200 and 9999.");
-        return;
-      }
-      // Simulate a random UV index from 0 to 11
-      this.uvIndex = Math.floor(Math.random() * 12);
-      // Set UV message based on the UV index value
-      if (this.uvIndex < 3) {
-        this.uvMessage = "Low UV level. Minimal sun protection needed.";
-      } else if (this.uvIndex < 6) {
-        this.uvMessage =
-          "Moderate UV level. Consider wearing sunglasses and sunscreen.";
-      } else if (this.uvIndex < 8) {
-        this.uvMessage =
-          "High UV level. Wear a hat, sunglasses, and sunscreen.";
-      } else if (this.uvIndex < 11) {
-        this.uvMessage =
-          "Very High UV level. Seek shade and use strong sunscreen.";
+    async handleAddressInput() {
+      if (this.address.length > 2) {
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/api/places/autocomplete?input=${encodeURIComponent(
+              this.address
+            )}`
+          );
+          this.predictions = response.data.predictions;
+        } catch (error) {
+          console.error("Error fetching predictions:", error);
+        }
       } else {
-        this.uvMessage =
-          "Extreme UV level! Stay indoors or use maximum protection.";
+        this.predictions = [];
+      }
+    },
+
+    async selectAddress(prediction) {
+      this.address = prediction.description;
+      this.predictions = [];
+      await this.checkUVIndex();
+    },
+
+    async checkUVIndex() {
+      if (!this.address) {
+        alert("Please enter an address.");
+        return;
+      }
+
+      this.loading = true;
+      this.error = null;
+      try {
+        // Get coordinates from address
+        const geoResponse = await axios.get(
+          `http://localhost:3000/api/geocode/postcode?postcode=${encodeURIComponent(
+            this.address
+          )}`
+        );
+        const { lat, lng } = geoResponse.data;
+
+        // Get UV index from coordinates
+        const uvResponse = await axios.get(
+          `http://localhost:3000/api/uv-index?lat=${lat}&lon=${lng}`
+        );
+        this.uvIndex = uvResponse.data.uvIndex;
+
+        // Set UV message based on the UV index value
+        if (this.uvIndex < 3) {
+          this.uvMessage = "Low UV level. Minimal sun protection needed.";
+        } else if (this.uvIndex < 6) {
+          this.uvMessage =
+            "Moderate UV level. Consider wearing sunglasses and sunscreen.";
+        } else if (this.uvIndex < 8) {
+          this.uvMessage =
+            "High UV level. Wear a hat, sunglasses, and sunscreen.";
+        } else if (this.uvIndex < 11) {
+          this.uvMessage =
+            "Very High UV level. Seek shade and use strong sunscreen.";
+        } else {
+          this.uvMessage =
+            "Extreme UV level! Stay indoors or use maximum protection.";
+        }
+      } catch (error) {
+        this.error = "Failed to fetch UV index. Please try again.";
+        console.error("Error:", error);
+      } finally {
+        this.loading = false;
       }
     },
     useCurrentLocation() {
       if (navigator.geolocation) {
+        this.loading = true;
+        this.error = null;
         navigator.geolocation.getCurrentPosition(
-          () => {
-            // We don't need to use the position data, so no parameter is needed.
-            this.reverseGeocode();
+          async (position) => {
+            try {
+              const { latitude, longitude } = position.coords;
+              const response = await axios.get(
+                `http://localhost:3000/api/uv-index?lat=${latitude}&lon=${longitude}`
+              );
+              this.uvIndex = response.data.uvIndex;
+
+              // Set UV message based on the UV index value
+              if (this.uvIndex < 3) {
+                this.uvMessage = "Low UV level. Minimal sun protection needed.";
+              } else if (this.uvIndex < 6) {
+                this.uvMessage =
+                  "Moderate UV level. Consider wearing sunglasses and sunscreen.";
+              } else if (this.uvIndex < 8) {
+                this.uvMessage =
+                  "High UV level. Wear a hat, sunglasses, and sunscreen.";
+              } else if (this.uvIndex < 11) {
+                this.uvMessage =
+                  "Very High UV level. Seek shade and use strong sunscreen.";
+              } else {
+                this.uvMessage =
+                  "Extreme UV level! Stay indoors or use maximum protection.";
+              }
+            } catch (error) {
+              this.error = "Failed to fetch UV index. Please try again.";
+              console.error("Error:", error);
+            } finally {
+              this.loading = false;
+            }
           },
           () => {
-            alert("Unable to retrieve your location.");
+            this.error = "Unable to retrieve your location.";
+            this.loading = false;
           }
         );
       } else {
-        alert("Geolocation is not supported by your browser.");
+        this.error = "Geolocation is not supported by your browser.";
       }
-    },
-    async reverseGeocode() {
-      /*
-          In a real application, you would use a reverse-geocoding API
-          to convert latitude/longitude to a postal code.
-        */
-      // For demonstration, assume the location corresponds to postcode "3000"
-      this.pincode = "3000";
-      this.checkUVIndex();
     },
   },
 };
@@ -157,8 +243,39 @@ export default {
   padding: 10px;
   font-size: 1rem;
   margin-right: 10px;
-  width: 120px;
-  text-align: center;
+  width: 300px;
+  text-align: left;
+}
+
+.address-search {
+  position: relative;
+  display: inline-block;
+}
+
+.predictions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.predictions-list li {
+  padding: 10px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.predictions-list li:hover {
+  background-color: #f5f5f5;
 }
 
 .input-area button,
