@@ -523,15 +523,7 @@ app.get("/api/sun-safe-products/from-database", async (req, res) => {
   try {
     const { category } = req.query;
 
-    // Create database connection
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST || "localhost",
-      user: process.env.DB_USER || "root",
-      password: process.env.DB_PASSWORD || "",
-      database: process.env.DB_NAME || "uv_defender",
-    });
-
-    let query = "SELECT * FROM products";
+    let query = "SELECT * FROM PRODUCTS";
     let params = [];
 
     // If category is specified, filter by category
@@ -541,7 +533,7 @@ app.get("/api/sun-safe-products/from-database", async (req, res) => {
     }
 
     // Execute query
-    const [rows] = await connection.execute(query, params);
+    const [rows] = await dbPool.execute(query, params);
 
     // Format the response to match the expected format in the frontend
     const products = rows.map((product) => ({
@@ -550,12 +542,9 @@ app.get("/api/sun-safe-products/from-database", async (req, res) => {
       description: product.description,
       price: parseFloat(product.price),
       category: product.category,
-      imageUrl: product.image_url,
-      purchaseLink: product.purchase_link,
+      imageUrl: product.imageUrl,
+      purchaseLink: product.purchaseLink,
     }));
-
-    // Close the connection
-    await connection.end();
 
     res.json(products);
   } catch (error) {

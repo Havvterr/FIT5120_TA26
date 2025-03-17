@@ -163,11 +163,12 @@ export default {
       try {
         // Fetch products from database endpoint
         const response = await axios.get(
-          "/api/sun-safe-products/from-database"
+          "/api/sun-safe-products/from-database",
+          { params: { category: this.selectedCategory !== 'all' ? this.selectedCategory : undefined } }
         );
         this.products = response.data;
 
-        // Products already have categories from the database
+        // Filter products based on search query
         this.filterProducts();
         this.loading = false;
       } catch (error) {
@@ -178,29 +179,20 @@ export default {
     },
     selectCategory(category) {
       this.selectedCategory = category;
-      this.filterProducts();
+      this.fetchProducts();
     },
     filterProducts() {
-      // Filter by category
-      let filtered = this.products;
-
-      if (this.selectedCategory !== "all") {
-        filtered = filtered.filter(
-          (product) => product.category === this.selectedCategory
-        );
-      }
-
       // Filter by search query
       if (this.searchQuery.trim() !== "") {
         const query = this.searchQuery.toLowerCase();
-        filtered = filtered.filter(
+        this.filteredProducts = this.products.filter(
           (product) =>
             product.name.toLowerCase().includes(query) ||
             product.description.toLowerCase().includes(query)
         );
+      } else {
+        this.filteredProducts = this.products;
       }
-
-      this.filteredProducts = filtered;
     },
     getDefaultImage(category) {
       // Return default image based on category
