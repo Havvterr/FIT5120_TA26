@@ -530,7 +530,7 @@ h1 {
 }
 
 .location-button {
-  background-color: #6485db;
+  background-color: #007bff;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -659,13 +659,13 @@ h1 {
 }
 
 .moderate {
-  background-color: #f0ee64;
+  background-color: #d5cc25;
   color: #333;
   text-shadow: none;
 }
 
 .high {
-  background-color: #fa9911;
+  background-color: #e46115;
 }
 
 .extreme {

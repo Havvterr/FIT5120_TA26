@@ -25,23 +25,15 @@ const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 const OPENUV_API_KEY = process.env.OPENUV_API_KEY;
 
 // Database connection
-let dbPool;
-async function initializeDbConnection() {
-  try {
-    dbPool = await mysql.createPool({
-      host: process.env.DB_HOST || "localhost",
-      user: process.env.DB_USER || "root",
-      password: process.env.DB_PASSWORD || "",
-      database: process.env.DB_NAME || "uv_defender",
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-    });
-    console.log("Database connection initialized");
-  } catch (error) {
-    console.error("Failed to initialize database connection:", error);
-  }
-}
+const dbPool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 
 // Google Places API endpoint for place predictions
 app.get("/api/places/autocomplete", async (req, res) => {
@@ -377,147 +369,6 @@ function getVitaminDInfo(skinType) {
   }
 }
 
-// Endpoint for UV impact data
-app.get("/api/uv-impact-data", async (req, res) => {
-  try {
-    // This would typically come from a database
-    // For now, we'll return mock data
-    const uvImpactData = {
-      skinCancerByAgeGroup: [
-        { ageGroup: "15-24", incidenceRate: 32.5 },
-        { ageGroup: "25-34", incidenceRate: 48.7 },
-        { ageGroup: "35-44", incidenceRate: 78.2 },
-        { ageGroup: "45-54", incidenceRate: 124.6 },
-        { ageGroup: "55-64", incidenceRate: 187.3 },
-        { ageGroup: "65+", incidenceRate: 235.8 },
-      ],
-      heatTrendInAustralia: [
-        { year: 2014, averageTemp: 22.8 },
-        { year: 2015, averageTemp: 23.1 },
-        { year: 2016, averageTemp: 23.4 },
-        { year: 2017, averageTemp: 23.7 },
-        { year: 2018, averageTemp: 24.1 },
-        { year: 2019, averageTemp: 24.6 },
-        { year: 2020, averageTemp: 24.3 },
-        { year: 2021, averageTemp: 24.5 },
-        { year: 2022, averageTemp: 24.8 },
-        { year: 2023, averageTemp: 25.2 },
-      ],
-    };
-
-    res.json(uvImpactData);
-  } catch (error) {
-    console.error("Error fetching UV impact data:", error);
-    res.status(500).json({ error: "Failed to fetch UV impact data" });
-  }
-});
-
-// Endpoint for sun-safe products
-app.get("/api/sun-safe-products", async (req, res) => {
-  try {
-    const { category } = req.query;
-
-    // This would typically come from a database
-    // For now, we'll return mock data
-    const products = {
-      sunscreen: [
-        {
-          id: 1,
-          name: "Ultra Protection SPF 50+",
-          price: 24.99,
-          description: "Water-resistant, broad-spectrum protection",
-          imageUrl: "https://example.com/sunscreen1.jpg",
-          purchaseLink: "https://example.com/buy/sunscreen1",
-        },
-        {
-          id: 2,
-          name: "Sensitive Skin SPF 30",
-          price: 19.99,
-          description: "Fragrance-free formula for sensitive skin",
-          imageUrl: "https://example.com/sunscreen2.jpg",
-          purchaseLink: "https://example.com/buy/sunscreen2",
-        },
-        {
-          id: 3,
-          name: "Sport Formula SPF 50+",
-          price: 27.99,
-          description: "Extra water-resistant for active lifestyles",
-          imageUrl: "https://example.com/sunscreen3.jpg",
-          purchaseLink: "https://example.com/buy/sunscreen3",
-        },
-      ],
-      clothing: [
-        {
-          id: 4,
-          name: "UV Protection Hat",
-          price: 34.99,
-          description: "Wide-brimmed hat with UPF 50+ protection",
-          imageUrl: "https://example.com/hat1.jpg",
-          purchaseLink: "https://example.com/buy/hat1",
-        },
-        {
-          id: 5,
-          name: "Long Sleeve Rash Guard",
-          price: 45.99,
-          description: "UPF 50+ protection for water activities",
-          imageUrl: "https://example.com/rashguard1.jpg",
-          purchaseLink: "https://example.com/buy/rashguard1",
-        },
-        {
-          id: 6,
-          name: "Sun Protection Shirt",
-          price: 39.99,
-          description: "Lightweight, breathable fabric with UPF 40+",
-          imageUrl: "https://example.com/shirt1.jpg",
-          purchaseLink: "https://example.com/buy/shirt1",
-        },
-      ],
-      sunglasses: [
-        {
-          id: 7,
-          name: "Polarized UV400 Sunglasses",
-          price: 89.99,
-          description: "Full UV protection with polarized lenses",
-          imageUrl: "https://example.com/sunglasses1.jpg",
-          purchaseLink: "https://example.com/buy/sunglasses1",
-        },
-        {
-          id: 8,
-          name: "Sport Wrap Sunglasses",
-          price: 69.99,
-          description: "Wrap-around design for maximum protection",
-          imageUrl: "https://example.com/sunglasses2.jpg",
-          purchaseLink: "https://example.com/buy/sunglasses2",
-        },
-        {
-          id: 9,
-          name: "Fashion UV Protection",
-          price: 59.99,
-          description: "Stylish frames with 100% UV protection",
-          imageUrl: "https://example.com/sunglasses3.jpg",
-          purchaseLink: "https://example.com/buy/sunglasses3",
-        },
-      ],
-    };
-
-    // If category is specified, return only that category
-    if (category && products[category]) {
-      return res.json(products[category]);
-    }
-
-    // Otherwise, return all products
-    const allProducts = [
-      ...products.sunscreen,
-      ...products.clothing,
-      ...products.sunglasses,
-    ];
-    res.json(allProducts);
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    res.status(500).json({ error: "Failed to fetch products" });
-  }
-});
-
 // Endpoint for sun-safe products from database
 app.get("/api/sun-safe-products/from-database", async (req, res) => {
   try {
@@ -559,7 +410,6 @@ app.get("*", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, async () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  await initializeDbConnection();
 });

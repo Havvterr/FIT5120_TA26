@@ -23,9 +23,20 @@
               placeholder="Enter location or postcode"
               class="form-control"
               @input="locationInput"
+              :disabled="loading"
             />
-            <button @click="getCurrentUV" class="btn btn-primary">
-              Get UV Index
+            <button
+              @click="getCurrentUV"
+              class="btn btn-primary"
+              :disabled="loading"
+            >
+              <span
+                v-if="loading"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              {{ loading ? "Loading..." : "Get UV Index" }}
             </button>
           </div>
 
@@ -45,13 +56,32 @@
           <button
             @click="useCurrentLocation"
             class="btn btn-secondary location-btn"
+            :disabled="loading"
           >
-            Use My Current Location
+            <span
+              v-if="loading"
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            {{ loading ? "Getting Location..." : "Use My Current Location" }}
           </button>
         </div>
 
+        <!-- Loading indicator -->
+        <div v-if="loading" class="loading-indicator">
+          <div class="spinner"></div>
+          <p>Fetching UV data...</p>
+        </div>
+
+        <!-- Error message -->
+        <div v-if="error" class="error-message">
+          <i class="error-icon">⚠️</i>
+          <p>{{ error }}</p>
+        </div>
+
         <!-- Current UV display -->
-        <div v-if="currentUVIndex !== null" class="current-uv">
+        <div v-if="currentUVIndex !== null && !loading" class="current-uv">
           <h3>
             Current UV Index:
             <span :style="{ color: getUVColor() }">{{
@@ -111,6 +141,7 @@
           max="8"
           step="0.5"
           class="form-control"
+          :disabled="loading"
         />
       </div>
 
@@ -489,7 +520,7 @@ export default {
       if (this.currentUVIndex < 3) {
         return "#4abe2a"; // Green for low
       } else if (this.currentUVIndex < 6) {
-        return "#f0ee64"; // Yellow for moderate
+        return "#d5cc25"; // Yellow for moderate
       } else if (this.currentUVIndex < 10) {
         return "#fa9911"; // Orange for high
       } else {
@@ -611,6 +642,72 @@ h1 {
   background-color: #f8f9fa;
 }
 
+/* Loading indicator styles */
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin: 15px 0;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-border {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: text-bottom;
+  border: 0.2em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border 0.75s linear infinite;
+  margin-right: 5px;
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error message styles */
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+}
+
+.error-icon {
+  font-size: 1.5rem;
+  margin-right: 10px;
+  font-style: normal;
+}
+
 .current-uv {
   background-color: #fff;
   border-radius: 8px;
@@ -675,7 +772,7 @@ h1 {
 }
 
 .btn-secondary {
-  background-color: #6c757d;
+  background-color: #007bff;
   color: white;
 }
 

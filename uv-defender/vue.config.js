@@ -15,7 +15,7 @@ module.exports = {
         changeOrigin: true,
       },
     },
-    port: 8080,
+    port: 3002,
     allowedHosts: "all",
   },
 };

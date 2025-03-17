@@ -164,7 +164,14 @@ export default {
         // Fetch products from database endpoint
         const response = await axios.get(
           "/api/sun-safe-products/from-database",
-          { params: { category: this.selectedCategory !== 'all' ? this.selectedCategory : undefined } }
+          {
+            params: {
+              category:
+                this.selectedCategory !== "all"
+                  ? this.selectedCategory
+                  : undefined,
+            },
+          }
         );
         this.products = response.data;
 
