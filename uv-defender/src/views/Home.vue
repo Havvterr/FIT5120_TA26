@@ -120,7 +120,6 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 105px 20px 40px;
-  color: white;
   position: relative;
   overflow: hidden;
 }
@@ -132,7 +131,6 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.3);
   z-index: 0;
 }
 
@@ -160,9 +158,9 @@ export default {
 .app-name {
   font-size: 2.5rem;
   font-weight: 700;
-  color: white;
+  color: #1e5799;
   margin: 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Main content */
@@ -174,66 +172,199 @@ export default {
 }
 
 .info-box {
-  background-color: rgba(0, 0, 0, 0.6);
+  background: linear-gradient(
+    135deg,
+    rgba(42, 174, 31, 0.85),
+    rgba(34, 99, 164, 0.85)
+  );
   border-radius: 20px;
   padding: 50px;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .info-box h2 {
   font-size: 2.3rem;
   margin-bottom: 20px;
   color: white;
+  font-weight: 700;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .info-box p {
   font-size: 1.1rem;
   margin-bottom: 20px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   line-height: 1.6;
 }
 
 /* Feature navigation cards */
 .feature-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 30px;
   width: 100%;
   max-width: 1200px;
 }
 
 .feature-card {
-  background-color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.95),
+    rgba(240, 240, 240, 0.95)
+  );
   border-radius: 15px;
   padding: 30px;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   color: #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .feature-card:hover {
   transform: translateY(-10px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.9);
 }
 
 .card-icon {
   font-size: 2.5rem;
   margin-bottom: 20px;
-  color: #2467af;
+  color: #1e88e5;
+  background-color: rgba(30, 136, 229, 0.1);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover .card-icon {
+  background-color: #1e88e5;
+  color: white;
+  transform: scale(1.1);
 }
 
 .feature-card h3 {
   font-size: 1.5rem;
   margin-bottom: 15px;
-  color: #2c3e50;
+  color: #1e5799;
+  font-weight: 600;
 }
 
 .feature-card p {
   font-size: 1rem;
-  color: #555;
+  color: #303030;
   line-height: 1.5;
+}
+
+/* Add a colorful accent to each card */
+.feature-card:nth-child(1) {
+  background: linear-gradient(
+    135deg,
+    rgba(215, 106, 33, 0.85),
+    rgba(220, 225, 115, 0.85)
+  );
+}
+
+.feature-card:nth-child(1) .card-icon {
+  color: #e91e63;
+  background-color: rgba(233, 30, 99, 0.1);
+}
+
+.feature-card:nth-child(1):hover .card-icon {
+  background-color: #e91e63;
+  color: white;
+}
+
+.feature-card:nth-child(2) {
+  background: linear-gradient(
+    135deg,
+    rgba(215, 106, 33, 0.85),
+    rgba(220, 225, 115, 0.85)
+  );
+}
+
+.feature-card:nth-child(2) .card-icon {
+  color: #e91e63;
+  background-color: rgba(233, 30, 99, 0.1);
+}
+
+.feature-card:nth-child(2):hover .card-icon {
+  background-color: #e91e63;
+  color: white;
+}
+
+.feature-card:nth-child(3) {
+  background: linear-gradient(
+    135deg,
+    rgba(215, 106, 33, 0.85),
+    rgba(220, 225, 115, 0.85)
+  );
+}
+
+.feature-card:nth-child(3) .card-icon {
+  color: #e91e63;
+  background-color: rgba(233, 30, 99, 0.1);
+}
+
+.feature-card:nth-child(3):hover .card-icon {
+  background-color: #e91e63;
+  color: white;
+}
+
+.feature-card:nth-child(4) {
+  background: linear-gradient(
+    135deg,
+    rgba(215, 106, 33, 0.85),
+    rgba(220, 225, 115, 0.85)
+  );
+}
+
+.feature-card:nth-child(4) .card-icon {
+  color: #e91e63;
+  background-color: rgba(233, 30, 99, 0.1);
+}
+
+.feature-card:nth-child(4):hover .card-icon {
+  background-color: #e91e63;
+  color: white;
+}
+
+.feature-card:nth-child(5) {
+  background: linear-gradient(
+    135deg,
+    rgba(215, 106, 33, 0.85),
+    rgba(220, 225, 115, 0.85)
+  );
+}
+
+.feature-card:nth-child(5) .card-icon {
+  color: #e91e63;
+  background-color: rgba(233, 30, 99, 0.1);
+}
+
+.feature-card:nth-child(5):hover .card-icon {
+  background-color: #e91e63;
+  color: white;
+}
+
+@media (max-width: 992px) {
+  .feature-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .feature-cards {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

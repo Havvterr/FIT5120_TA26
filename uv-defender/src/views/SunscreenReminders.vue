@@ -76,7 +76,7 @@
 
         <!-- Error message -->
         <div v-if="error" class="error-message">
-          <i class="error-icon">⚠️</i>
+          <i class="error-icon">!</i>
           <p>{{ error }}</p>
         </div>
 
@@ -90,7 +90,21 @@
           </h3>
           <p>{{ getUVMessage() }}</p>
 
-          <div class="recommendation-box">
+          <div v-if="currentUVIndex < 3" class="recommendation-box low-uv">
+            <h3>No Sunscreen Needed</h3>
+            <p>
+              With the current UV index ({{
+                Number(currentUVIndex).toFixed(1)
+              }}), sunscreen is generally not required for most people during
+              regular activities.
+            </p>
+            <p class="note">
+              Note: If you have very sensitive skin or will be outdoors for
+              extended periods, you may still want to set a reminder.
+            </p>
+          </div>
+
+          <div v-else class="recommendation-box">
             <h3>Recommended Reapplication</h3>
             <p>
               Based on the current UV index ({{
@@ -444,6 +458,8 @@ export default {
       } else if (this.currentUVIndex >= 3) {
         this.recommendedInterval = 2.5;
       } else {
+        // For UV < 3, we still set a recommended interval
+        // in case user still wants to set a reminder
         this.recommendedInterval = 3;
       }
     },
@@ -851,6 +867,20 @@ h1 {
   color: #28a745;
   position: absolute;
   left: 5px;
+}
+
+.low-uv {
+  background-color: #f0f8ff;
+  border-left: 4px solid #007bff;
+}
+
+.low-uv h3 {
+  color: #007bff;
+}
+
+.note {
+  font-size: 0.8em;
+  color: #6c757d;
 }
 
 @media (max-width: 576px) {

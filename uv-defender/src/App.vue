@@ -33,13 +33,6 @@
             <i class="fas fa-chart-line"></i> UV Impact
           </router-link>
           <router-link
-            to="/personalized-advice"
-            class="nav-link"
-            @click="closeMenu"
-          >
-            <i class="fa-solid fa-handshake-angle"></i> Advice
-          </router-link>
-          <router-link
             to="/sunscreen-reminders"
             class="nav-link"
             @click="closeMenu"
@@ -151,12 +144,14 @@ body.no-scroll {
   z-index: 1000;
   padding: 15px 0;
   transition: all 0.3s ease;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-transparent {
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
   box-shadow: none;
 }
 
@@ -202,29 +197,35 @@ body.no-scroll {
 .nav-link {
   color: #333;
   text-decoration: none;
-  padding: 10px 8px;
-  font-weight: 500;
+  padding: 10px 15px;
+  font-weight: 600;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   text-align: center;
   white-space: nowrap;
+  border-radius: 20px;
+  margin: 0 5px;
+  background-color: transparent;
+  border: 2px solid transparent;
 }
 
 .nav-link i {
-  margin-right: 3px;
+  margin-right: 5px;
 }
 
 .nav-link:hover,
 .nav-link.router-link-active {
   color: #007bff;
+  background-color: transparent;
+  border: 2px solid transparent;
+  box-shadow: none;
 }
 
 .navbar-transparent .nav-link:hover,
 .navbar-transparent .nav-link.router-link-active {
-  color: #e1c5c5;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  color: #007bff;
 }
 
 /* Mobile Menu */
@@ -307,15 +308,34 @@ body:not(.home-page) main {
 
   .nav-link {
     margin: 10px 0;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    width: 80%;
+    justify-content: center;
+    padding: 15px;
+    font-weight: 600;
+  }
+
+  .nav-link:hover,
+  .nav-link.router-link-active {
+    color: #007bff;
+    background-color: transparent;
+    border: 2px solid transparent;
   }
 
   .navbar-transparent .nav-links {
-    background-color: rgba(12, 11, 11, 0.9);
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
   }
 
   .navbar-transparent .nav-links .nav-link {
-    color: white;
+    color: #333;
+  }
+
+  .navbar-transparent .nav-link:hover,
+  .navbar-transparent .nav-link.router-link-active {
+    color: #007bff;
+    background-color: transparent;
+    border: 2px solid transparent;
   }
 
   main {

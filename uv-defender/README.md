@@ -1,57 +1,57 @@
 # UV Defender
 
-UV Defender 是一个帮助年轻澳大利亚人了解紫外线指数并提供个性化防晒建议的应用程序。该应用程序旨在平衡皮肤癌风险和维生素 D 需求，特别是对于肤色较深的年轻成年人。
+UV Defender is an application that helps young Australians understand UV index and provides personalized sun protection advice. The application aims to balance skin cancer risk and vitamin D requirements, especially for young adults with darker skin tones.
 
-## 功能特点
+## Features
 
-- **查看紫外线指数**：根据位置或邮政编码查看当前紫外线指数
-- **紫外线影响数据**：了解紫外线对不同年龄组的影响和澳大利亚热度趋势
-- **个性化防晒建议**：根据皮肤类型和紫外线指数获取个性化的防晒建议
-- **防晒霜提醒**：设置防晒霜重新涂抹的提醒
-- **防晒产品推荐**：浏览和查找防晒产品
+- **View UV Index**: Check current UV index based on location or postal code
+- **UV Impact Data**: Learn about UV effects on different age groups and heat trends in Australia
+- **Personalized Sun Protection Advice**: Get personalized sun protection advice based on skin type and UV index
+- **Sunscreen Reminders**: Set reminders to reapply sunscreen
+- **Sun Protection Product Recommendations**: Browse and find sun protection products
 
-## 技术栈
+## Tech Stack
 
-- 前端：Vue.js
-- 后端：Node.js, Express
-- 数据库：MySQL
-- API：Google Places API, Weather API
+- Frontend: Vue.js
+- Backend: Node.js, Express
+- Database: MySQL
+- APIs: Google Places API, Weather API
 
-## 安装指南
+## Installation Guide
 
-### 前提条件
+### Prerequisites
 
 - Node.js (v14+)
 - MySQL
-- Google Places API 密钥
-- Weather API 密钥
+- Google Places API key
+- Weather API key
 
-### 安装步骤
+### Installation Steps
 
-1. 克隆仓库
+1. Clone the repository
 
    ```
    git clone https://github.com/yourusername/uv-defender.git
    cd uv-defender
    ```
 
-2. 安装前端依赖
+2. Install frontend dependencies
 
    ```
    npm install
    ```
 
-3. 安装后端依赖
+3. Install backend dependencies
 
    ```
    cd server
    npm install
    ```
 
-4. 配置环境变量
+4. Configure environment variables
 
-   - 在 `server` 目录中创建 `.env` 文件
-   - 添加以下内容，替换为您的 API 密钥和数据库配置
+   - Create a `.env` file in the `server` directory
+   - Add the following content, replacing with your API keys and database configuration
 
    ```
    GOOGLE_PLACES_API_KEY=your_google_places_api_key
@@ -63,62 +63,62 @@ UV Defender 是一个帮助年轻澳大利亚人了解紫外线指数并提供�
    PORT=3000
    ```
 
-5. 初始化数据库
+5. Initialize the database
 
    ```
    node db-init.js
    ```
 
-6. 启动后端服务器
+6. Start the backend server
 
    ```
    node server.js
    ```
 
-7. 在另一个终端中启动前端开发服务器
+7. Start the frontend development server in another terminal
 
    ```
    cd ..
    npm run serve
    ```
 
-8. 访问应用程序
-   - 打开浏览器，访问 `http://localhost:8080`
+8. Access the application
+   - Open your browser and visit `http://localhost:8080`
 
-## 部署
+## Deployment
 
-### 构建前端
+### Build the frontend
 
 ```
 npm run build
 ```
 
-### 部署到服务器
+### Deploy to server
 
-1. 将 `dist` 目录和 `server` 目录上传到您的服务器
-2. 在服务器上安装依赖
+1. Upload the `dist` directory and `server` directory to your server
+2. Install dependencies on the server
    ```
    cd server
    npm install --production
    ```
-3. 配置环境变量
-4. 启动服务器
+3. Configure environment variables
+4. Start the server
    ```
    node server.js
    ```
 
-## 用户故事
+## User Stories
 
-1. **查看紫外线指数**：作为年轻成年人，我想查看不同地点的紫外线指数，以便决定外出的合适时间和所需的防晒措施。
-2. **紫外线影响数据**：作为年轻成年人，我想了解紫外线在澳大利亚的危害，以增加我对适合年龄的提示和技巧的理解。
-3. **个性化防晒建议**：作为年轻的澳大利亚成年人，我想了解阳光暴露对我的皮肤类型的特定风险和好处，以便制定满足我个人需求的个性化防晒计划。
-4. **防晒霜提醒**：作为年轻的澳大利亚人，我希望在需要重新涂抹防晒霜时得到提醒，以便在一天中保持对阳光的防护。
-5. **防晒产品推荐**：作为年轻的澳大利亚成年人，我希望能够轻松找到和获取防晒产品和服装，以便有效和方便地保护自己免受阳光伤害。
+1. **View UV Index**: As a young adult, I want to check the UV index for different locations so I can decide on suitable times to go outside and the necessary sun protection measures.
+2. **UV Impact Data**: As a young adult, I want to learn about UV dangers in Australia to increase my understanding of age-appropriate tips and techniques.
+3. **Personalized Sun Protection Advice**: As a young Australian adult, I want to understand the specific risks and benefits of sun exposure for my skin type in order to develop a personalized sun protection plan that meets my individual needs.
+4. **Sunscreen Reminders**: As a young Australian, I want to be reminded when I need to reapply sunscreen so I can maintain protection from the sun throughout the day.
+5. **Sun Protection Product Recommendations**: As a young Australian adult, I want to be able to easily find and access sun protection products and clothing so I can protect myself from the sun effectively and conveniently.
 
-## 贡献
+## Contribution
 
-欢迎贡献！请随时提交问题或拉取请求。
+Contributions are welcome! Feel free to submit issues or pull requests.
 
-## 许可证
+## License
 
 [MIT](LICENSE)

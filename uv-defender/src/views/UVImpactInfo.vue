@@ -3,34 +3,43 @@
     <h1>UV Impact Information</h1>
     <p class="description">
       Understanding the impact of UV radiation in Australia is crucial for
-      developing effective sun safety habits. Below are visualizations showing
-      the impact of UV exposure based on age groups and the trend of heat in
-      Australia.
+      developing effective sun safety habits. Australia has one of the highest
+      UV levels globally, making sun protection particularly important for all
+      Australians.
     </p>
 
     <div class="charts-container">
       <div class="chart-box">
-        <h2>Skin Cancer Incidence by Age Group</h2>
-        <div class="chart-wrapper">
-          <canvas id="skinCancerChart" ref="skinCancerChart"></canvas>
+        <h2>Australia's Annual Mean UV Index</h2>
+        <div class="image-wrapper">
+          <img
+            src="@/assets/annually-uv.png"
+            alt="Australia's Annual Mean UV Index"
+            class="chart-image"
+          />
         </div>
         <p class="chart-description">
-          This chart shows the incidence rate of skin cancer per 100,000 people
-          across different age groups in Australia. The risk increases
-          significantly with age, highlighting the importance of sun protection
-          throughout life.
+          This table shows the average annual UV Index in Australia. From the
+          chart, it can be observed that the UV Index peaked in 2000, followed
+          by a period of stability and a slight decline. This may indicate the
+          impact of human activities and environmental conservation efforts on
+          the ozone layer.
         </p>
       </div>
 
       <div class="chart-box">
-        <h2>Average Temperature Trend in Australia</h2>
-        <div class="chart-wrapper">
-          <canvas id="temperatureChart" ref="temperatureChart"></canvas>
+        <h2>Melanoma Skin Cancer Incidence Rates (1982-2019)</h2>
+        <div class="image-wrapper">
+          <img
+            src="@/assets/melanoma.png"
+            alt="Melanoma Incidence Rates by Sex"
+            class="chart-image"
+          />
         </div>
         <p class="chart-description">
-          This chart shows the trend of average temperatures in Australia over
-          the past decade. Rising temperatures are associated with increased UV
-          radiation exposure, making sun protection increasingly important.
+          This chart displays age-standardised incidence rates for melanoma of
+          the skin from 1982 to 2019, separated by sex. Males consistently show
+          higher rates of melanoma skin cancer compared to females.
         </p>
       </div>
     </div>
@@ -42,149 +51,22 @@
           Australia has one of the highest rates of skin cancer in the world.
         </li>
         <li>
-          Two in three Australians will be diagnosed with skin cancer by the age
-          of 70.
-        </li>
-        <li>
           UV radiation can cause sunburn, skin damage, eye damage, and skin
           cancer.
         </li>
-        <li>UV radiation can be high even on cool or cloudy days.</li>
+        <li>UV radiation can be high even on cloudy days.</li>
         <li>
           The UV Index is highest during the middle of the day, typically
-          between 10am and 2pm (11am and 3pm daylight saving time).
+          between 10am and 2pm.
         </li>
       </ul>
-    </div>
-
-    <div class="loading-overlay" v-if="loading">
-      <div class="spinner"></div>
-      <p>Loading data...</p>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import Chart from "chart.js/auto";
-
 export default {
   name: "UVImpactInfo",
-  data() {
-    return {
-      loading: true,
-      skinCancerData: [],
-      temperatureData: [],
-      skinCancerChart: null,
-      temperatureChart: null,
-    };
-  },
-  async mounted() {
-    try {
-      // 从数据库获取数据，而不是直接从API获取
-      // 这里我们使用的是后端API，但后端会从数据库获取数据
-      const response = await axios.get("/api/uv-impact-data/from-database");
-      this.skinCancerData = response.data.skinCancerByAgeGroup;
-      this.temperatureData = response.data.heatTrendInAustralia;
-
-      // 创建图表
-      this.$nextTick(() => {
-        this.createSkinCancerChart();
-        this.createTemperatureChart();
-        this.loading = false;
-      });
-    } catch (error) {
-      console.error("Error fetching UV impact data:", error);
-      this.loading = false;
-    }
-  },
-  methods: {
-    createSkinCancerChart() {
-      const ctx = this.$refs.skinCancerChart.getContext("2d");
-
-      this.skinCancerChart = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: this.skinCancerData.map((item) => item.ageGroup),
-          datasets: [
-            {
-              label: "Incidence Rate per 100,000",
-              data: this.skinCancerData.map((item) => item.incidenceRate),
-              backgroundColor: "rgba(255, 99, 132, 0.7)",
-              borderColor: "rgba(255, 99, 132, 1)",
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: "Incidence Rate per 100,000",
-              },
-            },
-            x: {
-              title: {
-                display: true,
-                text: "Age Group",
-              },
-            },
-          },
-        },
-      });
-    },
-    createTemperatureChart() {
-      const ctx = this.$refs.temperatureChart.getContext("2d");
-
-      this.temperatureChart = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: this.temperatureData.map((item) => item.year),
-          datasets: [
-            {
-              label: "Average Temperature (°C)",
-              data: this.temperatureData.map((item) => item.averageTemp),
-              backgroundColor: "rgba(54, 162, 235, 0.2)",
-              borderColor: "rgba(54, 162, 235, 1)",
-              borderWidth: 2,
-              tension: 0.1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              title: {
-                display: true,
-                text: "Temperature (°C)",
-              },
-            },
-            x: {
-              title: {
-                display: true,
-                text: "Year",
-              },
-            },
-          },
-        },
-      });
-    },
-  },
-  beforeUnmount() {
-    // Clean up charts when component is destroyed
-    if (this.skinCancerChart) {
-      this.skinCancerChart.destroy();
-    }
-    if (this.temperatureChart) {
-      this.temperatureChart.destroy();
-    }
-  },
 };
 </script>
 
@@ -192,22 +74,32 @@ export default {
 .uv-impact-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 30px;
   position: relative;
+  background-color: #f9fcff;
+  border-radius: 15px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
 }
 
 h1 {
-  color: #2c3e50;
+  color: #1e5799;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  position: relative;
+  padding-bottom: 0;
 }
 
 .description {
   text-align: center;
   max-width: 800px;
   margin: 0 auto 30px;
-  color: #555;
+  color: #333;
   line-height: 1.6;
+  background-color: rgba(227, 242, 253, 0.9);
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: none;
 }
 
 .charts-container {
@@ -222,28 +114,77 @@ h1 {
   flex: 1;
   min-width: 300px;
   max-width: 550px;
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: transparent;
+  border-radius: 12px;
+  padding: 25px;
+  transition: transform 0.3s ease;
+  box-shadow: none;
+  border-top: none;
 }
 
-.chart-wrapper {
-  height: 300px;
+.chart-box:hover {
+  transform: translateY(-5px);
+  box-shadow: none;
+}
+
+.chart-box h2 {
+  color: #1e5799;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  text-align: center;
+  background-color: rgba(227, 242, 253, 0.9);
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 20px 0;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+  background-color: transparent;
+}
+
+.chart-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  transition: transform 0.3s ease;
+}
+
+.chart-image:hover {
+  transform: scale(1.02);
 }
 
 .chart-description {
-  font-size: 0.9rem;
-  color: #666;
-  line-height: 1.5;
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.6;
+  background-color: rgba(227, 242, 253, 0.9);
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .info-section {
-  background-color: #e8f4f8;
-  border-radius: 10px;
-  padding: 25px;
-  margin-top: 30px;
+  background: linear-gradient(to bottom right, #e3f2fd, #bbdefb);
+  border-radius: 12px;
+  padding: 30px;
+  margin-top: 40px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.info-section h2 {
+  color: #1e5799;
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  border-radius: 8px;
 }
 
 .fact-list {
@@ -252,50 +193,20 @@ h1 {
 }
 
 .fact-list li {
-  padding: 10px 0 10px 30px;
+  padding: 12px 15px 12px 35px;
   position: relative;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
 }
 
 .fact-list li:before {
-  content: "•";
-  color: #007bff;
+  content: "*";
+  color: #1e88e5;
   font-size: 1.5em;
   position: absolute;
-  left: 10px;
-  top: 5px;
-}
-
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
-.spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 10px;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  left: 15px;
+  top: 10px;
 }
 
 @media (max-width: 768px) {

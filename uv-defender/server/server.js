@@ -22,7 +22,6 @@ app.use(express.static(path.join(__dirname, "../dist")));
 // API Keys
 const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
-const OPENUV_API_KEY = process.env.OPENUV_API_KEY;
 
 // Database connection
 const dbPool = mysql.createPool({
@@ -100,38 +99,44 @@ app.get("/api/uv-index", async (req, res) => {
       return res.json(mockData);
     }
 
-    // Call OpenUV API
+    // Call WeatherAPI
     try {
-      console.log("Calling OpenUV API...");
-      console.log(`API endpoint: https://api.openuv.io/api/v1/uv`);
-      console.log(`Parameters: lat=${lat}, lng=${lon}, alt=100`);
-      console.log(`Using API key: ${OPENUV_API_KEY}`);
+      console.log("Calling WeatherAPI...");
+      console.log(`API endpoint: https://api.weatherapi.com/v1/forecast.json`);
+      console.log(`Parameters: lat=${lat}, lon=${lon}`);
+      console.log(`Using API key: ${WEATHER_API_KEY.substring(0, 5)}...`);
 
-      const response = await axios.get("https://api.openuv.io/api/v1/uv", {
-        params: {
-          lat,
-          lng: lon,
-          alt: 100, // Default altitude
-        },
-        headers: {
-          "x-access-token": OPENUV_API_KEY,
-          "Content-Type": "application/json",
-        },
-        timeout: 15000, // 15 second timeout
-      });
-
-      console.log("OpenUV API response received:", response.status);
-      console.log(
-        "Response data:",
-        JSON.stringify(response.data).substring(0, 200) + "..."
+      const response = await axios.get(
+        "https://api.weatherapi.com/v1/forecast.json",
+        {
+          params: {
+            key: WEATHER_API_KEY,
+            q: `${lat},${lon}`,
+            days: 1,
+            aqi: "no",
+            alerts: "no",
+          },
+          timeout: 15000, // 15 second timeout
+        }
       );
 
-      // Extract UV index and safe exposure times
+      console.log("WeatherAPI response received:", response.status);
+      console.log(
+        "Response data summary:",
+        `Location: ${response.data.location.name}, Current temp: ${response.data.current.temp_c}°C`
+      );
+
+      // Extract UV index from WeatherAPI response
       const uvData = {
-        uvIndex: response.data.result.uv,
-        uvMaxToday: response.data.result.uv_max,
-        safeExposureTimes: response.data.result.safe_exposure_time,
-        sunInfo: response.data.result.sun_info,
+        uvIndex: response.data.current.uv,
+        uvMaxToday: response.data.forecast.forecastday[0].day.uv,
+        sunInfo: {
+          sun_times: {
+            sunrise: response.data.forecast.forecastday[0].astro.sunrise,
+            sunset: response.data.forecast.forecastday[0].astro.sunset,
+          },
+        },
+        isBackupData: false,
       };
 
       console.log("Processed UV data:", {
@@ -140,12 +145,12 @@ app.get("/api/uv-index", async (req, res) => {
       });
 
       return res.json(uvData);
-    } catch (openUvError) {
-      console.error("Error fetching UV index from OpenUV:");
-      console.error("Error message:", openUvError.message);
-      console.error("Status code:", openUvError.response?.status);
-      console.error("Status text:", openUvError.response?.statusText);
-      console.error("Response data:", openUvError.response?.data);
+    } catch (weatherApiError) {
+      console.error("Error fetching UV index from WeatherAPI:");
+      console.error("Error message:", weatherApiError.message);
+      console.error("Status code:", weatherApiError.response?.status);
+      console.error("Status text:", weatherApiError.response?.statusText);
+      console.error("Response data:", weatherApiError.response?.data);
 
       // Return mock data as fallback
       console.log("Using mock data as fallback due to API error");
@@ -401,6 +406,68 @@ app.get("/api/sun-safe-products/from-database", async (req, res) => {
   } catch (error) {
     console.error("Error fetching products from database:", error);
     res.status(500).json({ error: "Failed to fetch products from database" });
+  }
+});
+
+// Endpoint for personalized advice from database
+app.get("/api/personalized-advice", async (req, res) => {
+  try {
+    const { skinType, uvIndex } = req.query;
+
+    if (!skinType || !uvIndex) {
+      return res
+        .status(400)
+        .json({ error: "Missing required parameters: skinType or uvIndex" });
+    }
+
+    // Round UV index to nearest integer
+    const roundedUvIndex = Math.round(parseFloat(uvIndex));
+
+    // If UV index is 0, return special message
+    if (roundedUvIndex === 0) {
+      return res.json({
+        adviceText:
+          "Currently, the UV index is very low. You do not need sun protection at this time.",
+        skinType: skinType,
+        uvIndex: 0,
+        additionalInfo:
+          "Even though protection isn't required now, remember that UV levels can change throughout the day.",
+      });
+    }
+
+    // Query advice from database based on skin tone and UV index
+    const query = `
+      SELECT a.advice, s.skin_tone, u.uv_index, a.recommendation_type
+      FROM ADVICE a
+      JOIN SKINTONE s ON a.skin_tone_id = s.id
+      JOIN UV u ON a.uv_id = u.id
+      WHERE s.id = ? AND u.id = ?
+    `;
+
+    const [results] = await dbPool.execute(query, [skinType, roundedUvIndex]);
+
+    if (results.length === 0) {
+      // Fallback if no specific advice is found
+      return res.status(404).json({
+        error: "No specific advice found for the given parameters",
+        fallbackAdvice: getRiskAssessment(skinType, roundedUvIndex),
+      });
+    }
+
+    // Format and send response
+    const adviceData = {
+      adviceText: results[0].advice,
+      skinType: parseInt(skinType),
+      uvIndex: roundedUvIndex,
+      recommendationType: results[0].recommendation_type,
+    };
+
+    res.json(adviceData);
+  } catch (error) {
+    console.error("Error fetching personalized advice:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to fetch personalized advice from database" });
   }
 });
 
