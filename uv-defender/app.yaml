@@ -1,0 +1,24 @@
+runtime: nodejs18
+
+env: standard
+
+instance_class: F1
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 0
+  max_instances: 1
+
+env_variables:
+  NODE_ENV: "production"
+  DB_HOST: "your-database-host"
+  DB_USER: "your-database-user"
+  DB_PASSWORD: "your-database-password"
+  DB_NAME: "your-database-name"
+  OPENUV_API_KEY: "your-openuv-api-key"
+  GOOGLE_API_KEY: "your-google-api-key"
+
+handlers:
+  - url: /.*
+    script: auto
+    secure: always

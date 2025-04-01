@@ -1,82 +1,124 @@
-# UV Defender - Your Personal UV Protection Assistant
+# UV Defender
 
-UV Defender is a web application designed to help users protect themselves from harmful UV radiation by providing personalized UV protection advice and real-time UV index information.
-
-## Technology Stack
-
-- Frontend: Vue.js 3
-- Backend: Node.js with Express
-- Database: MySQL
-- Additional Libraries: Chart.js, FullCalendar
-
-## Prerequisites
-
-- Node.js (v14 or higher)
-- npm (Node Package Manager)
-- A modern web browser
-
-## Project Setup
-
-1. Clone the repository
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create necessary environment variables:
-   - Create a `.env` file in the root directory
-   - Add required API keys (Mapbox, Firebase, etc.)
-
-## Development
-
-### Start Frontend Development Server
-```bash
-npm run serve
-```
-This will launch the development server at `http://localhost:3001` or the specified port.
-
-### Start Backend Server
-```bash
-cd server
-npm install
-node server.js
-```
-The backend server will run on `http://localhost:3000` or the specified port.
-
-### Additional Commands
-
-```bash
-# Compile and minify for production
-npm run build
-
-# Lint and fix files
-npm run lint
-```
-
-## Project Structure
-
-- `/src` - Frontend source code
-- `/server` - Backend server code
-- `/public` - Static assets
-- `/functions` - Firebase Cloud Functions
+UV Defender is an application that helps young Australians understand UV index and provides personalized sun protection advice. The application aims to balance skin cancer risk and vitamin D requirements, especially for young adults with darker skin tones.
 
 ## Features
 
-- Real-time UV index monitoring
-- Personalized UV protection advice
-- Interactive UV map
-- User profile management
-- Calendar integration for UV tracking
+- **View UV Index**: Check current UV index based on location or postal code
+- **UV Impact Data**: Learn about UV effects on different age groups and heat trends in Australia
+- **Personalized Sun Protection Advice**: Get personalized sun protection advice based on skin type and UV index
+- **Sunscreen Reminders**: Set reminders to reapply sunscreen
+- **Sun Protection Product Recommendations**: Browse and find sun protection products
 
-## Contributing
+## Tech Stack
 
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
+- Frontend: Vue.js
+- Backend: Node.js, Express
+- Database: MySQL
+- APIs: Google Places API, Weather API
+
+## Installation Guide
+
+### Prerequisites
+
+- Node.js (v14+)
+- MySQL
+- Google Places API key
+- Weather API key
+
+### Installation Steps
+
+1. Clone the repository
+
+   ```
+   git clone https://github.com/yourusername/uv-defender.git
+   cd uv-defender
+   ```
+
+2. Install frontend dependencies
+
+   ```
+   npm install
+   ```
+
+3. Install backend dependencies
+
+   ```
+   cd server
+   npm install
+   ```
+
+4. Configure environment variables
+
+   - Create a `.env` file in the `server` directory
+   - Add the following content, replacing with your API keys and database configuration
+
+   ```
+   GOOGLE_PLACES_API_KEY=your_google_places_api_key
+   WEATHER_API_KEY=your_weather_api_key
+   DB_HOST=localhost
+   DB_USER=root
+   DB_PASSWORD=your_password
+   DB_NAME=uv_defender
+   PORT=3000
+   ```
+
+5. Initialize the database
+
+   ```
+   node db-init.js
+   ```
+
+6. Start the backend server
+
+   ```
+   node server.js
+   ```
+
+7. Start the frontend development server in another terminal
+
+   ```
+   cd ..
+   npm run serve
+   ```
+
+8. Access the application
+   - Open your browser and visit `http://localhost:8080`
+
+## Deployment
+
+### Build the frontend
+
+```
+npm run build
+```
+
+### Deploy to server
+
+1. Upload the `dist` directory and `server` directory to your server
+2. Install dependencies on the server
+   ```
+   cd server
+   npm install --production
+   ```
+3. Configure environment variables
+4. Start the server
+   ```
+   node server.js
+   ```
+
+## User Stories
+
+1. **View UV Index**: As a young adult, I want to check the UV index for different locations so I can decide on suitable times to go outside and the necessary sun protection measures.
+2. **UV Impact Data**: As a young adult, I want to learn about UV dangers in Australia to increase my understanding of age-appropriate tips and techniques.
+3. **Personalized Sun Protection Advice**: As a young Australian adult, I want to understand the specific risks and benefits of sun exposure for my skin type in order to develop a personalized sun protection plan that meets my individual needs.
+4. **Sunscreen Reminders**: As a young Australian, I want to be reminded when I need to reapply sunscreen so I can maintain protection from the sun throughout the day.
+5. **Sun Protection Product Recommendations**: As a young Australian adult, I want to be able to easily find and access sun protection products and clothing so I can protect myself from the sun effectively and conveniently.
+
+## Contribution
+
+Contributions are welcome! Feel free to submit issues or pull requests.
 
 ## License
 
-This project is private and confidential.
+[MIT](LICENSE)

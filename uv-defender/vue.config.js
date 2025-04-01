@@ -8,4 +8,14 @@ module.exports = {
       },
     },
   },
+  devServer: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+    },
+    port: 3002,
+    allowedHosts: "all",
+  },
 };
