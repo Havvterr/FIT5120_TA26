@@ -5,7 +5,7 @@
         <h3>Melbourne Eco Nest</h3>
         <p>Dedicated to raising public awareness about Melbourne's urban heat island effect and promoting sustainable urban development.</p>
       </div>
-      
+
       <div class="footer-section">
         <h3>Quick Links</h3>
         <ul>
@@ -15,7 +15,7 @@
           <li><RouterLink to="/about">About Us</RouterLink></li>
         </ul>
       </div>
-      
+
       <div class="footer-section">
         <h3>Contact Us</h3>
         <p>Email: info@melecnest.org</p>
@@ -23,9 +23,9 @@
         <p>Address: Melbourne CBD</p>
       </div>
     </div>
-    
+
     <div class="footer-bottom">
-      <p>&copy; 2023 Melbourne Eco Nest | Melbourne Urban Heat Island Research Project</p>
+      <p>&copy; 2025 Melbourne Eco Nest | Melbourne Urban Heat Island Research Project</p>
     </div>
   </footer>
 </template>
@@ -101,7 +101,7 @@ import { RouterLink } from 'vue-router';
   .footer-content {
     flex-direction: column;
   }
-  
+
   .footer-section {
     margin-bottom: 1.5rem;
   }
