@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <!-- 背景 -->
+  <rect width="800" height="600" fill="#f5f5f5"/>
+  
+  <!-- 墨尔本简化地图轮廓 -->
+  <path d="M100,300 Q200,250 300,200 T500,150 Q600,200 700,250 Q750,350 700,450 Q600,500 500,550 Q400,580 300,500 Q200,450 150,400 Q100,350 100,300 Z" fill="#e0e0e0" stroke="#bdbdbd" stroke-width="2"/>
+  
+  <!-- 热岛效应区域 - 从低到高的温度 -->
+  <!-- 低温区域 -->
+  <path d="M200,300 Q250,280 300,250 T400,230 Q450,250 500,280 Q530,330 500,380 Q450,420 400,450 Q350,460 300,420 Q250,380 220,350 Q200,320 200,300 Z" fill="#ffffcc" opacity="0.8"/>
+  
+  <!-- 中低温区域 -->
+  <path d="M250,300 Q280,290 320,270 T400,250 Q430,270 460,290 Q480,320 460,350 Q430,380 400,400 Q370,410 320,380 Q280,350 260,330 Q250,310 250,300 Z" fill="#fed976" opacity="0.8"/>
+  
+  <!-- 中温区域 -->
+  <path d="M300,300 Q320,290 350,280 T400,270 Q420,280 440,300 Q450,320 440,340 Q420,360 400,370 Q380,380 350,360 Q320,340 310,320 Q300,310 300,300 Z" fill="#fd8d3c" opacity="0.8"/>
+  
+  <!-- 高温区域 -->
+  <path d="M350,310 Q360,300 380,290 T400,285 Q410,290 420,300 Q425,310 420,320 Q410,330 400,335 Q390,340 380,330 Q360,320 355,315 Q350,310 350,310 Z" fill="#e31a1c" opacity="0.8"/>
+  
+  <!-- 极高温区域 (CBD) -->
+  <circle cx="400" cy="300" r="15" fill="#800026" opacity="0.8"/>
+  
+  <!-- 主要道路 -->
+  <line x1="100" y1="300" x2="700" y2="300" stroke="#9e9e9e" stroke-width="3" stroke-dasharray="5,5"/>
+  <line x1="400" y1="150" x2="400" y2="550" stroke="#9e9e9e" stroke-width="3" stroke-dasharray="5,5"/>
+  
+  <!-- 河流 -->
+  <path d="M300,150 Q350,200 320,250 Q300,300 350,350 Q400,400 450,350 Q500,300 480,250 Q450,200 500,150" fill="none" stroke="#64b5f6" stroke-width="5"/>
+  
+  <!-- 地标标记 -->
+  <circle cx="400" cy="300" r="8" fill="#212121"/>
+  <text x="410" y="300" font-family="Arial" font-size="12" fill="#212121">CBD</text>
+  
+  <circle cx="350" cy="250" r="5" fill="#212121"/>
+  <text x="360" y="250" font-family="Arial" font-size="10" fill="#212121">北墨尔本</text>
+  
+  <circle cx="450" cy="350" r="5" fill="#212121"/>
+  <text x="460" y="350" font-family="Arial" font-size="10" fill="#212121">南墨尔本</text>
+  
+  <circle cx="300" cy="350" r="5" fill="#212121"/>
+  <text x="250" y="350" font-family="Arial" font-size="10" fill="#212121">西墨尔本</text>
+  
+  <circle cx="500" cy="250" r="5" fill="#212121"/>
+  <text x="510" y="250" font-family="Arial" font-size="10" fill="#212121">东墨尔本</text>
+  
+  <!-- 指南针 -->
+  <circle cx="700" cy="500" r="30" fill="white" stroke="#bdbdbd" stroke-width="2"/>
+  <line x1="700" y1="470" x2="700" y2="530" stroke="#212121" stroke-width="2"/>
+  <line x1="670" y1="500" x2="730" y2="500" stroke="#212121" stroke-width="2"/>
+  <text x="698" y="480" font-family="Arial" font-size="12" font-weight="bold" fill="#212121">N</text>
+  <text x="698" y="525" font-family="Arial" font-size="12" font-weight="bold" fill="#212121">S</text>
+  <text x="675" y="505" font-family="Arial" font-size="12" font-weight="bold" fill="#212121">W</text>
+  <text x="720" y="505" font-family="Arial" font-size="12" font-weight="bold" fill="#212121">E</text>
+</svg>

@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import HeatMapView from '../views/HeatMapView.vue'
+import MitigationView from '../views/MitigationView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,6 +10,16 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+    },
+    {
+      path: '/heat-map',
+      name: 'heatMap',
+      component: HeatMapView,
+    },
+    {
+      path: '/mitigation',
+      name: 'mitigation',
+      component: MitigationView,
     },
     {
       path: '/about',

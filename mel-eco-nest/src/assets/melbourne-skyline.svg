@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600">
+  <!-- 背景 -->
+  <rect width="1200" height="600" fill="#e8f5e9"/>
+  
+  <!-- 天空渐变 -->
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#64b5f6" />
+      <stop offset="100%" stop-color="#bbdefb" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="400" fill="url(#skyGradient)"/>
+  
+  <!-- 远处的山丘 -->
+  <path d="M0,350 Q300,300 600,350 T1200,330 L1200,600 L0,600 Z" fill="#81c784" opacity="0.6"/>
+  
+  <!-- 墨尔本天际线 -->
+  <!-- 尤里卡大厦 -->
+  <rect x="500" y="100" width="40" height="300" fill="#455a64"/>
+  <rect x="510" y="80" width="20" height="20" fill="#ffd54f"/>
+  
+  <!-- 其他高楼 -->
+  <rect x="300" y="200" width="30" height="200" fill="#546e7a"/>
+  <rect x="340" y="180" width="35" height="220" fill="#607d8b"/>
+  <rect x="385" y="220" width="25" height="180" fill="#78909c"/>
+  <rect x="420" y="150" width="30" height="250" fill="#546e7a"/>
+  <rect x="460" y="200" width="30" height="200" fill="#607d8b"/>
+  
+  <rect x="550" y="180" width="35" height="220" fill="#546e7a"/>
+  <rect x="595" y="220" width="25" height="180" fill="#607d8b"/>
+  <rect x="630" y="170" width="30" height="230" fill="#78909c"/>
+  <rect x="670" y="190" width="40" height="210" fill="#546e7a"/>
+  <rect x="720" y="230" width="30" height="170" fill="#607d8b"/>
+  <rect x="760" y="200" width="25" height="200" fill="#78909c"/>
+  <rect x="795" y="180" width="35" height="220" fill="#546e7a"/>
+  <rect x="840" y="210" width="30" height="190" fill="#607d8b"/>
+  
+  <!-- 前景建筑 -->
+  <rect x="100" y="250" width="50" height="150" fill="#455a64"/>
+  <rect x="160" y="280" width="40" height="120" fill="#546e7a"/>
+  <rect x="210" y="260" width="60" height="140" fill="#607d8b"/>
+  
+  <rect x="880" y="270" width="45" height="130" fill="#455a64"/>
+  <rect x="935" y="290" width="55" height="110" fill="#546e7a"/>
+  <rect x="1000" y="260" width="40" height="140" fill="#607d8b"/>
+  <rect x="1050" y="280" width="50" height="120" fill="#455a64"/>
+  
+  <!-- 地面 -->
+  <rect x="0" y="400" width="1200" height="200" fill="#4caf50" opacity="0.7"/>
+  
+  <!-- 树木 -->
+  <circle cx="150" cy="420" r="30" fill="#2e7d32"/>
+  <circle cx="350" cy="430" r="25" fill="#2e7d32"/>
+  <circle cx="600" cy="420" r="30" fill="#2e7d32"/>
+  <circle cx="800" cy="430" r="25" fill="#2e7d32"/>
+  <circle cx="1000" cy="420" r="30" fill="#2e7d32"/>
+  <circle cx="1150" cy="430" r="25" fill="#2e7d32"/>
+  
+  <!-- 热岛效应表示 -->
+  <defs>
+    <radialGradient id="heatGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#ff5722" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#ff5722" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <circle cx="600" cy="300" r="200" fill="url(#heatGradient)"/>
+</svg>
