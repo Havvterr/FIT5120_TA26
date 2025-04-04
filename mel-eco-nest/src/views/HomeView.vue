@@ -284,7 +284,7 @@ h1 {
 
 .cta-section {
   background-color: var(--vt-c-green);
-  color: white;
+  color: rgb(0, 0, 0);
   padding: 4rem 2rem;
   text-align: center;
   margin-bottom: 3rem;
@@ -308,7 +308,7 @@ h1 {
 .cta-button {
   display: inline-block;
   padding: 1rem 2rem;
-  background-color: white;
+  background-color: rgb(0, 153, 82);
   color: var(--vt-c-green);
   font-weight: bold;
   text-decoration: none;
