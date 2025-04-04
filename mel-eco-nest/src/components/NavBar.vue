@@ -1,13 +1,14 @@
 <template>
   <nav class="navbar">
     <div class="logo-container">
-      <img src="@/assets/logo.svg" alt="Mel Eco Nest Logo" class="logo" />
+      <img src="@/assets/Logo.png" alt="Mel Eco Nest Logo" class="logo" />
       <span class="site-name">Melbourne Eco Nest</span>
     </div>
     <div class="nav-links">
       <RouterLink to="/" class="nav-link">Home</RouterLink>
       <RouterLink to="/heat-map" class="nav-link">Heat Map</RouterLink>
       <RouterLink to="/mitigation" class="nav-link">Mitigation</RouterLink>
+      <RouterLink to="/plant-recommendation" class="nav-link">Bulid Your Micro-Oasis</RouterLink>
       <RouterLink to="/about" class="nav-link">About Us</RouterLink>
     </div>
   </nav>
@@ -70,17 +71,17 @@ import { RouterLink } from 'vue-router';
     flex-direction: column;
     padding: 1rem;
   }
-  
+
   .logo-container {
     margin-bottom: 1rem;
   }
-  
+
   .nav-links {
     width: 100%;
     justify-content: space-around;
     gap: 0.5rem;
   }
-  
+
   .nav-link {
     font-size: 0.9rem;
   }
