@@ -12,6 +12,7 @@
           <li><RouterLink to="/">Home</RouterLink></li>
           <li><RouterLink to="/heat-map">Heat Map</RouterLink></li>
           <li><RouterLink to="/mitigation">Mitigation</RouterLink></li>
+          <li><RouterLink to="/plant-recommendation">Plant Recommendation</RouterLink></li>
           <li><RouterLink to="/about">About Us</RouterLink></li>
         </ul>
       </div>

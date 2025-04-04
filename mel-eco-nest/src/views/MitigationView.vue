@@ -2,10 +2,10 @@
   <div class="mitigation-container">
     <h1 class="page-title">Heat Island Effect Mitigation Measures</h1>
     <p class="page-description">Learn how to reduce Melbourne's urban heat island effect through various methods and strategies, creating a more livable urban environment.</p>
-    
+
     <div class="strategies-section">
       <h2 class="section-title">Main Mitigation Strategies</h2>
-      
+
       <div class="strategy-cards">
         <div class="strategy-card">
           <div class="strategy-icon green-space"></div>
@@ -17,7 +17,7 @@
             <li>Encourage residents to plant native species in their yards</li>
           </ul>
         </div>
-        
+
         <div class="strategy-card">
           <div class="strategy-icon cool-roof"></div>
           <h3>Use Reflective Building Materials</h3>
@@ -28,7 +28,7 @@
             <li>Choose light-colored pavement materials</li>
           </ul>
         </div>
-        
+
         <div class="strategy-card">
           <div class="strategy-icon green-roof"></div>
           <h3>Promote Green Roofs and Walls</h3>
@@ -39,7 +39,7 @@
             <li>Combine with rainwater collection systems to maintain plants</li>
           </ul>
         </div>
-        
+
         <div class="strategy-card">
           <div class="strategy-icon transport"></div>
           <h3>Reduce Traffic Emissions</h3>
@@ -52,10 +52,10 @@
         </div>
       </div>
     </div>
-    
+
     <div class="case-studies-section">
       <h2 class="section-title">Successful Case Studies</h2>
-      
+
       <div class="case-study">
         <div class="case-study-image melbourne-example"></div>
         <div class="case-study-content">
@@ -64,7 +64,7 @@
           <p>The project also created new urban wildlife habitats, increased biodiversity, and enhanced building aesthetics and value.</p>
         </div>
       </div>
-      
+
       <div class="case-study reverse">
         <div class="case-study-content">
           <h3>Cool Streets Transformation</h3>
@@ -74,10 +74,10 @@
         <div class="case-study-image cool-streets"></div>
       </div>
     </div>
-    
+
     <div class="community-action-section">
       <h2 class="section-title">Community Action Guide</h2>
-      
+
       <div class="action-grid">
         <div class="action-item">
           <h3>Individual Actions</h3>
@@ -88,7 +88,7 @@
             <li>Reduce unnecessary vehicle use</li>
           </ul>
         </div>
-        
+
         <div class="action-item">
           <h3>Community Organizations</h3>
           <ul>
@@ -98,7 +98,7 @@
             <li>Advocate for increased greening budgets</li>
           </ul>
         </div>
-        
+
         <div class="action-item">
           <h3>Business Engagement</h3>
           <ul>
@@ -108,7 +108,7 @@
             <li>Sponsor community greening projects</li>
           </ul>
         </div>
-        
+
         <div class="action-item">
           <h3>Policy Advocacy</h3>
           <ul>
@@ -120,26 +120,26 @@
         </div>
       </div>
     </div>
-    
+
     <div class="resources-section">
       <h2 class="section-title">Additional Resources</h2>
-      
+
       <div class="resources-grid">
         <a href="#" class="resource-card">
           <h3>Melbourne Green Roof Guide</h3>
           <p>Learn how to install and maintain green roofs on your building</p>
         </a>
-        
+
         <a href="#" class="resource-card">
           <h3>Victoria Tree Planting Program</h3>
           <p>Join community tree planting events and get free seedlings</p>
         </a>
-        
+
         <a href="#" class="resource-card">
           <h3>Building Energy Efficiency Rebates</h3>
           <p>Learn about available government rebates and incentives</p>
         </a>
-        
+
         <a href="#" class="resource-card">
           <h3>Community Climate Action Toolkit</h3>
           <p>Practical guide for organizing and participating in community climate actions</p>
@@ -257,11 +257,11 @@
 }
 
 .melbourne-example {
-  background-image: url('@/assets/green-roof-example.svg');
+  background-image: url('@/assets/Skyhouse362.jpg');
 }
 
 .cool-streets {
-  background-image: url('@/assets/cool-streets-example.svg');
+  background-image: url('@/assets/urban_road_vegetation_eg.webp');
 }
 
 .case-study-content {
@@ -353,19 +353,19 @@
   .page-title {
     font-size: 2rem;
   }
-  
+
   .section-title {
     font-size: 1.8rem;
   }
-  
+
   .case-study-image {
     height: 250px;
   }
-  
+
   .case-study-content {
     padding: 1.5rem;
   }
-  
+
   .case-study-content h3 {
     font-size: 1.4rem;
   }

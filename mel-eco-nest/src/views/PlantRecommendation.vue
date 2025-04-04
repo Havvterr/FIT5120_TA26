@@ -8,6 +8,7 @@ const showRecommendations = ref(false)
 const recommendations = ref([])
 
 const balconyOptions = [
+  { value: 1, label: 'Mini Balcony', description: 'Space for a few small plants', icon: '🌱', detail: 'About 1 square meter, suitable for 1-2 small potted plants' },
   { value: 2, label: 'Small Balcony', description: 'Space for a small coffee table', icon: '🪑', detail: 'About 2 square meters, suitable for 2-4 small potted plants' },
   { value: 4, label: 'Medium Balcony', description: 'Space for a double bed', icon: '🛏️', detail: 'About 4 square meters, suitable for 5-8 medium-sized potted plants' },
   { value: 8, label: 'Large Balcony', description: 'Space of a small bedroom', icon: '🏠', detail: 'About 8 square meters, suitable for creating a small sky garden' }
@@ -22,6 +23,13 @@ const frequencies = [
 ]
 
 const plantDatabase = [
+  {
+    name: 'Mini Cactus',
+    minArea: 0.1,
+    maxArea: 1,
+    wateringFrequency: 1,
+    seasons: ['Spring', 'Summer', 'Autumn', 'Winter']
+  },
   {
     name: 'Succulent',
     minArea: 0.1,

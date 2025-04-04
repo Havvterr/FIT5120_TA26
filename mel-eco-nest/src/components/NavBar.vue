@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar">
-    <div class="logo-container">
+    <div class="logo-container" style="cursor: pointer" @click="$router.push('/')">
       <img src="@/assets/Logo.png" alt="Mel Eco Nest Logo" class="logo" />
       <span class="site-name">Melbourne Eco Nest</span>
     </div>
@@ -55,15 +55,37 @@ import { RouterLink } from 'vue-router';
   text-decoration: none;
   font-size: 1rem;
   font-weight: 500;
-  padding: 0.5rem 0;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
   border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .nav-link:hover,
 .nav-link.router-link-active {
   color: var(--vt-c-green);
-  border-bottom: 2px solid var(--vt-c-green);
+  background-color: rgba(0, 153, 82, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 153, 82, 0.2);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: var(--vt-c-green);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after,
+.nav-link.router-link-active::after {
+  width: 80%;
 }
 
 @media (max-width: 768px) {

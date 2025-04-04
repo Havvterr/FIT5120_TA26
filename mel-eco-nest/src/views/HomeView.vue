@@ -101,7 +101,7 @@ import { RouterLink } from 'vue-router';
 }
 
 .hero-section {
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('@/assets/melbourne-skyline.svg') no-repeat center center;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('@/assets/melskyline.jpg') no-repeat center center;
   background-size: cover;
   height: 500px;
   display: flex;
@@ -121,6 +121,7 @@ h1 {
   font-size: 3rem;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  color: white;
 }
 
 .hero-subtitle {
