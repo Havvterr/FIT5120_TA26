@@ -19,32 +19,66 @@ Recommended to use [VSCode](https://code.visualstudio.com/) as the development t
 
 ## Project Setup
 
-### 1. Install Project Dependencies
-Run in the project root directory:
-```sh
-npm install
-```
+### 1. Environment Configuration
+1. Frontend Configuration
+   - Create a new `.env` file in the project root directory
+   - Update the environment variables in `.env` according to your needs
 
-### 2. Development Mode
-Start the development server (with hot-reload support):
-```sh
-npm run dev
-```
-After starting, visit the prompted URL in your browser (usually http://localhost:5173)
+2. Backend Configuration
+   - Navigate to the `server` directory
+   - Copy `.env.example` to create a new `.env` file
+   - Configure the following environment variables in the server's `.env` file:
+     ```
+     PORT=3000
+     DB_HOST=localhost
+     DB_USER=your_username
+     DB_PASSWORD=your_password
+     DB_NAME=your_database_name
+     ```
+   - Ask Ruifeng(rlia0025@student.monash.edu) for the database connection information
+   
+### 2. Install Dependencies
+1. Install Frontend Dependencies
+   ```sh
+   # In the project root directory
+   npm install
+   ```
 
-### 3. Production Build
+2. Install Backend Dependencies
+   ```sh
+   # Navigate to server directory
+   cd server
+   npm install
+   ```
+
+### 3. Start the Application
+1. Start Backend Server
+   ```sh
+   # In the server directory
+   npm start
+   ```
+   The backend server will start on http://localhost:3000
+
+2. Start Frontend Development Server
+   ```sh
+   # In the project root directory
+   npm run dev
+   ```
+   After starting, visit the prompted URL in your browser (usually http://localhost:5173)
+
+### 4. Production Build
 Build for production:
 ```sh
 npm run build
 ```
 
-### 4. Unit Tests
+### 5. Unit Tests
 Run unit tests:
 ```sh
 npm run test:unit
 ```
 
-### 5. Code Linting
+### 6. Code Linting
 Run ESLint check:
 ```sh
 npm run lint
