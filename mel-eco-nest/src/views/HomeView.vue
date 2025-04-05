@@ -6,15 +6,13 @@ import { RouterLink } from 'vue-router'
   <div class="home">
     <div class="hero-section">
       <div class="hero-content">
-        <h1>Melbourne Urban Heat Island Effect</h1>
+        <h1>Mel Eco Nest</h1>
         <p class="hero-subtitle">
-          Explore urban heat islands and its impact on the environment and residents
+          Join us in shaping a better, more sustainable future for our cities
         </p>
         <div class="hero-buttons">
-          <RouterLink to="/heat-map" class="hero-button primary">View Heat Map</RouterLink>
-          <RouterLink to="/mitigation" class="hero-button secondary"
-            >Learn Mitigation Measures</RouterLink
-          >
+          <RouterLink to="/about" class="hero-button secondary"
+            >About Us</RouterLink>
         </div>
       </div>
     </div>
@@ -45,9 +43,9 @@ import { RouterLink } from 'vue-router'
         <div class="intro-icon solution"></div>
         <h2>How to Mitigate the Heat Island Effect?</h2>
         <p>
-          Increasing urban green spaces, practicing low-carbon and environmentally friendly lifestyles,
-          and promoting green roofs and vertical gardens are effective measures to mitigate the
-          urban heat island effect and create more livable urban environments.
+          Increasing urban green spaces, practicing low-carbon and environmentally friendly
+          lifestyles, and promoting green roofs and vertical gardens are effective measures to
+          mitigate the urban heat island effect and create more livable urban environments.
         </p>
       </div>
     </div>
@@ -170,8 +168,8 @@ h1 {
 }
 
 .hero-button {
-  padding: 0.8rem 1.5rem;
-  border-radius: 30px;
+  padding: 0.6rem 1.8rem;
+  border-radius: 25px;
   font-weight: bold;
   text-decoration: none;
   transition: all 0.3s ease;
@@ -221,7 +219,7 @@ h1 {
   width: 60px;
   height: 60px;
   margin-bottom: 1.5rem;
-  background-color: var--color-white;
+  background-color: var(--color-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -325,7 +323,7 @@ h1 {
 }
 
 .cta-content {
-  max-width: 800px;
+  max-width: 850px;
   margin: 0 auto;
 }
 

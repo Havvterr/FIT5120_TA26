@@ -6,7 +6,7 @@
     <div class="container">
       <div class="logo-container navbar-brand" style="cursor: pointer" @click="$router.push('/')">
         <img src="@/assets/Logo.png" alt="Mel Eco Nest Logo" class="logo" />
-        <span class="site-name">Melbourne Eco Nest</span>
+        <span class="site-name">MelEcoNest</span>
       </div>
 
       <button

@@ -2,7 +2,7 @@
   <div class="heat-map-container">
     <h1 class="page-title">Melbourne Heat Island Map</h1>
     <p class="page-description">Through the interactive map below, you can learn about the intensity of the heat island effect in different areas of Melbourne. The map data is based on the latest temperature monitoring records.</p>
-    
+
     <div class="map-container">
       <div class="map-placeholder">
         <div class="map-overlay">
@@ -33,30 +33,30 @@
         <img src="@/assets/melbourne-map-placeholder.svg" alt="Melbourne Heat Island Map" class="map-image" />
       </div>
     </div>
-    
+
     <div class="data-section">
       <h2>Heat Island Effect Data Analysis</h2>
-      
+
       <div class="data-cards">
         <div class="data-card">
           <h3>CBD Temperature Difference</h3>
           <div class="data-value">+7°C</div>
           <p>Maximum temperature difference between Melbourne CBD and surrounding suburbs</p>
         </div>
-        
+
         <div class="data-card">
           <h3>Heat Island Area</h3>
           <div class="data-value">37 km²</div>
           <p>Coverage area of Melbourne's main heat island effect</p>
         </div>
-        
+
         <div class="data-card">
           <h3>Annual Growth</h3>
           <div class="data-value">0.3°C</div>
           <p>Annual temperature increase of Melbourne's heat island effect</p>
         </div>
       </div>
-      
+
       <div class="temperature-chart">
         <h3>Temperature Comparison of Melbourne Areas (Summer Average)</h3>
         <div class="chart-container">
@@ -83,7 +83,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="factors-section">
       <h2>Factors Affecting Heat Island Effect</h2>
       <div class="factors-grid">
@@ -316,35 +316,35 @@
   .map-placeholder {
     height: 350px;
   }
-  
+
   .map-overlay {
     top: 10px;
     right: 10px;
     padding: 0.5rem;
     font-size: 0.9rem;
   }
-  
+
   .color-box {
     width: 15px;
     height: 15px;
   }
-  
+
   .data-cards {
     flex-direction: column;
   }
-  
+
   .chart-container {
     height: 250px;
   }
-  
+
   .chart-bar {
     width: 15%;
   }
-  
+
   .bar-label {
     font-size: 0.8rem;
   }
-  
+
   .temperature {
     font-size: 0.9rem;
   }
