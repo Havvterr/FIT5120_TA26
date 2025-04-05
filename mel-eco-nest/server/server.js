@@ -5,11 +5,11 @@ require('dotenv').config();
 
 const app = express();
 
-// 启用CORS
+// start CORS
 app.use(cors());
 app.use(express.json());
 
-// 创建数据库连接
+// config connrction to database
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -18,7 +18,7 @@ const connection = mysql.createConnection({
   database: process.env.DB_NAME
 });
 
-// 连接到数据库
+// connect to database
 connection.connect(error => {
   if (error) {
     console.error('Error connecting to the database: ' + error.stack);
@@ -27,10 +27,10 @@ connection.connect(error => {
   console.log('Successfully connected to the database.');
 });
 
-// 获取所有植物数据的API端点
+// get plants API endpoint
 app.get('/plants', (req, res) => {
   const query = 'SELECT * FROM plant';
-  
+
   connection.query(query, (error, results) => {
     if (error) {
       console.error('Error executing query: ' + error.stack);
@@ -41,16 +41,16 @@ app.get('/plants', (req, res) => {
   });
 });
 
-// 获取植物推荐的API端点
+// get plant details API endpoint
 app.post('/plants/recommendations', (req, res) => {
   const { userPreferences } = req.body;
-  
+
   if (!userPreferences) {
     return res.status(400).json({ error: 'User preferences are required' });
   }
 
   const query = 'SELECT * FROM plant';
-  
+
   connection.query(query, (error, plants) => {
     if (error) {
       console.error('Error executing query: ' + error.stack);
@@ -58,11 +58,11 @@ app.post('/plants/recommendations', (req, res) => {
       return;
     }
 
-    // 计算每个植物的得分
+    // calculate scores for each plant
     const scoredPlants = plants.map(plant => {
       let score = 0;
-      
-      // 根据光照需求评分
+
+      // give score based on user preferences
       if (plant.sunlight_needs === userPreferences.sunlight) {
         score += 3;
       } else if (
@@ -72,7 +72,7 @@ app.post('/plants/recommendations', (req, res) => {
         score += 1;
       }
 
-      // 根据浇水需求评分
+      // give score based on water needs
       if (plant.water_needs === userPreferences.waterNeeds) {
         score += 3;
       } else if (
@@ -83,7 +83,7 @@ app.post('/plants/recommendations', (req, res) => {
         score += 1;
       }
 
-      // 根据维护难度评分
+      // give score based on maintenance level
       if (plant.maintenance_level === userPreferences.maintenanceLevel) {
         score += 3;
       } else if (
@@ -94,23 +94,23 @@ app.post('/plants/recommendations', (req, res) => {
         score += 1;
       }
 
-      // 考虑植物优先级
+      // consider priority
       score += (4 - plant.priority);
 
       return { ...plant, score };
     });
 
-    // 按分数降序排序并过滤掉得分过低的植物
+    // filter and sort plants based on scores
     const recommendations = scoredPlants
-      .filter(plant => plant.score >= 8) // 只返回得分大于等于3的植物
-      .sort((a, b) => b.score - a.score); // 按得分从高到低排序
+      .filter(plant => plant.score >= 8) // filter plants with score >= 8
+      .sort((a, b) => b.score - a.score); // sort plants by score in descending order
 
     res.json(recommendations);
   });
 });
 
 
-// 启动服务器
+// start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
