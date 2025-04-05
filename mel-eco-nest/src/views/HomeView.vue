@@ -43,9 +43,9 @@ import { RouterLink } from 'vue-router'
 
       <div class="intro-card">
         <div class="intro-icon solution"></div>
-        <h2>How to Mitigate the Heat Island Effect</h2>
+        <h2>How to Mitigate the Heat Island Effect?</h2>
         <p>
-          Increasing urban green spaces, using reflective building materials, reducing vehicle use,
+          Increasing urban green spaces, practicing low-carbon and environmentally friendly lifestyles,
           and promoting green roofs and vertical gardens are effective measures to mitigate the
           urban heat island effect and create more livable urban environments.
         </p>
@@ -221,7 +221,7 @@ h1 {
   width: 60px;
   height: 60px;
   margin-bottom: 1.5rem;
-  background-color: var(--vt-c-green-lighter);
+  background-color: var--color-white;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -235,7 +235,7 @@ h1 {
 }
 
 .facts-section {
-  background-color: var(--color-background-soft);
+  background-color: var(--color-background);
   padding: 4rem 2rem;
   margin-bottom: 3rem;
 }
@@ -255,7 +255,7 @@ h1 {
   max-width: 250px;
   text-align: center;
   padding: 2rem;
-  background-color: var(--color-background);
+  background-color: var(--color-background-soft);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
@@ -269,7 +269,7 @@ h1 {
 .fact-number {
   font-size: 2.5rem;
   font-weight: bold;
-  color: var(--vt-c-green);
+  color: var(--color-text);
   margin-bottom: 1rem;
 }
 

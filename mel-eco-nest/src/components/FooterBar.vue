@@ -37,7 +37,7 @@ import { RouterLink } from 'vue-router';
 
 <style scoped>
 .footer {
-  background-color: var(--color-background-soft);
+  background-color: var(--color-background);
   color: var(--color-text);
   padding: 2rem 0 0 0;
   margin-top: 3rem;

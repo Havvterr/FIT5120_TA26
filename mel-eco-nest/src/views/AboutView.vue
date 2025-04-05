@@ -1,5 +1,5 @@
 <template>
-  <div class="about page-background">
+  <div class="about about-page page-container">
     <div class="video-container">
       <video class="main-video" autoplay loop muted playsinline>
         <source src="@/assets/mainVedio.mp4" type="video/mp4" />
@@ -35,9 +35,7 @@
 
 <style>
 .page-background {
-  background-color: var(--color-background-soft);
-  min-height: 100vh;
-  width: 100%;
+  /* Remove this class as it's now handled by pages.css */
 }
 
 .about {
