@@ -1,5 +1,5 @@
 <script setup>
-import { RouterLink } from 'vue-router';
+import { RouterLink } from 'vue-router'
 </script>
 
 <template>
@@ -7,10 +7,14 @@ import { RouterLink } from 'vue-router';
     <div class="hero-section">
       <div class="hero-content">
         <h1>Melbourne Urban Heat Island Effect</h1>
-        <p class="hero-subtitle">Explore urban heat islands and its impact on the environment and residents</p>
+        <p class="hero-subtitle">
+          Explore urban heat islands and its impact on the environment and residents
+        </p>
         <div class="hero-buttons">
           <RouterLink to="/heat-map" class="hero-button primary">View Heat Map</RouterLink>
-          <RouterLink to="/mitigation" class="hero-button secondary">Learn Mitigation Measures</RouterLink>
+          <RouterLink to="/mitigation" class="hero-button secondary"
+            >Learn Mitigation Measures</RouterLink
+          >
         </div>
       </div>
     </div>
@@ -19,19 +23,32 @@ import { RouterLink } from 'vue-router';
       <div class="intro-card">
         <div class="intro-icon thermometer"></div>
         <h2>What is the Urban Heat Island Effect?</h2>
-        <p>The urban heat island effect refers to the phenomenon where urban areas experience significantly higher temperatures than surrounding rural areas, primarily caused by human activities and building materials. Materials like concrete and asphalt in cities absorb and store large amounts of heat, leading to increased urban temperatures.</p>
+        <p>
+          The urban heat island effect refers to the phenomenon where urban areas experience
+          significantly higher temperatures than surrounding rural areas, primarily caused by human
+          activities and building materials. Materials like concrete and asphalt in cities absorb
+          and store large amounts of heat, leading to increased urban temperatures.
+        </p>
       </div>
 
       <div class="intro-card">
         <div class="intro-icon city"></div>
         <h2>Melbourne's Heat Island Effect</h2>
-        <p>Melbourne's CBD can be 4-7°C warmer than surrounding suburbs, especially during summer heat waves. This temperature difference significantly impacts the health, energy consumption, and quality of life of urban residents.</p>
+        <p>
+          Melbourne's CBD can be 4-7°C warmer than surrounding suburbs, especially during summer
+          heat waves. This temperature difference significantly impacts the health, energy
+          consumption, and quality of life of urban residents.
+        </p>
       </div>
 
       <div class="intro-card">
         <div class="intro-icon solution"></div>
         <h2>How to Mitigate the Heat Island Effect</h2>
-        <p>Increasing urban green spaces, using reflective building materials, reducing vehicle use, and promoting green roofs and vertical gardens are effective measures to mitigate the urban heat island effect and create more livable urban environments.</p>
+        <p>
+          Increasing urban green spaces, using reflective building materials, reducing vehicle use,
+          and promoting green roofs and vertical gardens are effective measures to mitigate the
+          urban heat island effect and create more livable urban environments.
+        </p>
       </div>
     </div>
 
@@ -65,22 +82,33 @@ import { RouterLink } from 'vue-router';
       <div class="impact-grid">
         <div class="impact-item">
           <h3>Health Risks</h3>
-          <p>High temperatures increase the risk of heat stroke, heat exhaustion, and cardiovascular diseases, especially affecting the elderly and children</p>
+          <p>
+            High temperatures increase the risk of heat stroke, heat exhaustion, and cardiovascular
+            diseases, especially affecting the elderly and children
+          </p>
         </div>
 
         <div class="impact-item">
           <h3>Energy Consumption</h3>
-          <p>Increased air conditioning use leads to higher energy consumption, further exacerbating greenhouse gas emissions</p>
+          <p>
+            Increased air conditioning use leads to higher energy consumption, further exacerbating
+            greenhouse gas emissions
+          </p>
         </div>
 
         <div class="impact-item">
           <h3>Air Quality</h3>
-          <p>High temperatures accelerate chemical reactions of air pollutants, reducing urban air quality</p>
+          <p>
+            High temperatures accelerate chemical reactions of air pollutants, reducing urban air
+            quality
+          </p>
         </div>
 
         <div class="impact-item">
           <h3>Biodiversity</h3>
-          <p>Rising urban temperatures affect the survival environment of local plants and animals</p>
+          <p>
+            Rising urban temperatures affect the survival environment of local plants and animals
+          </p>
         </div>
       </div>
     </div>
@@ -88,7 +116,10 @@ import { RouterLink } from 'vue-router';
     <div class="cta-section">
       <div class="cta-content">
         <h2>Take Action Together to Mitigate Melbourne's Heat Island Effect</h2>
-        <p>Learn more about the heat island effect and explore how to improve Melbourne's urban environment through individual and community actions</p>
+        <p>
+          Learn more about the heat island effect and explore how to improve Melbourne's urban
+          environment through individual and community actions
+        </p>
         <RouterLink to="/mitigation" class="cta-button">View Mitigation Measures</RouterLink>
       </div>
     </div>
@@ -101,9 +132,11 @@ import { RouterLink } from 'vue-router';
 }
 
 .hero-section {
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('@/assets/melskyline.jpg') no-repeat center center;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.27), rgba(0, 0, 0, 0.08)),
+    url('@/assets/melskyline.jpg') no-repeat center center;
   background-size: cover;
-  height: 500px;
+  height: 600px;
   display: flex;
   align-items: center;
   justify-content: center;

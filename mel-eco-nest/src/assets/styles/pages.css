@@ -1,0 +1,27 @@
+/* Page background colors */
+.home-page {
+  background-color: var(--color-background);
+}
+
+.about-page {
+  background-color: var(--color-background-soft);
+}
+
+.heat-map-page {
+  background-color: #f8f9fa;
+}
+
+.mitigation-page {
+  background-color: #f0f7f4;
+}
+
+.plant-recommendation-page {
+  background-color: #f4f8f2;
+}
+
+/* Ensure pages fill viewport height */
+.page-container {
+  min-height: 100vh;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
