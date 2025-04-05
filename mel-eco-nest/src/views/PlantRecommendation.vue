@@ -147,7 +147,7 @@ const getRecommendations = async () => {
       <div v-if="recommendations.length > 0" class="recommendation-list">
         <div class="plant-card" v-for="plant in recommendations" :key="plant.name">
           <div class="plant-image" v-if="plant.image_url">
-            <img :src="plant.image_url" :alt="plant.name">
+            <img :src="plant.image_url" :alt="plant.name" @error="handleImageError">
           </div>
           <div class="plant-info">
             <h3>{{ plant.name }}</h3>
@@ -172,6 +172,16 @@ const getRecommendations = async () => {
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  methods: {
+    handleImageError(e) {
+      e.target.src = '/path/to/placeholder-image.jpg'; // 替换为实际的占位图片路径
+    }
+  }
+}
+</script>
 
 <style scoped>
 .plant-recommendation {
@@ -346,7 +356,14 @@ select {
   background-color: #fff;
   padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.3s ease;
+}
+
+.plant-card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .plant-card h3 {
@@ -358,5 +375,38 @@ select {
 .plant-card p {
   margin: 0.5rem 0;
   color: #666;
+}
+.plant-image {
+  width: 100%;
+  padding-top: 75%; /* 4:3 宽高比 */
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 1rem; /* 添加下方留白 */
+}
+
+.plant-card {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.plant-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.plant-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>

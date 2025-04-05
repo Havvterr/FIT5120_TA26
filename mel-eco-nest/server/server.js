@@ -102,7 +102,7 @@ app.post('/plants/recommendations', (req, res) => {
 
     // 按分数降序排序并过滤掉得分过低的植物
     const recommendations = scoredPlants
-      .filter(plant => plant.score >= 10) // 只返回得分大于等于3的植物
+      .filter(plant => plant.score >= 8) // 只返回得分大于等于3的植物
       .sort((a, b) => b.score - a.score); // 按得分从高到低排序
 
     res.json(recommendations);
