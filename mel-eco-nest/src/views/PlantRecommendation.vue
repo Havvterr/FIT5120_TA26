@@ -1,101 +1,93 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { plantService } from '../services/plantService'
 
-const balconyArea = ref('')
-const wateringFrequency = ref('')
-const plantingSeason = ref('')
+const sunlight = ref('')
+const waterNeeds = ref('')
+const maintenanceLevel = ref('')
 const showRecommendations = ref(false)
 const recommendations = ref([])
+const loading = ref(false)
+const error = ref(null)
 
-const balconyOptions = [
-  { value: 1, label: 'Mini Balcony', description: 'Space for a few small plants', icon: '🌱', detail: 'About 1 square meter, suitable for 1-2 small potted plants' },
-  { value: 2, label: 'Small Balcony', description: 'Space for a small coffee table', icon: '🪑', detail: 'About 2 square meters, suitable for 2-4 small potted plants' },
-  { value: 4, label: 'Medium Balcony', description: 'Space for a double bed', icon: '🛏️', detail: 'About 4 square meters, suitable for 5-8 medium-sized potted plants' },
-  { value: 8, label: 'Large Balcony', description: 'Space of a small bedroom', icon: '🏠', detail: 'About 8 square meters, suitable for creating a small sky garden' }
+const resetForm = () => {
+  sunlight.value = ''
+  waterNeeds.value = ''
+  maintenanceLevel.value = ''
+  showRecommendations.value = false
+  recommendations.value = []
+  error.value = null
+}
+const sunlightOptions = [
+  { value: 'Full Sun', icon: '☀️', description: 'Full Sun', detail: '6+ hours of direct sunlight daily' },
+  { value: 'Partial Shade', icon: '🌤️', description: 'Partial Shade', detail: '3-6 hours of direct sunlight' },
+  { value: 'Shade', icon: '🌥️', description: 'Shade', detail: 'Less than 3 hours of direct sunlight' }
 ]
 
-const seasons = ['Spring', 'Summer', 'Autumn', 'Winter']
-const frequencies = [
-  { value: 1, label: 'Once per week' },
-  { value: 2, label: 'Twice per week' },
-  { value: 3, label: 'Three times per week' },
-  { value: 4, label: 'Four times or more per week' }
+const waterNeedsOptions = [
+  { value: 'Low', icon: '💧', description: 'Low Water Needs', detail: 'Water once a week or less' },
+  { value: 'Medium', icon: '💧💧', description: 'Medium Water Needs', detail: 'Water 2-3 times a week' },
+  { value: 'High', icon: '💧💧💧', description: 'High Water Needs', detail: 'Water daily or more' }
 ]
 
-const plantDatabase = [
-  {
-    name: 'Mini Cactus',
-    minArea: 0.1,
-    maxArea: 1,
-    wateringFrequency: 1,
-    seasons: ['Spring', 'Summer', 'Autumn', 'Winter']
-  },
-  {
-    name: 'Succulent',
-    minArea: 0.1,
-    maxArea: 2,
-    wateringFrequency: 1,
-    seasons: ['Spring', 'Summer', 'Autumn']
-  },
-  {
-    name: 'Lavender',
-    minArea: 0.5,
-    maxArea: 3,
-    wateringFrequency: 2,
-    seasons: ['Spring', 'Summer']
-  },
-  {
-    name: 'Rosemary',
-    minArea: 0.3,
-    maxArea: 2,
-    wateringFrequency: 2,
-    seasons: ['Spring', 'Summer', 'Autumn']
-  },
-  {
-    name: 'Pothos',
-    minArea: 0.2,
-    maxArea: 1.5,
-    wateringFrequency: 3,
-    seasons: ['Spring', 'Summer', 'Autumn', 'Winter']
+const maintenanceLevelOptions = [
+  { value: 'Low', icon: '🌱', description: 'Low Maintenance', detail: 'Perfect for beginners' },
+  { value: 'Medium', icon: '🌿', description: 'Medium Maintenance', detail: 'Requires regular attention' },
+  { value: 'High', icon: '🌺', description: 'High Maintenance', detail: 'Needs careful attention' }
+]
+
+const getRecommendations = async () => {
+  if (!sunlight.value || !waterNeeds.value || !maintenanceLevel.value) {
+    error.value = 'Please fill in all fields'
+    return
   }
-]
 
-const getRecommendations = () => {
-  const area = parseFloat(balconyArea.value)
-  const frequency = parseInt(wateringFrequency.value)
-  const season = plantingSeason.value
+  loading.value = true
+  error.value = null
 
-  recommendations.value = plantDatabase.filter(plant => {
-    return (
-      area >= plant.minArea &&
-      area <= plant.maxArea &&
-      frequency >= plant.wateringFrequency &&
-      plant.seasons.includes(season)
-    )
-  })
+  try {
+    const userPreferences = {
+      sunlight: sunlight.value,
+      waterNeeds: waterNeeds.value,
+      maintenanceLevel: maintenanceLevel.value
+    }
 
-  showRecommendations.value = true
+    recommendations.value = await plantService.getRecommendations(userPreferences)
+    showRecommendations.value = true
+  } catch (e) {
+    error.value = 'Failed to get plant recommendations. Please try again later.'
+    console.error(e)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
 <template>
   <div class="plant-recommendation">
-    <h1>Balcony Plant Recommendations</h1>
+    <div class="welcome-section">
+      <h1>Find Your Perfect Plant</h1>
+      <p class="welcome-text">Tell us about your gardening preferences, and we'll help you discover the perfect plants for your space.</p>
+    </div>
+
     <div class="recommendation-form">
+      <div v-if="error" class="error-message">
+        {{ error }}
+      </div>
+
       <div class="form-group">
-        <label>Select Your Balcony Size:</label>
-        <div class="balcony-options">
+        <label>Select Sunlight Condition:</label>
+        <div class="option-grid">
           <div
-            v-for="option in balconyOptions"
+            v-for="option in sunlightOptions"
             :key="option.value"
-            class="balcony-option"
-            :class="{ 'selected': balconyArea === option.value.toString() }"
-            @click="balconyArea = option.value.toString()"
+            class="option-card"
+            :class="{ 'selected': sunlight === option.value }"
+            @click="sunlight = option.value"
           >
             <div class="option-icon">{{ option.icon }}</div>
             <div class="option-content">
-              <h3>{{ option.label }}</h3>
-              <p class="description">{{ option.description }}</p>
+              <h3>{{ option.description }}</h3>
               <p class="detail">{{ option.detail }}</p>
             </div>
           </div>
@@ -103,49 +95,80 @@ const getRecommendations = () => {
       </div>
 
       <div class="form-group">
-        <label for="wateringFrequency">Watering Frequency:</label>
-        <select id="wateringFrequency" v-model="wateringFrequency" required>
-          <option value="">Please select watering frequency</option>
-          <option
-            v-for="freq in frequencies"
-            :key="freq.value"
-            :value="freq.value"
+        <label>Select Water Needs:</label>
+        <div class="option-grid">
+          <div
+            v-for="option in waterNeedsOptions"
+            :key="option.value"
+            class="option-card"
+            :class="{ 'selected': waterNeeds === option.value }"
+            @click="waterNeeds = option.value"
           >
-            {{ freq.label }}
-          </option>
-        </select>
+            <div class="option-icon">{{ option.icon }}</div>
+            <div class="option-content">
+              <h3>{{ option.description }}</h3>
+              <p class="detail">{{ option.detail }}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="form-group">
-        <label for="plantingSeason">Planting Season:</label>
-        <select id="plantingSeason" v-model="plantingSeason" required>
-          <option value="">Please select season</option>
-          <option v-for="season in seasons" :key="season" :value="season">
-            {{ season }}
-          </option>
-        </select>
+        <label>Select Maintenance Level:</label>
+        <div class="option-grid">
+          <div
+            v-for="option in maintenanceLevelOptions"
+            :key="option.value"
+            class="option-card"
+            :class="{ 'selected': maintenanceLevel === option.value }"
+            @click="maintenanceLevel = option.value"
+          >
+            <div class="option-icon">{{ option.icon }}</div>
+            <div class="option-content">
+              <h3>{{ option.description }}</h3>
+              <p class="detail">{{ option.detail }}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <button @click="getRecommendations" class="submit-button">
-        Get Plant Recommendations
+      <button
+        class="submit-button"
+        @click="getRecommendations"
+        :disabled="!sunlight || !waterNeeds || !maintenanceLevel || loading"
+      >
+        <span v-if="loading">Loading...</span>
+        <span v-else>Get Recommendations</span>
       </button>
     </div>
 
     <div v-if="showRecommendations" class="recommendations">
-      <h2>Recommended Plants</h2>
+      <h2>Your Plant Recommendations</h2>
       <div v-if="recommendations.length > 0" class="recommendation-list">
-        <div
-          v-for="plant in recommendations"
-          :key="plant.name"
-          class="plant-card"
-        >
-          <h3>{{ plant.name }}</h3>
-          <p>Suitable Area: {{ plant.minArea }}-{{ plant.maxArea }} square meters</p>
-          <p>Watering Suggestion: {{ plant.wateringFrequency }} times per week</p>
-          <p>Suitable Seasons: {{ plant.seasons.join(', ') }}</p>
+        <div class="plant-card" v-for="plant in recommendations" :key="plant.name">
+          <div class="plant-image" v-if="plant.image_url">
+            <img :src="plant.image_url" :alt="plant.name">
+          </div>
+          <div class="plant-info">
+            <h3>{{ plant.name }}</h3>
+            <p class="plant-species">{{ plant.species }}</p>
+            <div class="plant-details">
+              <p><span class="detail-label">Sunlight:</span> {{ plant.sunlight_needs }}</p>
+              <p><span class="detail-label">Water Needs:</span> {{ plant.water_needs }}</p>
+              <p><span class="detail-label">Temperature:</span> {{ plant.temperature_range }}</p>
+              <p><span class="detail-label">Maintenance:</span> {{ plant.maintenance_level }}</p>
+            </div>
+            <p class="plant-description">{{ plant.description }}</p>
+            <div class="match-score">
+              <span class="score-label">Match Score:</span>
+              <div class="score-bar">
+                <div class="score-fill" :style="{ width: (plant.score / 12 * 100) + '%' }"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <p v-else>Sorry, no plants match your criteria.</p>
+      <p v-else class="no-results">Sorry, no plants match your criteria. Try adjusting your preferences.</p>
     </div>
   </div>
 </template>
@@ -163,11 +186,25 @@ h1 {
   margin-bottom: 2rem;
 }
 
+.welcome-section {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.welcome-text {
+  color: #666;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
 .recommendation-form {
   background-color: #f8f9fa;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 .form-group {
@@ -210,11 +247,34 @@ label {
   background-color: #f0faf5;
 }
 
-.option-icon {
-  font-size: 2rem;
-  line-height: 1;
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
+.option-card {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.option-card:hover {
+  border-color: #42b983;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.option-card.selected {
+  border-color: #42b983;
+  background-color: #f0faf5;
+}
 .option-content h3 {
   margin: 0 0 0.5rem 0;
   color: #2c3e50;
@@ -244,27 +304,42 @@ select {
   background-color: #42b983;
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 2rem;
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
-  font-size: 1rem;
-  transition: background-color 0.3s;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-top: 2rem;
+  position: relative;
 }
 
-.submit-button:hover {
+.submit-button:hover:not(:disabled) {
   background-color: #3aa876;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .recommendations {
   margin-top: 2rem;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .recommendation-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
 .plant-card {
