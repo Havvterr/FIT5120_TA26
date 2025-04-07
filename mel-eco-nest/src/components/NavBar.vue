@@ -74,6 +74,32 @@ onUnmounted(() => {
   transition: all 0.3s ease;
 }
 
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+  max-width: 100%;
+  margin: 0;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-right: auto;
+  padding-left: 2rem;
+}
+
+.navbar-nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding-right: 2rem;
+}
+
 .navbar-scrolled {
   padding: 0.7rem 0;
   background-color: rgba(255, 255, 255, 0.95);
@@ -84,12 +110,6 @@ onUnmounted(() => {
 /* Spacer div height matches navbar height */
 .navbar-spacer {
   height: 80px;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
 }
 
 .logo {
@@ -118,6 +138,7 @@ onUnmounted(() => {
 .nav-link {
   position: relative;
   color: #232323 !important;
+  font-size: 1.1rem;
   font-weight: 500;
   padding: 0.5rem 1rem !important;
   transition: all 0.3s ease;

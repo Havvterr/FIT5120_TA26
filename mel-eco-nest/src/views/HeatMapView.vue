@@ -8,6 +8,12 @@
 
     <div class="map-container">
       <div id="map" class="map-area"></div>
+      <div v-if="!isDataLoaded" class="map-loading-overlay">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Loading temperature data...</p>
+        </div>
+      </div>
       <div class="map-overlay">
         <h3>Current Temperature</h3>
         <div v-if="currentWeather" class="current-weather">
@@ -20,6 +26,10 @@
           </div>
           <p class="weather-desc">{{ currentWeather.description }}</p>
           <p class="humidity">Humidity: {{ currentWeather.humidity }}%</p>
+        </div>
+        <div v-else class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Loading temperature data...</p>
         </div>
       </div>
     </div>
@@ -105,6 +115,7 @@ import L from 'leaflet'
 import { getMelbourneTemperatures, getCurrentMelbourneWeather } from '../services/weatherService'
 
 const currentWeather = ref(null)
+const isDataLoaded = ref(false)
 let map = null
 let heatLayer = null
 
@@ -123,6 +134,7 @@ function cleanup() {
 async function initMap() {
   // Clean up existing instances
   cleanup()
+  isDataLoaded.value = false
 
   // Create map instance
   map = L.map('map').setView([-37.8136, 144.9631], 11)
@@ -207,6 +219,8 @@ async function initMap() {
         },
       },
     ).addTo(map)
+
+    isDataLoaded.value = true
   } catch (error) {
     console.error('Error initializing map:', error)
   }
@@ -339,7 +353,7 @@ onUnmounted(() => {
   position: absolute;
   top: 20px;
   right: 20px;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.25);
   padding: 1.5rem;
   border-radius: 8px;
   z-index: 1000;
@@ -496,6 +510,47 @@ onUnmounted(() => {
 .factor-card h3 {
   color: var(--color-heading);
   margin-bottom: 1rem;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #014421;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.map-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 @media (max-width: 768px) {

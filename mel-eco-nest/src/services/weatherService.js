@@ -41,7 +41,7 @@ const MELBOURNE_DISTRICTS = [
   // Adding locations further from Melbourne
   { name: 'Bunyip State Park', lat: -38.071, lng: 145.6378 },
   { name: 'Sunbury', lat: -37.5811, lng: 144.7286 },
-  { name: 'Healesville Sanctuary', lat: -37.682, lng: 145.532 },
+  { name: 'Lake Eildon', lat: -37.2333, lng: 145.9167 },
   { name: "Animal Land Children's Farm", lat: -37.6568, lng: 144.9513 },
   { name: 'Thornhill Park', lat: -37.6866, lng: 144.5754 },
   { name: 'Kilmore', lat: -37.3004, lng: 144.9511 },
