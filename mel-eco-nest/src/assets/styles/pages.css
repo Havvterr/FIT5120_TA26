@@ -1,6 +1,6 @@
 /* Page background colors */
 .home-page {
-  background-color: var(--color-white);
+  background-color: #ffffff;
 }
 
 .about-page {
@@ -9,15 +9,15 @@
 }
 
 .heat-map-page {
-  background-color: var(--color-white);
+  background-color: #ffffff;
 }
 
 .mitigation-page {
-  background-color: var(--color-white);
+  background-color: #ffffff;
 }
 
 .plant-recommendation-page {
-  background-color: var(--color-white);
+  background-color: #ffffff;
 }
 
 /* Common page container styles */

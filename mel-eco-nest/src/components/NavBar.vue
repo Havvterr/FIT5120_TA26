@@ -68,7 +68,7 @@ onUnmounted(() => {
 
 <style scoped>
 .navbar {
-  background-color: var(--color-background-soft);
+  background-color: #fdfdfd;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 1rem 0;
   transition: all 0.3s ease;
@@ -106,7 +106,7 @@ onUnmounted(() => {
 .site-name {
   font-size: 1.5rem;
   font-weight: bold;
-  color: var(--color-heading);
+  color: #090b09;
   margin: 0;
   transition: all 0.3s ease;
 }
@@ -116,26 +116,38 @@ onUnmounted(() => {
 }
 
 .nav-link {
-  color: var(--color-text) !important;
+  position: relative;
+  color: #232323 !important;
   font-weight: 500;
   padding: 0.5rem 1rem !important;
-  border-radius: 8px;
   transition: all 0.3s ease;
   margin: 0 0.25rem;
+  text-decoration: none;
 }
 
-.nav-link:hover,
-.nav-link.active {
-  color: var(--vt-c-green) !important;
-  background-color: rgba(0, 153, 82, 0.1);
+.nav-link:hover {
+  color: #014421 !important;
   transform: translateY(-2px);
+  font-weight: 650;
+  letter-spacing: 0.2px;
+}
+
+.nav-link.active {
+  color: #014421 !important;
+  font-weight: 650;
+}
+
+/* Remove all pseudo-elements and complex effects */
+.nav-link::before,
+.nav-link::after {
+  display: none;
 }
 
 /* Tablet and mobile styles */
 @media (max-width: 991px) {
   .navbar-collapse {
     margin-top: 1rem;
-    background-color: var(--color-background-soft);
+    background-color: #fdfdfd;
     border-radius: 8px;
     padding: 0.5rem;
   }
