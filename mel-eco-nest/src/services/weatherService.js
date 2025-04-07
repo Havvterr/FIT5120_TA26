@@ -39,7 +39,7 @@ const MELBOURNE_DISTRICTS = [
   { name: 'Essendon', lat: -37.7533, lng: 144.9108 },
   { name: 'Clayton', lat: -37.915, lng: 145.1215 },
   // Adding locations further from Melbourne
-  { name: 'Bunyip State Park', lat: -38.071, lng: 145.6378 },
+  { name: 'Woods Point', lat: -37.5667, lng: 146.2667 },
   { name: 'Sunbury', lat: -37.5811, lng: 144.7286 },
   { name: 'Lake Eildon', lat: -37.2333, lng: 145.9167 },
   { name: "Animal Land Children's Farm", lat: -37.6568, lng: 144.9513 },
