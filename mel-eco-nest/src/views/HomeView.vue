@@ -11,8 +11,7 @@ import { RouterLink } from 'vue-router'
           Join us in shaping a better, more sustainable future for our cities
         </p>
         <div class="hero-buttons">
-          <RouterLink to="/about" class="hero-button secondary"
-            >About Us</RouterLink>
+          <RouterLink to="/about" class="hero-button secondary">About Us</RouterLink>
         </div>
       </div>
     </div>
