@@ -2,6 +2,7 @@ const express = require('express')
 const mysql = require('mysql2')
 const cors = require('cors')
 require('dotenv').config()
+const axios = require('axios')
 
 const app = express()
 
@@ -15,7 +16,7 @@ const connection = mysql.createConnection({
   port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  database: process.env.DB_DATABASE,
 })
 
 // Connect to database
@@ -110,6 +111,26 @@ app.post('/plants/recommendations', (req, res) => {
 
     res.json(recommendations)
   })
+})
+
+// Weather API endpoint
+app.get('/api/weather', async (req, res) => {
+  try {
+    const { lat, lon } = req.query
+    const apiKey = process.env.OPENWEATHERMAP_API_KEY
+    const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather`, {
+      params: {
+        lat,
+        lon,
+        appid: apiKey,
+        units: 'metric',
+      },
+    })
+    res.json(response.data)
+  } catch (error) {
+    console.error('Error fetching weather data:', error)
+    res.status(500).json({ error: 'Failed to fetch weather data' })
+  }
 })
 
 // Start server

@@ -1,6 +1,22 @@
 import axios from 'axios'
 
-const API_KEY = '26b7b3041941d8e7f9c186d59cbe2d91'
+const API_BASE_URL = 'http://localhost:3000/api'
+
+export const getWeatherData = async (lat, lon) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/weather`, {
+      params: { lat, lon },
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error fetching weather data:', error)
+    throw error
+  }
+}
+
+// Get API key from environment variable, or fallback to hardcoded value if not available
+// Note: In production, you should use a server-side proxy to hide API keys
+const API_KEY = import.meta.env.VITE_OPENWEATHERMAP_API_KEY || '26b7b3041941d8e7f9c186d59cbe2d91'
 const BASE_URL = 'https://api.openweathermap.org/data/2.5'
 
 // Melbourne area boundaries
