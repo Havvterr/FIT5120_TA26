@@ -1,8 +1,8 @@
 /* Global color variables */
 :root {
   --color-white: #ffffff;
-  --color-background: #dddddd;
-  --color-background-soft: #fdfdfd;
+  --color-background: #f4f4f4;
+  --color-background-soft: #f9f9f9;
   --color-background-mute: #f5f5f5;
 
   --color-heading: #090b09;
