@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import HeatMapView from '../views/HeatMapView.vue'
 import MitigationView from '../views/MitigationView.vue'
 import PlantRecommendation from '../views/PlantRecommendation.vue'
+import WaterReminderView from '../views/WaterReminderView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +35,11 @@ const router = createRouter({
       path: '/plant-recommendation',
       name: 'plantRecommendation',
       component: PlantRecommendation,
+    },
+    {
+      path: '/water-reminder',
+      name: 'waterReminder',
+      component: WaterReminderView,
     },
   ],
 })

@@ -78,7 +78,7 @@
 
         <div class="strategy-card">
           <div class="strategy-icon">
-            <i class="fas fa-bus"></i>
+            <i class="fas fa-heart"></i>
           </div>
           <h3>Support Community Green Initiatives</h3>
           <p>

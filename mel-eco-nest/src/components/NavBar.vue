@@ -31,10 +31,28 @@
               >Mitigation</RouterLink
             >
           </li>
-          <li class="nav-item">
-            <RouterLink to="/plant-recommendation" class="nav-link" active-class="active"
-              >Build Your Micro-Oasis</RouterLink
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
             >
+              Build Your Micro-Oasis
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <RouterLink to="/plant-recommendation" class="dropdown-item"
+                  >Plant Recommendation</RouterLink
+                >
+              </li>
+              <li>
+                <RouterLink to="/water-reminder" class="dropdown-item"
+                  >Set Water Reminder</RouterLink
+                >
+              </li>
+            </ul>
           </li>
           <li class="nav-item">
             <RouterLink to="/about" class="nav-link" active-class="active">About Us</RouterLink>
@@ -211,5 +229,34 @@ onUnmounted(() => {
     width: 28px;
     height: 28px;
   }
+}
+
+.dropdown-menu {
+  background-color: #fdfdfd;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.dropdown-item {
+  color: #232323;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+  color: #014421;
+  transform: translateX(5px);
+}
+
+.navbar-scrolled .dropdown-menu {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
 }
 </style>
