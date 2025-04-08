@@ -1,0 +1,42 @@
+/* Page background colors */
+.home-page {
+  background-color: #ffffff;
+}
+
+.about-page {
+  /* Keep transparent for video background */
+  background-color: transparent;
+}
+
+.heat-map-page {
+  background-color: #ffffff;
+}
+
+.mitigation-page {
+  background-color: #ffffff;
+}
+
+.plant-recommendation-page {
+  background-color: #ffffff;
+}
+
+/* Common page container styles */
+.page-container {
+  min-height: 100vh;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+/* Standard content container */
+.page-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page-content {
+    padding: 1rem;
+  }
+}

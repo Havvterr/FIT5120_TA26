@@ -1,16 +1,17 @@
 <script setup>
-import { RouterLink } from 'vue-router';
+import { RouterLink } from 'vue-router'
 </script>
 
 <template>
   <div class="home">
     <div class="hero-section">
       <div class="hero-content">
-        <h1>Melbourne Urban Heat Island Effect</h1>
-        <p class="hero-subtitle">Explore urban heat islands and its impact on the environment and residents</p>
+        <h1>Mel Eco Nest</h1>
+        <p class="hero-subtitle">
+          Join us in shaping a better, more sustainable future for our cities
+        </p>
         <div class="hero-buttons">
-          <RouterLink to="/heat-map" class="hero-button primary">View Heat Map</RouterLink>
-          <RouterLink to="/mitigation" class="hero-button secondary">Learn Mitigation Measures</RouterLink>
+          <RouterLink to="/about" class="hero-button secondary">About Us</RouterLink>
         </div>
       </div>
     </div>
@@ -19,19 +20,32 @@ import { RouterLink } from 'vue-router';
       <div class="intro-card">
         <div class="intro-icon thermometer"></div>
         <h2>What is the Urban Heat Island Effect?</h2>
-        <p>The urban heat island effect refers to the phenomenon where urban areas experience significantly higher temperatures than surrounding rural areas, primarily caused by human activities and building materials. Materials like concrete and asphalt in cities absorb and store large amounts of heat, leading to increased urban temperatures.</p>
+        <p>
+          The urban heat island effect refers to the phenomenon where urban areas experience
+          significantly higher temperatures than surrounding rural areas, primarily caused by human
+          activities and building materials. Materials like concrete and asphalt in cities absorb
+          and store large amounts of heat, leading to increased urban temperatures.
+        </p>
       </div>
 
       <div class="intro-card">
         <div class="intro-icon city"></div>
         <h2>Melbourne's Heat Island Effect</h2>
-        <p>Melbourne's CBD can be 4-7°C warmer than surrounding suburbs, especially during summer heat waves. This temperature difference significantly impacts the health, energy consumption, and quality of life of urban residents.</p>
+        <p>
+          Melbourne's CBD can be 4-7°C warmer than surrounding suburbs, especially during summer
+          heat waves. This temperature difference significantly impacts the health, energy
+          consumption, and quality of life of urban residents.
+        </p>
       </div>
 
       <div class="intro-card">
         <div class="intro-icon solution"></div>
-        <h2>How to Mitigate the Heat Island Effect</h2>
-        <p>Increasing urban green spaces, using reflective building materials, reducing vehicle use, and promoting green roofs and vertical gardens are effective measures to mitigate the urban heat island effect and create more livable urban environments.</p>
+        <h2>How to Mitigate the Heat Island Effect?</h2>
+        <p>
+          Increasing urban green spaces, practicing low-carbon and environmentally friendly
+          lifestyles, and promoting green roofs and vertical gardens are effective measures to
+          mitigate the urban heat island effect and create more livable urban environments.
+        </p>
       </div>
     </div>
 
@@ -65,22 +79,33 @@ import { RouterLink } from 'vue-router';
       <div class="impact-grid">
         <div class="impact-item">
           <h3>Health Risks</h3>
-          <p>High temperatures increase the risk of heat stroke, heat exhaustion, and cardiovascular diseases, especially affecting the elderly and children</p>
+          <p>
+            High temperatures increase the risk of heat stroke, heat exhaustion, and cardiovascular
+            diseases, especially affecting the elderly and children
+          </p>
         </div>
 
         <div class="impact-item">
           <h3>Energy Consumption</h3>
-          <p>Increased air conditioning use leads to higher energy consumption, further exacerbating greenhouse gas emissions</p>
+          <p>
+            Increased air conditioning use leads to higher energy consumption, further exacerbating
+            greenhouse gas emissions
+          </p>
         </div>
 
         <div class="impact-item">
           <h3>Air Quality</h3>
-          <p>High temperatures accelerate chemical reactions of air pollutants, reducing urban air quality</p>
+          <p>
+            High temperatures accelerate chemical reactions of air pollutants, reducing urban air
+            quality
+          </p>
         </div>
 
         <div class="impact-item">
           <h3>Biodiversity</h3>
-          <p>Rising urban temperatures affect the survival environment of local plants and animals</p>
+          <p>
+            Rising urban temperatures affect the survival environment of local plants and animals
+          </p>
         </div>
       </div>
     </div>
@@ -88,7 +113,10 @@ import { RouterLink } from 'vue-router';
     <div class="cta-section">
       <div class="cta-content">
         <h2>Take Action Together to Mitigate Melbourne's Heat Island Effect</h2>
-        <p>Learn more about the heat island effect and explore how to improve Melbourne's urban environment through individual and community actions</p>
+        <p>
+          Learn more about the heat island effect and explore how to improve Melbourne's urban
+          environment through individual and community actions
+        </p>
         <RouterLink to="/mitigation" class="cta-button">View Mitigation Measures</RouterLink>
       </div>
     </div>
@@ -101,9 +129,11 @@ import { RouterLink } from 'vue-router';
 }
 
 .hero-section {
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('@/assets/melskyline.jpg') no-repeat center center;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.27), rgba(0, 0, 0, 0.08)),
+    url('@/assets/melskyline.jpg') no-repeat center center;
   background-size: cover;
-  height: 500px;
+  height: 600px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,8 +167,8 @@ h1 {
 }
 
 .hero-button {
-  padding: 0.8rem 1.5rem;
-  border-radius: 30px;
+  padding: 0.6rem 1.8rem;
+  border-radius: 25px;
   font-weight: bold;
   text-decoration: none;
   transition: all 0.3s ease;
@@ -188,7 +218,7 @@ h1 {
   width: 60px;
   height: 60px;
   margin-bottom: 1.5rem;
-  background-color: var(--vt-c-green-lighter);
+  background-color: var(--color-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -202,7 +232,7 @@ h1 {
 }
 
 .facts-section {
-  background-color: var(--color-background-soft);
+  background-color: var(--color-background);
   padding: 4rem 2rem;
   margin-bottom: 3rem;
 }
@@ -222,7 +252,7 @@ h1 {
   max-width: 250px;
   text-align: center;
   padding: 2rem;
-  background-color: var(--color-background);
+  background-color: var(--color-background-soft);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
@@ -236,7 +266,7 @@ h1 {
 .fact-number {
   font-size: 2.5rem;
   font-weight: bold;
-  color: var(--vt-c-green);
+  color: var(--color-text);
   margin-bottom: 1rem;
 }
 
@@ -292,7 +322,7 @@ h1 {
 }
 
 .cta-content {
-  max-width: 800px;
+  max-width: 850px;
   margin: 0 auto;
 }
 

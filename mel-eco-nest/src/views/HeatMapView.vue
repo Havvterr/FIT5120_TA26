@@ -1,62 +1,62 @@
 <template>
   <div class="heat-map-container">
     <h1 class="page-title">Melbourne Heat Island Map</h1>
-    <p class="page-description">Through the interactive map below, you can learn about the intensity of the heat island effect in different areas of Melbourne. The map data is based on the latest temperature monitoring records.</p>
-    
+    <p class="page-description">
+      Through this interactive map, you can see real-time temperature variations across Melbourne,
+      highlighting the urban heat island effect. The data is updated regularly using OpenWeatherMap.
+    </p>
+
     <div class="map-container">
-      <div class="map-placeholder">
-        <div class="map-overlay">
-          <h3>Heat Island Effect Intensity</h3>
-          <div class="map-legend">
-            <div class="legend-item">
-              <div class="color-box" style="background-color: #ffffcc;"></div>
-              <span>Low (0-2°C)</span>
-            </div>
-            <div class="legend-item">
-              <div class="color-box" style="background-color: #fed976;"></div>
-              <span>Medium-Low (2-4°C)</span>
-            </div>
-            <div class="legend-item">
-              <div class="color-box" style="background-color: #fd8d3c;"></div>
-              <span>Medium (4-6°C)</span>
-            </div>
-            <div class="legend-item">
-              <div class="color-box" style="background-color: #e31a1c;"></div>
-              <span>High (6-8°C)</span>
-            </div>
-            <div class="legend-item">
-              <div class="color-box" style="background-color: #800026;"></div>
-              <span>Very High (>8°C)</span>
-            </div>
-          </div>
+      <div id="map" class="map-area"></div>
+      <div v-if="!isDataLoaded" class="map-loading-overlay">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Loading temperature data...</p>
         </div>
-        <img src="@/assets/melbourne-map-placeholder.svg" alt="Melbourne Heat Island Map" class="map-image" />
+      </div>
+      <div class="map-overlay">
+        <h3>Current Temperature</h3>
+        <div v-if="currentWeather" class="current-weather">
+          <div class="weather-main">
+            <span class="temp">{{ currentWeather.temperature }}°C</span>
+            <img
+              :src="`http://openweathermap.org/img/w/${currentWeather.icon}.png`"
+              :alt="currentWeather.description"
+            />
+          </div>
+          <p class="weather-desc">{{ currentWeather.description }}</p>
+          <p class="humidity">Humidity: {{ currentWeather.humidity }}%</p>
+        </div>
+        <div v-else class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Loading temperature data...</p>
+        </div>
       </div>
     </div>
-    
+
     <div class="data-section">
       <h2>Heat Island Effect Data Analysis</h2>
-      
+
       <div class="data-cards">
         <div class="data-card">
           <h3>CBD Temperature Difference</h3>
           <div class="data-value">+7°C</div>
           <p>Maximum temperature difference between Melbourne CBD and surrounding suburbs</p>
         </div>
-        
+
         <div class="data-card">
           <h3>Heat Island Area</h3>
           <div class="data-value">37 km²</div>
           <p>Coverage area of Melbourne's main heat island effect</p>
         </div>
-        
+
         <div class="data-card">
           <h3>Annual Growth</h3>
           <div class="data-value">0.3°C</div>
           <p>Annual temperature increase of Melbourne's heat island effect</p>
         </div>
       </div>
-      
+
       <div class="temperature-chart">
         <h3>Temperature Comparison of Melbourne Areas (Summer Average)</h3>
         <div class="chart-container">
@@ -83,7 +83,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="factors-section">
       <h2>Factors Affecting Heat Island Effect</h2>
       <div class="factors-grid">
@@ -109,7 +109,130 @@
 </template>
 
 <script setup>
-// 未来可以集成真实的地图API和数据
+import { onMounted, onUnmounted, ref } from 'vue'
+import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
+import { getMelbourneTemperatures, getCurrentMelbourneWeather } from '../services/weatherService'
+
+const currentWeather = ref(null)
+const isDataLoaded = ref(false)
+let map = null
+let heatLayer = null
+
+// Clean up function to remove map and heat layer
+function cleanup() {
+  if (heatLayer) {
+    heatLayer.remove()
+    heatLayer = null
+  }
+  if (map) {
+    map.remove()
+    map = null
+  }
+}
+
+async function initMap() {
+  // Clean up existing instances
+  cleanup()
+  isDataLoaded.value = false
+
+  // Create map instance
+  map = L.map('map').setView([-37.8136, 144.9631], 11)
+
+  // Add OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+  }).addTo(map)
+
+  try {
+    // Get current weather for Melbourne CBD
+    currentWeather.value = await getCurrentMelbourneWeather()
+
+    // Get temperature data for heat map
+    const points = await getMelbourneTemperatures()
+
+    // Load leaflet.heat dynamically
+    await import('leaflet.heat')
+
+    // Add temperature markers with popups
+    points.forEach((point) => {
+      // Determine color based on temperature
+      let markerColor
+      if (point.value < 12) {
+        markerColor = '#003296' // Cold
+      } else if (point.value < 14) {
+        markerColor = '#1e5ab4' // Cool
+      } else if (point.value < 16) {
+        markerColor = '#3c82d2' // Mild
+      } else if (point.value < 18) {
+        markerColor = '#78a0e6' // Moderate
+      } else {
+        markerColor = '#aac8f0' // Warm
+      }
+
+      // Create a custom icon with highlight effect
+      const customIcon = L.divIcon({
+        className: 'custom-temp-marker',
+        html: `
+          <div class="marker-pulse" style="box-shadow: 0 0 0 ${markerColor}"></div>
+          <div class="temp-value" style="background-color: ${markerColor}">${Math.round(point.value)}°</div>
+        `,
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+      })
+
+      // Create marker with custom icon
+      L.marker([point.lat, point.lng], { icon: customIcon })
+        .bindPopup(
+          `
+          <div class="temp-popup">
+            <h3>${point.name || 'Location'}</h3>
+            <div class="temp-large" style="color: ${markerColor}">${point.value.toFixed(1)}°C</div>
+            <p>Location: ${point.lat.toFixed(4)}, ${point.lng.toFixed(4)}</p>
+          </div>
+        `,
+          { className: 'temp-popup-container' },
+        )
+        .addTo(map)
+    })
+
+    // Create heat layer with optimized parameters
+    heatLayer = L.heatLayer(
+      points.map((point) => [
+        point.lat,
+        point.lng,
+        (point.value - 10) / 10, // Normalize temperature range (10-20) to (0-1)
+      ]),
+      {
+        radius: 60, // Increased radius for more coverage
+        blur: 40, // Increased blur for smoother transitions
+        maxZoom: 11,
+        minOpacity: 0.4, // Slightly increased opacity for better visibility
+        gradient: {
+          // Custom temperature color gradient for cooler temperatures
+          0.0: 'rgba(0, 50, 150, 0.7)', // Cold (10°C)
+          0.2: 'rgba(30, 90, 180, 0.7)', // Cool
+          0.4: 'rgba(60, 130, 210, 0.7)', // Mild
+          0.6: 'rgba(120, 160, 230, 0.7)', // Moderate
+          0.8: 'rgba(170, 200, 240, 0.7)', // Somewhat warm
+          1.0: 'rgba(220, 230, 255, 0.7)', // Warmer (20°C)
+        },
+      },
+    ).addTo(map)
+
+    isDataLoaded.value = true
+  } catch (error) {
+    console.error('Error initializing map:', error)
+  }
+}
+
+onMounted(() => {
+  initMap()
+})
+
+onUnmounted(() => {
+  cleanup()
+})
 </script>
 
 <style scoped>
@@ -117,6 +240,83 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+/* Custom marker styles */
+:deep(.custom-temp-marker) {
+  background: transparent;
+  border: none;
+}
+
+:deep(.marker-pulse) {
+  width: 30px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  box-shadow: 0 0 0 rgba(255, 255, 255, 0.6);
+  animation: pulse 2s infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+:deep(.temp-value) {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  line-height: 36px;
+  border-radius: 50%;
+  background-color: #ff4500;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+
+  70% {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+/* Custom popup styles */
+:deep(.temp-popup-container) {
+  min-width: 200px;
+}
+
+:deep(.temp-popup) {
+  text-align: center;
+  padding: 5px;
+}
+
+:deep(.temp-popup h3) {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+:deep(.temp-large) {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff4500;
+  margin: 10px 0;
 }
 
 .page-title {
@@ -135,57 +335,57 @@
 }
 
 .map-container {
-  background-color: var(--color-background-soft);
-  border-radius: 12px;
-  padding: 1.5rem;
+  position: relative;
+  width: 100%;
+  height: 600px;
   margin-bottom: 3rem;
+  border-radius: 12px;
+  overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.map-placeholder {
-  position: relative;
-  width: 100%;
-  height: 500px;
-  background-color: #e8f5e9;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-.map-image {
+.map-area {
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 
 .map-overlay {
   position: absolute;
   top: 20px;
   right: 20px;
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.25);
+  padding: 1.5rem;
   border-radius: 8px;
-  z-index: 10;
+  z-index: 1000;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.map-legend {
-  margin-top: 0.5rem;
+.current-weather {
+  margin: 1rem 0;
+  text-align: center;
 }
 
-.legend-item {
+.weather-main {
   display: flex;
   align-items: center;
-  margin-bottom: 0.5rem;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-.color-box {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-  border: 1px solid #ccc;
+.temp {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #014421;
+}
+
+.weather-desc {
+  margin: 0.5rem 0;
+  text-transform: capitalize;
+}
+
+.humidity {
+  font-size: 0.9rem;
+  color: #666;
 }
 
 .data-section {
@@ -312,39 +512,78 @@
   margin-bottom: 1rem;
 }
 
-@media (max-width: 768px) {
-  .map-placeholder {
-    height: 350px;
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #014421;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.map-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  .map-container {
+    height: 400px;
+  }
+
   .map-overlay {
     top: 10px;
     right: 10px;
-    padding: 0.5rem;
-    font-size: 0.9rem;
+    padding: 1rem;
   }
-  
-  .color-box {
-    width: 15px;
-    height: 15px;
+
+  .temp {
+    font-size: 1.5rem;
   }
-  
+
   .data-cards {
     flex-direction: column;
   }
-  
+
   .chart-container {
     height: 250px;
   }
-  
+
   .chart-bar {
     width: 15%;
   }
-  
+
   .bar-label {
     font-size: 0.8rem;
   }
-  
+
   .temperature {
     font-size: 0.9rem;
   }

@@ -1,117 +1,156 @@
-const express = require('express');
-const mysql = require('mysql2');
-const cors = require('cors');
-require('dotenv').config();
+const express = require('express')
+const mysql = require('mysql2')
+const cors = require('cors')
+require('dotenv').config()
+const axios = require('axios')
 
-const app = express();
+const app = express()
 
-// start CORS
-app.use(cors());
-app.use(express.json());
+// Enable CORS
+app.use(cors())
+app.use(express.json())
 
-// config connrction to database
+// Create database connection
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-});
+  database: process.env.DB_DATABASE,
+})
 
-// connect to database
-connection.connect(error => {
+// Connect to database
+connection.connect((error) => {
   if (error) {
-    console.error('Error connecting to the database: ' + error.stack);
-    return;
+    console.error('Error connecting to the database: ' + error.stack)
+    return
   }
-  console.log('Successfully connected to the database.');
-});
+  console.log('Successfully connected to the database.')
+  console.log(`Database connection info - Host: ${process.env.DB_HOST}, Database: ${process.env.DB_DATABASE}`)
+})
 
-// get plants API endpoint
+// API endpoint for getting all plant data
 app.get('/plants', (req, res) => {
-  const query = 'SELECT * FROM plant';
+  console.log('GET /plants - Fetching all plants')
+  const query = 'SELECT * FROM plant'
 
   connection.query(query, (error, results) => {
     if (error) {
-      console.error('Error executing query: ' + error.stack);
-      res.status(500).json({ error: 'Database query failed' });
-      return;
+      console.error('Error executing query: ' + error.stack)
+      res.status(500).json({ error: 'Database query failed' })
+      return
     }
-    res.json(results);
-  });
-});
+    console.log(`Successfully retrieved ${results.length} plants from database`)
+    res.json(results)
+  })
+})
 
-// get plant details API endpoint
+// API endpoint for plant recommendations
 app.post('/plants/recommendations', (req, res) => {
-  const { userPreferences } = req.body;
+  console.log('POST /plants/recommendations - Generating plant recommendations')
+  console.log('User preferences:', req.body.userPreferences)
+
+  const { userPreferences } = req.body
 
   if (!userPreferences) {
-    return res.status(400).json({ error: 'User preferences are required' });
+    console.log('Error: No user preferences provided')
+    return res.status(400).json({ error: 'User preferences are required' })
   }
 
-  const query = 'SELECT * FROM plant';
+  const query = 'SELECT * FROM plant'
 
   connection.query(query, (error, plants) => {
     if (error) {
-      console.error('Error executing query: ' + error.stack);
-      res.status(500).json({ error: 'Database query failed' });
-      return;
+      console.error('Error executing query: ' + error.stack)
+      res.status(500).json({ error: 'Database query failed' })
+      return
     }
 
-    // calculate scores for each plant
-    const scoredPlants = plants.map(plant => {
-      let score = 0;
+    console.log(`Processing ${plants.length} plants for recommendations`)
 
-      // give score based on user preferences
+    // Calculate score for each plant
+    const scoredPlants = plants.map((plant) => {
+      let score = 0
+
+      // Score based on light requirements
       if (plant.sunlight_needs === userPreferences.sunlight) {
-        score += 3;
+        score += 3
       } else if (
         (plant.sunlight_needs === 'Partial Shade' && userPreferences.sunlight === 'Full Sun') ||
         (plant.sunlight_needs === 'Full Sun' && userPreferences.sunlight === 'Partial Shade')
       ) {
-        score += 1;
+        score += 1
       }
 
-      // give score based on water needs
+      // Score based on watering requirements
       if (plant.water_needs === userPreferences.waterNeeds) {
-        score += 3;
+        score += 3
       } else if (
-        (plant.water_needs === 'Medium' && (userPreferences.waterNeeds === 'Low' || userPreferences.waterNeeds === 'High')) ||
+        (plant.water_needs === 'Medium' &&
+          (userPreferences.waterNeeds === 'Low' || userPreferences.waterNeeds === 'High')) ||
         (plant.water_needs === 'Low' && userPreferences.waterNeeds === 'Medium') ||
         (plant.water_needs === 'High' && userPreferences.waterNeeds === 'Medium')
       ) {
-        score += 1;
+        score += 1
       }
 
-      // give score based on maintenance level
+      // Score based on maintenance difficulty
       if (plant.maintenance_level === userPreferences.maintenanceLevel) {
-        score += 3;
+        score += 3
       } else if (
-        (plant.maintenance_level === 'Medium' && (userPreferences.maintenanceLevel === 'Low' || userPreferences.maintenanceLevel === 'High')) ||
+        (plant.maintenance_level === 'Medium' &&
+          (userPreferences.maintenanceLevel === 'Low' ||
+            userPreferences.maintenanceLevel === 'High')) ||
         (plant.maintenance_level === 'Low' && userPreferences.maintenanceLevel === 'Medium') ||
         (plant.maintenance_level === 'High' && userPreferences.maintenanceLevel === 'Medium')
       ) {
-        score += 1;
+        score += 1
       }
 
-      // consider priority
-      score += (4 - plant.priority);
+      // Consider plant priority
+      score += 4 - plant.priority
 
-      return { ...plant, score };
-    });
+      console.log(`Plant: ${plant.name}, Score: ${score} (Sunlight: ${plant.sunlight_needs}, Water: ${plant.water_needs}, Maintenance: ${plant.maintenance_level})`)
 
-    // filter and sort plants based on scores
+      return { ...plant, score }
+    })
+
+    // Sort by score in descending order and filter out low-scoring plants
     const recommendations = scoredPlants
-      .filter(plant => plant.score >= 8) // filter plants with score >= 8
-      .sort((a, b) => b.score - a.score); // sort plants by score in descending order
+      .filter((plant) => plant.score >= 10) // Only return plants with score >= 10
+      .sort((a, b) => b.score - a.score) // Sort by score from high to low
 
-    res.json(recommendations);
-  });
-});
+    console.log(`Returning ${recommendations.length} recommended plants`)
+    res.json(recommendations)
+  })
+})
 
+// Weather API endpoint
+app.get('/api/weather', async (req, res) => {
+  console.log('GET /api/weather - Fetching weather data')
+  console.log('Query parameters:', req.query)
 
-// start server
-const PORT = process.env.PORT || 3000;
+  try {
+    const { lat, lon } = req.query
+    const apiKey = process.env.OPENWEATHERMAP_API_KEY
+    const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather`, {
+      params: {
+        lat,
+        lon,
+        appid: apiKey,
+        units: 'metric',
+      },
+    })
+    console.log('Weather data retrieved successfully')
+    res.json(response.data)
+  } catch (error) {
+    console.error('Error fetching weather data:', error)
+    res.status(500).json({ error: 'Failed to fetch weather data' })
+  }
+})
+
+// Start server
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+  console.log(`Server is running on port ${PORT}`)
+})

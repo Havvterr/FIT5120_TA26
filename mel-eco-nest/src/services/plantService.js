@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000';
+
+const API_URL = 'http://localhost:3000' //comment this line for deployment
+// const API_URL = '/api'; //uncomment this line for deployment
 
 export const plantService = {
   async getPlants() {

@@ -366,6 +366,21 @@ select {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
+.plant-image {
+  width: 100%;
+  height: 200px;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.plant-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
 .plant-card h3 {
   color: #2c3e50;
   margin-top: 0;
