@@ -1,6 +1,132 @@
+<template>
+  <div class="plant-recommendation">
+    <div class="welcome-section">
+      <h1>Find Your Perfect Plant</h1>
+      <p class="welcome-text">
+        Tell us about your gardening preferences, and we'll help you discover the perfect plants for your space.
+      </p>
+    </div>
+
+    <div class="recommendation-form">
+      <div v-if="error" class="error-message">
+        {{ error }}
+      </div>
+
+      <!-- Sunlight Options -->
+      <div class="form-group">
+        <label>Select Sunlight Condition:</label>
+        <div class="option-grid">
+          <div
+            v-for="option in sunlightOptions"
+            :key="option.value"
+            class="option-card"
+            :class="{ 'selected': sunlight === option.value }"
+            @click="sunlight = option.value"
+          >
+            <div class="option-icon">{{ option.icon }}</div>
+            <div class="option-content">
+              <h3>{{ option.description }}</h3>
+              <p class="detail">{{ option.detail }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Water Needs Options -->
+      <div class="form-group">
+        <label>Select Water Needs:</label>
+        <div class="option-grid">
+          <div
+            v-for="option in waterNeedsOptions"
+            :key="option.value"
+            class="option-card"
+            :class="{ 'selected': waterNeeds === option.value }"
+            @click="waterNeeds = option.value"
+          >
+            <div class="option-icon">{{ option.icon }}</div>
+            <div class="option-content">
+              <h3>{{ option.description }}</h3>
+              <p class="detail">{{ option.detail }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Maintenance Level Options -->
+      <div class="form-group">
+        <label>Select Maintenance Level:</label>
+        <div class="option-grid">
+          <div
+            v-for="option in maintenanceLevelOptions"
+            :key="option.value"
+            class="option-card"
+            :class="{ 'selected': maintenanceLevel === option.value }"
+            @click="maintenanceLevel = option.value"
+          >
+            <div class="option-icon">{{ option.icon }}</div>
+            <div class="option-content">
+              <h3>{{ option.description }}</h3>
+              <p class="detail">{{ option.detail }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        class="submit-button"
+        @click="getRecommendations"
+        :disabled="!sunlight || !waterNeeds || !maintenanceLevel || loading"
+      >
+        <span v-if="loading">Loading...</span>
+        <span v-else>Get Recommendations</span>
+      </button>
+    </div>
+
+    <!-- Plant Recommendations List -->
+    <div v-if="showRecommendations" class="recommendations">
+      <h2>Your Plant Recommendations</h2>
+      <div v-if="recommendations.length > 0" class="recommendation-list">
+        <div class="plant-card" v-for="plant in recommendations" :key="plant.id">
+          <div class="plant-image" v-if="plant.image_url">
+            <img :src="plant.image_url" :alt="plant.name" />
+          </div>
+          <div class="plant-info">
+            <h3>{{ plant.name }}</h3>
+            <p class="plant-species">{{ plant.species }}</p>
+            <div class="plant-details">
+              <p><span class="detail-label">Sunlight:</span> {{ plant.sunlight_needs }}</p>
+              <p><span class="detail-label">Water Needs:</span> {{ plant.water_needs }}</p>
+              <p><span class="detail-label">Temperature:</span> {{ plant.temperature_range }}</p>
+              <p><span class="detail-label">Maintenance:</span> {{ plant.maintenance_level }}</p>
+            </div>
+            <p class="plant-description">{{ plant.description }}</p>
+            <div class="match-score">
+              <span class="score-label">Match Score:</span>
+              <div class="score-bar">
+                <div class="score-fill" :style="{ width: (plant.score / 12 * 100) + '%' }"></div>
+              </div>
+            </div>
+            <!-- Button to redirect to the dedicated PlantGuide page -->
+            <button @click="redirectToGuide(plant)">
+              Show Full Guide
+            </button>
+          </div>
+        </div>
+      </div>
+      <p v-else class="no-results">
+        Sorry, no plants match your criteria. Try adjusting your preferences.
+      </p>
+    </div>
+  </div>
+</template>
+
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { plantService } from '../services/plantService'
+
+const router = useRouter()
 
 const sunlight = ref('')
 const waterNeeds = ref('')
@@ -18,6 +144,7 @@ const resetForm = () => {
   recommendations.value = []
   error.value = null
 }
+
 const sunlightOptions = [
   { value: 'Full Sun', icon: '☀️', description: 'Full Sun', detail: '6+ hours of direct sunlight daily' },
   { value: 'Partial Shade', icon: '🌤️', description: 'Partial Shade', detail: '3-6 hours of direct sunlight' },
@@ -61,117 +188,12 @@ const getRecommendations = async () => {
     loading.value = false
   }
 }
+
+// Function that navigates to the dedicated PlantGuide page using the plant's id
+const redirectToGuide = (plant) => {
+  router.push({ name: 'plantGuide', params: { id: plant.id } })
+}
 </script>
-
-<template>
-  <div class="plant-recommendation">
-    <div class="welcome-section">
-      <h1>Find Your Perfect Plant</h1>
-      <p class="welcome-text">Tell us about your gardening preferences, and we'll help you discover the perfect plants for your space.</p>
-    </div>
-
-    <div class="recommendation-form">
-      <div v-if="error" class="error-message">
-        {{ error }}
-      </div>
-
-      <div class="form-group">
-        <label>Select Sunlight Condition:</label>
-        <div class="option-grid">
-          <div
-            v-for="option in sunlightOptions"
-            :key="option.value"
-            class="option-card"
-            :class="{ 'selected': sunlight === option.value }"
-            @click="sunlight = option.value"
-          >
-            <div class="option-icon">{{ option.icon }}</div>
-            <div class="option-content">
-              <h3>{{ option.description }}</h3>
-              <p class="detail">{{ option.detail }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Select Water Needs:</label>
-        <div class="option-grid">
-          <div
-            v-for="option in waterNeedsOptions"
-            :key="option.value"
-            class="option-card"
-            :class="{ 'selected': waterNeeds === option.value }"
-            @click="waterNeeds = option.value"
-          >
-            <div class="option-icon">{{ option.icon }}</div>
-            <div class="option-content">
-              <h3>{{ option.description }}</h3>
-              <p class="detail">{{ option.detail }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Select Maintenance Level:</label>
-        <div class="option-grid">
-          <div
-            v-for="option in maintenanceLevelOptions"
-            :key="option.value"
-            class="option-card"
-            :class="{ 'selected': maintenanceLevel === option.value }"
-            @click="maintenanceLevel = option.value"
-          >
-            <div class="option-icon">{{ option.icon }}</div>
-            <div class="option-content">
-              <h3>{{ option.description }}</h3>
-              <p class="detail">{{ option.detail }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <button
-        class="submit-button"
-        @click="getRecommendations"
-        :disabled="!sunlight || !waterNeeds || !maintenanceLevel || loading"
-      >
-        <span v-if="loading">Loading...</span>
-        <span v-else>Get Recommendations</span>
-      </button>
-    </div>
-
-    <div v-if="showRecommendations" class="recommendations">
-      <h2>Your Plant Recommendations</h2>
-      <div v-if="recommendations.length > 0" class="recommendation-list">
-        <div class="plant-card" v-for="plant in recommendations" :key="plant.name">
-          <div class="plant-image" v-if="plant.image_url">
-            <img :src="plant.image_url" :alt="plant.name">
-          </div>
-          <div class="plant-info">
-            <h3>{{ plant.name }}</h3>
-            <p class="plant-species">{{ plant.species }}</p>
-            <div class="plant-details">
-              <p><span class="detail-label">Sunlight:</span> {{ plant.sunlight_needs }}</p>
-              <p><span class="detail-label">Water Needs:</span> {{ plant.water_needs }}</p>
-              <p><span class="detail-label">Temperature:</span> {{ plant.temperature_range }}</p>
-              <p><span class="detail-label">Maintenance:</span> {{ plant.maintenance_level }}</p>
-            </div>
-            <p class="plant-description">{{ plant.description }}</p>
-            <div class="match-score">
-              <span class="score-label">Match Score:</span>
-              <div class="score-bar">
-                <div class="score-fill" :style="{ width: (plant.score / 12 * 100) + '%' }"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <p v-else class="no-results">Sorry, no plants match your criteria. Try adjusting your preferences.</p>
-    </div>
-  </div>
-</template>
 
 <style scoped>
 .plant-recommendation {
@@ -218,35 +240,6 @@ label {
   font-size: 1.1rem;
 }
 
-.balcony-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.balcony-option {
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.balcony-option:hover {
-  border-color: #42b983;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.balcony-option.selected {
-  border-color: #42b983;
-  background-color: #f0faf5;
-}
-
 .option-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -275,29 +268,17 @@ label {
   border-color: #42b983;
   background-color: #f0faf5;
 }
+
 .option-content h3 {
   margin: 0 0 0.5rem 0;
   color: #2c3e50;
   font-size: 1.1rem;
 }
 
-.option-content .description {
-  margin: 0 0 0.25rem 0;
-  color: #666;
-}
-
 .option-content .detail {
   margin: 0;
   color: #888;
   font-size: 0.9rem;
-}
-
-select {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
 }
 
 .submit-button {
@@ -364,13 +345,13 @@ select {
   object-position: center;
 }
 
-.plant-card h3 {
+.plant-info h3 {
   color: #2c3e50;
   margin-top: 0;
   margin-bottom: 1rem;
 }
 
-.plant-card p {
+.plant-info p {
   margin: 0.5rem 0;
   color: #666;
 }
