@@ -174,7 +174,7 @@ const getRecommendations = async () => {
 export default {
   methods: {
     handleImageError(e) {
-      e.target.src = '/path/to/placeholder-image.jpg'; // 替换为实际的占位图片路径
+      e.target.src = '/path/to/placeholder-image.jpg';
     }
   }
 }
@@ -390,11 +390,11 @@ select {
 }
 .plant-image {
   width: 100%;
-  padding-top: 75%; /* 4:3 宽高比 */
+  padding-top: 75%;
   position: relative;
   overflow: hidden;
   border-radius: 8px;
-  margin-bottom: 1rem; /* 添加下方留白 */
+  margin-bottom: 1rem;
 }
 
 .plant-card {

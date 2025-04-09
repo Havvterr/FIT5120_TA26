@@ -120,7 +120,7 @@ app.post('/plants/recommendations', (req, res) => {
 
     // Sort by score in descending order and filter out low-scoring plants
     const recommendations = scoredPlants
-      .filter((plant) => plant.score >= 7) // Only return plants with score >= 7
+      .filter((plant) => plant.score >= 5) // Only return plants with score >= 7
       .sort((a, b) => b.score - a.score) // Sort by score from high to low
 
     console.log(`Returning ${recommendations.length} recommended plants`)
