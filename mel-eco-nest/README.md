@@ -52,6 +52,11 @@ Recommended to use [VSCode](https://code.visualstudio.com/) as the development t
    ```
 
 ### 3. Start the Application
+To start both frontend and backend servers simultaneously:
+```sh
+npm run start:all
+```
+This command will start the backend server and then launch the frontend development server.
 1. Start Backend Server
    ```sh
    # In the server directory

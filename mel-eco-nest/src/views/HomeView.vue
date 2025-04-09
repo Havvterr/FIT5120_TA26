@@ -11,7 +11,7 @@ import { RouterLink } from 'vue-router'
           Join us in shaping a better, more sustainable future for our cities
         </p>
         <div class="hero-buttons">
-          <RouterLink to="/about" class="hero-button secondary">About Us</RouterLink>
+          <RouterLink to="/heat-map" class="hero-button secondary">Check Urban Heat Island in Mel</RouterLink>
         </div>
       </div>
     </div>

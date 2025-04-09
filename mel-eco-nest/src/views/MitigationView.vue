@@ -116,33 +116,32 @@
 
       <div class="case-study">
         <div class="case-study-image melbourne-example"></div>
-        <div class="case-study-content">
-          <h3>Melbourne Green Roof Project</h3>
+        <a href="https://www.melbourne.vic.gov.au/green-our-rooftop-project" target="_blank" class="case-study-content">
+          <h3>Green Our Rooftop Project</h3>
           <p>
-            Launched by Melbourne City Council in 2018, this project has installed over 20 green
-            roofs in the CBD, covering more than 5,000 square meters. Monitoring shows these
-            buildings reduced energy consumption by 15% on average and lowered surrounding
-            temperatures by 2-3°C.
+            A joint initiative between City of Melbourne and the Victorian Government at 1 Treasury Place in East Melbourne,
+            this $2.5 million project demonstrates innovative green roof retrofitting.
           </p>
           <p>
-            The project also created new urban wildlife habitats, increased biodiversity, and
-            enhanced building aesthetics and value.
+            The project features diverse planting systems and indigenous species, providing significant environmental benefits in cooling,
+            biodiversity, and water management.
           </p>
-        </div>
+        </a>
       </div>
 
       <div class="case-study reverse">
-        <div class="case-study-content">
-          <h3>Cool Streets Transformation</h3>
+        <a href="https://www.melbourne.vic.gov.au/greening-laneways" target="_blank" class="case-study-content">
+          <h3>Green Your Laneway Program</h3>
           <p>
-            Melbourne's Cool Streets program successfully reduced local temperatures by increasing
-            tree canopy, installing permeable pavement, and creating small green spaces.
+            This program has revitalized over 400 city laneways, turning them into vibrant green spaces.
+            The pilot projects at Meyers Place, Guildford Lane, and Coromandel Place successfully created leafy,
+            welcoming areas that cool the city, boost biodiversity, and improve community wellbeing.
           </p>
           <p>
-            Post-transformation data shows these streets are 3-5°C cooler than unmodified streets
-            during summer heat waves, while improving pedestrian comfort and business activity.
+            These transformations have inspired sustainable greening models for laneways across Melbourne,
+            showcasing how urban spaces can be reimagined for environmental and social benefits.
           </p>
-        </div>
+        </a>
         <div class="case-study-image cool-streets"></div>
       </div>
     </div>
@@ -370,16 +369,49 @@
 
 .melbourne-example {
   background-image: url('@/assets/Skyhouse362.jpg');
+  position: relative;
+}
+
+.melbourne-example::after {
+  content: '© Lisa Ellis Gardens';
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 12px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 .cool-streets {
-  background-image: url('@/assets/urban_road_vegetation_eg.webp');
+  background-image: url('@/assets/rankins-lane_mel.jpg');
+  position: relative;
+}
+
+.cool-streets::after {
+  content: '© Rebecca Newman';
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 12px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 .case-study-content {
   flex: 1;
   min-width: 300px;
   padding: 2rem;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.3s ease;
+}
+
+.case-study-content:hover {
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .case-study-content h3 {
