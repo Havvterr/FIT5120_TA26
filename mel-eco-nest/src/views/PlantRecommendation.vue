@@ -160,10 +160,7 @@ const getRecommendations = async () => {
             </div>
             <p class="plant-description">{{ plant.description }}</p>
             <div class="match-score">
-              <span class="score-label">Match Score:</span>
-              <div class="score-bar">
-                <div class="score-fill" :style="{ width: (plant.score / 12 * 100) + '%' }"></div>
-              </div>
+
             </div>
           </div>
         </div>

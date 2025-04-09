@@ -2,8 +2,7 @@
   <div class="heat-map-container">
     <h1 class="page-title">Melbourne Heat Island Map</h1>
     <p class="page-description">
-      Through this interactive map, you can see real-time temperature variations across Melbourne,
-      highlighting the urban heat island effect. The data is updated regularly using OpenWeatherMap.
+      This interactive map displays three key environmental indicators for Melbourne: <strong>Urban Heat Island Index</strong>, <strong>Real-time Temperature Distribution</strong>, and <strong>Vegetation Coverage</strong>. Data is regularly updated through OpenWeatherMap to help you better understand the city's environmental conditions.
     </p>
 
     <div class="map-container">
@@ -14,7 +13,76 @@
           <p>Loading temperature data...</p>
         </div>
       </div>
-      <div class="map-overlay">
+
+      <!-- Layer Controls -->
+      <div class="map-layer-controls">
+        <h3>Map Layers</h3>
+        <div class="layer-buttons">
+          <button :class="{ active: activeLayer === 'uhi' }" @click="switchLayer('uhi')">
+            UHI Index
+          </button>
+          <button
+            :class="{ active: activeLayer === 'temperature' }"
+            @click="switchLayer('temperature')"
+          >
+            Temperature
+          </button>
+          <button
+            :class="{ active: activeLayer === 'vegetation' }"
+            @click="switchLayer('vegetation')"
+          >
+            Vegetation Coverage
+          </button>
+        </div>
+        <div class="layer-legend" v-if="activeLayer === 'vegetation'">
+          <h4>Vegetation Coverage</h4>
+          <div class="legend-item">
+            <span class="color-box" style="background-color: #003300"></span>
+            <span>80-100%</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-box" style="background-color: #006600"></span>
+            <span>60-80%</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-box" style="background-color: #009900"></span>
+            <span>40-60%</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-box" style="background-color: #66cc00"></span>
+            <span>20-40%</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-box" style="background-color: #ccff99"></span>
+            <span>0-20%</span>
+          </div>
+        </div>
+        <div class="layer-legend" v-if="activeLayer === 'uhi'">
+          <h4>UHI Index</h4>
+          <div class="legend-item">
+            <span class="color-box" style="background-color: #b10026"></span>
+            <span>Very High (8+)</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-box" style="background-color: #e31a1c"></span>
+            <span>High (6-8)</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-box" style="background-color: #fc4e2a"></span>
+            <span>Moderate (4-6)</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-box" style="background-color: #fd8d3c"></span>
+            <span>Low (2-4)</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-box" style="background-color: #fed976"></span>
+            <span>Very Low (0-2)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="map-overlay" v-if="activeLayer === 'temperature'">
         <h3>Current Temperature</h3>
         <div v-if="currentWeather" class="current-weather">
           <div class="weather-main">
@@ -116,19 +184,230 @@ import { getMelbourneTemperatures, getCurrentMelbourneWeather } from '../service
 
 const currentWeather = ref(null)
 const isDataLoaded = ref(false)
+const activeLayer = ref('uhi')
 let map = null
 let heatLayer = null
+let vegetationLayer = null
+let uhiLayer = null
+let tempMarkers = []
 
-// Clean up function to remove map and heat layer
+// Clean up function to remove map and layers
 function cleanup() {
   if (heatLayer) {
     heatLayer.remove()
     heatLayer = null
   }
+  if (vegetationLayer) {
+    vegetationLayer.remove()
+    vegetationLayer = null
+  }
+  if (uhiLayer) {
+    uhiLayer.remove()
+    uhiLayer = null
+  }
   if (map) {
     map.remove()
     map = null
   }
+}
+
+// Function to switch between layers
+function switchLayer(layerName) {
+  activeLayer.value = layerName
+
+  // Hide all layers first
+  if (heatLayer) heatLayer.remove()
+  if (vegetationLayer) vegetationLayer.remove()
+  if (uhiLayer) uhiLayer.remove()
+
+  // Remove all temperature markers when not on temperature layer
+  if (layerName !== 'temperature' && tempMarkers && tempMarkers.length > 0) {
+    tempMarkers.forEach((marker) => {
+      if (marker) marker.remove()
+    })
+  }
+
+  // Show the selected layer
+  if (layerName === 'temperature' && heatLayer) {
+    heatLayer.addTo(map)
+    // Re-add temperature markers
+    addTemperatureMarkers()
+  } else if (layerName === 'vegetation' && vegetationLayer) {
+    vegetationLayer.addTo(map)
+  } else if (layerName === 'uhi' && uhiLayer) {
+    uhiLayer.addTo(map)
+  }
+}
+
+// Function to load and setup vegetation coverage layer
+async function loadVegetationLayer() {
+  try {
+    const response = await fetch('/data/heat-veg.geojson')
+    const data = await response.json()
+
+    vegetationLayer = L.geoJSON(data, {
+      style: function (feature) {
+        // Get vegetation coverage percentage
+        const vegCoverage = feature.properties.PERANYVEG || 0
+
+        // Determine color based on vegetation coverage
+        let color
+        if (vegCoverage >= 80) {
+          color = '#003300' // Dark green for high vegetation
+        } else if (vegCoverage >= 60) {
+          color = '#006600'
+        } else if (vegCoverage >= 40) {
+          color = '#009900'
+        } else if (vegCoverage >= 20) {
+          color = '#66cc00'
+        } else {
+          color = '#ccff99' // Light green for low vegetation
+        }
+
+        return {
+          fillColor: color,
+          weight: 1,
+          opacity: 0.7,
+          color: '#666',
+          fillOpacity: 0.7,
+        }
+      },
+      onEachFeature: function (feature, layer) {
+        // Add popup with information
+        if (feature.properties) {
+          layer.bindPopup(`
+            <div class="custom-popup">
+              <h3>Vegetation Data</h3>
+              <p><strong>Vegetation Coverage:</strong> ${feature.properties.PERANYVEG || 0}%</p>
+              <p><strong>Area:</strong> ${feature.properties.SHAPE_AREA ? (feature.properties.SHAPE_AREA / 10000).toFixed(2) : 0} ha</p>
+            </div>
+          `)
+        }
+      },
+    })
+
+    if (activeLayer.value === 'vegetation') {
+      vegetationLayer.addTo(map)
+    }
+  } catch (error) {
+    console.error('Error loading vegetation data:', error)
+  }
+}
+
+// Function to load and setup UHI layer
+async function loadUHILayer() {
+  try {
+    const response = await fetch('/data/heat-veg.geojson')
+    const data = await response.json()
+
+    uhiLayer = L.geoJSON(data, {
+      style: function (feature) {
+        // Get UHI index
+        const uhiIndex = feature.properties.UHI18_M || 0
+
+        // Determine color based on UHI index
+        let color
+        if (uhiIndex >= 8) {
+          color = '#b10026' // Dark red for high UHI
+        } else if (uhiIndex >= 6) {
+          color = '#e31a1c'
+        } else if (uhiIndex >= 4) {
+          color = '#fc4e2a'
+        } else if (uhiIndex >= 2) {
+          color = '#fd8d3c'
+        } else {
+          color = '#fed976' // Yellow for low UHI
+        }
+
+        return {
+          fillColor: color,
+          weight: 1,
+          opacity: 0.7,
+          color: '#666',
+          fillOpacity: 0.7,
+        }
+      },
+      onEachFeature: function (feature, layer) {
+        // Add popup with information
+        if (feature.properties) {
+          layer.bindPopup(`
+            <div class="custom-popup">
+              <h3>Urban Heat Island Data</h3>
+              <p><strong>UHI Index:</strong> ${feature.properties.UHI18_M || 0}</p>
+              <p><strong>Area:</strong> ${feature.properties.SHAPE_AREA ? (feature.properties.SHAPE_AREA / 10000).toFixed(2) : 0} ha</p>
+            </div>
+          `)
+        }
+      },
+    })
+
+    if (activeLayer.value === 'uhi') {
+      uhiLayer.addTo(map)
+    }
+  } catch (error) {
+    console.error('Error loading UHI data:', error)
+  }
+}
+
+// Function to add temperature markers
+function addTemperatureMarkers() {
+  getMelbourneTemperatures()
+    .then((points) => {
+      // Clear existing markers
+      if (tempMarkers.length > 0) {
+        tempMarkers.forEach((marker) => {
+          if (marker) marker.remove()
+        })
+      }
+      tempMarkers = []
+
+      // Add temperature markers with popups
+      points.forEach((point) => {
+        // Determine color based on temperature
+        let markerColor
+        if (point.value < 12) {
+          markerColor = '#003296' // Cold
+        } else if (point.value < 14) {
+          markerColor = '#1e5ab4' // Cool
+        } else if (point.value < 16) {
+          markerColor = '#3c82d2' // Mild
+        } else if (point.value < 18) {
+          markerColor = '#78a0e6' // Moderate
+        } else {
+          markerColor = '#aac8f0' // Warm
+        }
+
+        // Create a custom icon with highlight effect
+        const customIcon = L.divIcon({
+          className: 'custom-temp-marker',
+          html: `
+          <div class="marker-pulse" style="box-shadow: 0 0 0 ${markerColor}"></div>
+          <div class="temp-value" style="background-color: ${markerColor}">${Math.round(point.value)}°</div>
+        `,
+          iconSize: [40, 40],
+          iconAnchor: [20, 20],
+        })
+
+        // Create marker with custom icon
+        const marker = L.marker([point.lat, point.lng], { icon: customIcon })
+          .bindPopup(
+            `
+          <div class="temp-popup">
+            <h3>${point.name || 'Location'}</h3>
+            <div class="temp-large" style="color: ${markerColor}">${point.value.toFixed(1)}°C</div>
+            <p>Location: ${point.lat.toFixed(4)}, ${point.lng.toFixed(4)}</p>
+          </div>
+        `,
+            { className: 'temp-popup-container' },
+          )
+          .addTo(map)
+
+        tempMarkers.push(marker)
+      })
+    })
+    .catch((error) => {
+      console.error('Error loading temperature markers:', error)
+    })
 }
 
 async function initMap() {
@@ -154,47 +433,10 @@ async function initMap() {
     // Load leaflet.heat dynamically
     await import('leaflet.heat')
 
-    // Add temperature markers with popups
-    points.forEach((point) => {
-      // Determine color based on temperature
-      let markerColor
-      if (point.value < 12) {
-        markerColor = '#003296' // Cold
-      } else if (point.value < 14) {
-        markerColor = '#1e5ab4' // Cool
-      } else if (point.value < 16) {
-        markerColor = '#3c82d2' // Mild
-      } else if (point.value < 18) {
-        markerColor = '#78a0e6' // Moderate
-      } else {
-        markerColor = '#aac8f0' // Warm
-      }
-
-      // Create a custom icon with highlight effect
-      const customIcon = L.divIcon({
-        className: 'custom-temp-marker',
-        html: `
-          <div class="marker-pulse" style="box-shadow: 0 0 0 ${markerColor}"></div>
-          <div class="temp-value" style="background-color: ${markerColor}">${Math.round(point.value)}°</div>
-        `,
-        iconSize: [40, 40],
-        iconAnchor: [20, 20],
-      })
-
-      // Create marker with custom icon
-      L.marker([point.lat, point.lng], { icon: customIcon })
-        .bindPopup(
-          `
-          <div class="temp-popup">
-            <h3>${point.name || 'Location'}</h3>
-            <div class="temp-large" style="color: ${markerColor}">${point.value.toFixed(1)}°C</div>
-            <p>Location: ${point.lat.toFixed(4)}, ${point.lng.toFixed(4)}</p>
-          </div>
-        `,
-          { className: 'temp-popup-container' },
-        )
-        .addTo(map)
-    })
+    // Add temperature markers only for temperature layer
+    if (activeLayer.value === 'temperature') {
+      addTemperatureMarkers()
+    }
 
     // Create heat layer with optimized parameters
     heatLayer = L.heatLayer(
@@ -218,7 +460,16 @@ async function initMap() {
           1.0: 'rgba(220, 230, 255, 0.7)', // Warmer (20°C)
         },
       },
-    ).addTo(map)
+    )
+
+    // Only add heat layer if temperature layer is active
+    if (activeLayer.value === 'temperature') {
+      heatLayer.addTo(map)
+    }
+
+    // Load vegetation and UHI layers
+    await loadVegetationLayer()
+    await loadUHILayer()
 
     isDataLoaded.value = true
   } catch (error) {
@@ -240,6 +491,74 @@ onUnmounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+/* Layer control styles */
+.map-layer-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 1rem;
+  border-radius: 8px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 200px;
+}
+
+.map-layer-controls h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.layer-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.layer-buttons button {
+  padding: 0.5rem;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.layer-buttons button.active {
+  background-color: #014421;
+  color: white;
+  border-color: #014421;
+}
+
+.layer-buttons button:hover:not(.active) {
+  background-color: #e0e0e0;
+}
+
+.layer-legend {
+  margin-top: 1rem;
+}
+
+.layer-legend h4 {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.color-box {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
 }
 
 /* Custom marker styles */
@@ -277,6 +596,16 @@ onUnmounted(() => {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
+}
+
+/* Custom popup styles */
+:deep(.custom-popup) {
+  padding: 5px;
+}
+
+:deep(.custom-popup h3) {
+  margin: 0 0 10px 0;
+  font-size: 16px;
 }
 
 @keyframes pulse {
@@ -353,7 +682,7 @@ onUnmounted(() => {
   position: absolute;
   top: 20px;
   right: 20px;
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.9);
   padding: 1.5rem;
   border-radius: 8px;
   z-index: 1000;
@@ -562,6 +891,17 @@ onUnmounted(() => {
     top: 10px;
     right: 10px;
     padding: 1rem;
+  }
+
+  .map-layer-controls {
+    top: 10px;
+    left: 10px;
+    padding: 0.5rem;
+  }
+
+  .layer-buttons button {
+    padding: 0.3rem;
+    font-size: 0.8rem;
   }
 
   .temp {
