@@ -22,7 +22,7 @@ const connection = mysql.createConnection({
 // Connect to database
 connection.connect((error) => {
   if (error) {
-    console.error('Error connecting to the database: ' + error.stack)
+    console.error('[Database] Connection error:', error.stack)
     return
   }
   console.log('Successfully connected to the database.')
@@ -36,7 +36,7 @@ app.get('/plants', (req, res) => {
 
   connection.query(query, (error, results) => {
     if (error) {
-      console.error('Error executing query: ' + error.stack)
+      console.error('[Database] Error executing plants query:', error.stack)
       res.status(500).json({ error: 'Database query failed' })
       return
     }
@@ -57,14 +57,17 @@ app.post('/plants/recommendations', (req, res) => {
     return res.status(400).json({ error: 'User preferences are required' })
   }
 
+  console.log('[API] User preferences:', userPreferences)
+
   const query = 'SELECT * FROM plant'
 
   connection.query(query, (error, plants) => {
     if (error) {
-      console.error('Error executing query: ' + error.stack)
+      console.error('[Database] Error executing recommendations query:', error.stack)
       res.status(500).json({ error: 'Database query failed' })
       return
     }
+    console.log(`[Database] Retrieved ${plants.length} plants for recommendation calculation`)
 
     console.log(`Processing ${plants.length} plants for recommendations`)
 
@@ -132,6 +135,7 @@ app.get('/api/weather', async (req, res) => {
 
   try {
     const { lat, lon } = req.query
+    console.log('[API] GET /api/weather - Fetching weather data for coordinates:', { lat, lon })
     const apiKey = process.env.OPENWEATHERMAP_API_KEY
     const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather`, {
       params: {
@@ -144,7 +148,7 @@ app.get('/api/weather', async (req, res) => {
     console.log('Weather data retrieved successfully')
     res.json(response.data)
   } catch (error) {
-    console.error('Error fetching weather data:', error)
+    console.error('[API] Error fetching weather data:', error.message)
     res.status(500).json({ error: 'Failed to fetch weather data' })
   }
 })
@@ -152,5 +156,6 @@ app.get('/api/weather', async (req, res) => {
 // Start server
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
+  console.log('[Server] Started successfully on port', PORT)
+  console.log('[Server] Environment:', process.env.NODE_ENV || 'development')
 })
