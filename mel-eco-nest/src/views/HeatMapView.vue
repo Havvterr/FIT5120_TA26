@@ -2,8 +2,7 @@
   <div class="heat-map-container">
     <h1 class="page-title">Melbourne Heat Island Map</h1>
     <p class="page-description">
-      Through this interactive map, you can see real-time temperature variations across Melbourne,
-      highlighting the urban heat island effect. The data is updated regularly using OpenWeatherMap.
+      This interactive map displays three key environmental indicators for Melbourne: <strong>Urban Heat Island Index</strong>, <strong>Real-time Temperature Distribution</strong>, and <strong>Vegetation Coverage</strong>. Data is regularly updated through OpenWeatherMap to help you better understand the city's environmental conditions.
     </p>
 
     <div class="map-container">
@@ -19,6 +18,9 @@
       <div class="map-layer-controls">
         <h3>Map Layers</h3>
         <div class="layer-buttons">
+          <button :class="{ active: activeLayer === 'uhi' }" @click="switchLayer('uhi')">
+            UHI Index
+          </button>
           <button
             :class="{ active: activeLayer === 'temperature' }"
             @click="switchLayer('temperature')"
@@ -30,9 +32,6 @@
             @click="switchLayer('vegetation')"
           >
             Vegetation Coverage
-          </button>
-          <button :class="{ active: activeLayer === 'uhi' }" @click="switchLayer('uhi')">
-            UHI Index
           </button>
         </div>
         <div class="layer-legend" v-if="activeLayer === 'vegetation'">
@@ -185,7 +184,7 @@ import { getMelbourneTemperatures, getCurrentMelbourneWeather } from '../service
 
 const currentWeather = ref(null)
 const isDataLoaded = ref(false)
-const activeLayer = ref('temperature')
+const activeLayer = ref('uhi')
 let map = null
 let heatLayer = null
 let vegetationLayer = null
@@ -497,7 +496,7 @@ onUnmounted(() => {
 /* Layer control styles */
 .map-layer-controls {
   position: absolute;
-  top: 20px;
+  bottom: 20px;
   left: 20px;
   background-color: rgba(255, 255, 255, 0.9);
   padding: 1rem;
