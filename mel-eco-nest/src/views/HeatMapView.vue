@@ -21,6 +21,7 @@
           <button :class="{ active: activeLayer === 'uhi' }" @click="switchLayer('uhi')">
             UHI Index
           </button>
+
           <button
             :class="{ active: activeLayer === 'temperature' }"
             @click="switchLayer('temperature')"
