@@ -26,10 +26,12 @@ connection.connect((error) => {
     return
   }
   console.log('Successfully connected to the database.')
+  console.log(`Database connection info - Host: ${process.env.DB_HOST}, Database: ${process.env.DB_DATABASE}`)
 })
 
 // API endpoint for getting all plant data
 app.get('/plants', (req, res) => {
+  console.log('GET /plants - Fetching all plants')
   const query = 'SELECT * FROM plant'
 
   connection.query(query, (error, results) => {
@@ -38,15 +40,20 @@ app.get('/plants', (req, res) => {
       res.status(500).json({ error: 'Database query failed' })
       return
     }
+    console.log(`Successfully retrieved ${results.length} plants from database`)
     res.json(results)
   })
 })
 
 // API endpoint for plant recommendations
 app.post('/plants/recommendations', (req, res) => {
+  console.log('POST /plants/recommendations - Generating plant recommendations')
+  console.log('User preferences:', req.body.userPreferences)
+
   const { userPreferences } = req.body
 
   if (!userPreferences) {
+    console.log('Error: No user preferences provided')
     return res.status(400).json({ error: 'User preferences are required' })
   }
 
@@ -58,6 +65,8 @@ app.post('/plants/recommendations', (req, res) => {
       res.status(500).json({ error: 'Database query failed' })
       return
     }
+
+    console.log(`Processing ${plants.length} plants for recommendations`)
 
     // Calculate score for each plant
     const scoredPlants = plants.map((plant) => {
@@ -101,6 +110,8 @@ app.post('/plants/recommendations', (req, res) => {
       // Consider plant priority
       score += 4 - plant.priority
 
+      console.log(`Plant: ${plant.name}, Score: ${score} (Sunlight: ${plant.sunlight_needs}, Water: ${plant.water_needs}, Maintenance: ${plant.maintenance_level})`)
+
       return { ...plant, score }
     })
 
@@ -109,12 +120,16 @@ app.post('/plants/recommendations', (req, res) => {
       .filter((plant) => plant.score >= 7) // Only return plants with score >= 7
       .sort((a, b) => b.score - a.score) // Sort by score from high to low
 
+    console.log(`Returning ${recommendations.length} recommended plants`)
     res.json(recommendations)
   })
 })
 
 // Weather API endpoint
 app.get('/api/weather', async (req, res) => {
+  console.log('GET /api/weather - Fetching weather data')
+  console.log('Query parameters:', req.query)
+
   try {
     const { lat, lon } = req.query
     const apiKey = process.env.OPENWEATHERMAP_API_KEY
@@ -126,6 +141,7 @@ app.get('/api/weather', async (req, res) => {
         units: 'metric',
       },
     })
+    console.log('Weather data retrieved successfully')
     res.json(response.data)
   } catch (error) {
     console.error('Error fetching weather data:', error)

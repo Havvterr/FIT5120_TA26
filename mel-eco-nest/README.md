@@ -84,6 +84,76 @@ Run ESLint check:
 npm run lint
 ```
 
+## Deployment Guide
+
+### 1. Frontend Deployment
+1. Build the frontend for production:
+   ```sh
+   npm run build
+   ```
+2. The built files will be in the `dist` directory.
+
+### 2. Backend Deployment
+1. Ensure Node.js is installed on your server.
+2. Copy the `server` directory to your deployment server.
+3. Install dependencies:
+   ```sh
+   cd server
+   npm install
+   ```
+4. Start the backend server:
+   ```sh
+   npm start
+   ```
+
+### 3. Nginx Configuration
+Here's a sample Nginx configuration for deploying the application:
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name meleconest.me;
+
+    ssl_certificate /etc/ssl/meleconest_me.crt;
+    ssl_certificate_key /etc/ssl/meleconest_me.key;
+    ssl_trusted_certificate /etc/ssl/meleconest_me.ca-bundle;
+
+    # Proxy /api/ to internal HTTP API service
+    location /api/ {
+        proxy_pass http://127.0.0.1:3000/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Serve frontend
+    location / {
+        root /var/www/dist;
+        index index.html index.htm;
+        try_files $uri $uri/ /index.html;
+    }
+}
+
+server {
+    listen 80;
+    server_name meleconest.me;
+    return 301 https://$host$request_uri;
+}
+```
+1. create a new file named `meleconest_me.conf` in the `/etc/nginx/sites-available` directory
+2. copy the above configuration into the file
+3. create a symbolic link to enable the site:
+   ```sh
+   sudo ln -s /etc/nginx/sites-available/meleconest_me.conf /etc/nginx/sites-enabled/
+   ```
+4. restart Nginx to apply the changes:
+   ```sh
+   sudo systemctl restart nginx
+   ```
+
 ## Configuration Reference
 
 For more configuration information, please refer to [Vite Configuration Reference](https://vitejs.dev/config/).
+
+
