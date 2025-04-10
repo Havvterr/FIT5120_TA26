@@ -114,6 +114,7 @@ export default {
     // Fetch all plants from the database
     const fetchPlants = async () => {
       try {
+        // const response = await axios.get('/api/plants')
         const response = await axios.get('http://localhost:3000/plants')
         plants.value = response.data
       } catch (error) {
