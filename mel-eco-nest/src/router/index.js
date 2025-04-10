@@ -5,6 +5,7 @@ import MitigationView from '../views/MitigationView.vue'
 import PlantRecommendation from '../views/PlantRecommendation.vue'
 import WaterReminderView from '../views/WaterReminderView.vue'
 import LoginView from '../views/LoginView.vue'
+import PlantingGuideView from '../views/PlantingGuideView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +44,12 @@ const router = createRouter({
       path: '/water-reminder',
       name: 'waterReminder',
       component: WaterReminderView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/planting-guide',
+      name: 'planting-guide',
+      component: PlantingGuideView,
       meta: { requiresAuth: true },
     },
   ],

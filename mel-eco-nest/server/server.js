@@ -20,7 +20,7 @@ const connection = mysql.createConnection({
 })
 
 // Add timestamp formatting function
-const getTimestamp = () => new Date().toISOString();
+const getTimestamp = () => new Date().toISOString()
 
 // Connect to database
 connection.connect((error) => {
@@ -29,7 +29,9 @@ connection.connect((error) => {
     return
   }
   console.log(`[${getTimestamp()}] Successfully connected to the database.`)
-  console.log(`[${getTimestamp()}] Database connection info - Host: ${process.env.DB_HOST}, Database: ${process.env.DB_DATABASE}`)
+  console.log(
+    `[${getTimestamp()}] Database connection info - Host: ${process.env.DB_HOST}, Database: ${process.env.DB_DATABASE}`,
+  )
 })
 
 // API endpoint for getting all plant data
@@ -45,6 +47,34 @@ app.get('/plants', (req, res) => {
     }
     console.log(`[${getTimestamp()}] Successfully retrieved ${results.length} plants from database`)
     res.json(results)
+  })
+})
+
+// API endpoint for getting plant details by name
+app.get('/plants/:name', (req, res) => {
+  const plantName = req.params.name
+  console.log(`[${getTimestamp()}] GET /plants/${plantName} - Fetching plant details`)
+
+  const query = 'SELECT * FROM plant WHERE name = ?'
+
+  connection.query(query, [plantName], (error, results) => {
+    if (error) {
+      console.error(
+        `[${getTimestamp()}][Database] Error executing plant details query:`,
+        error.stack,
+      )
+      res.status(500).json({ error: 'Database query failed' })
+      return
+    }
+
+    if (results.length === 0) {
+      console.log(`[${getTimestamp()}] No plant found with name: ${plantName}`)
+      res.status(404).json({ error: 'Plant not found' })
+      return
+    }
+
+    console.log(`[${getTimestamp()}] Successfully retrieved plant details for: ${plantName}`)
+    res.json(results[0])
   })
 })
 
@@ -66,11 +96,16 @@ app.post('/plants/recommendations', (req, res) => {
 
   connection.query(query, (error, plants) => {
     if (error) {
-      console.error(`[${getTimestamp()}][Database] Error executing recommendations query:`, error.stack)
+      console.error(
+        `[${getTimestamp()}][Database] Error executing recommendations query:`,
+        error.stack,
+      )
       res.status(500).json({ error: 'Database query failed' })
       return
     }
-    console.log(`[${getTimestamp()}][Database] Retrieved ${plants.length} plants for recommendation calculation`)
+    console.log(
+      `[${getTimestamp()}][Database] Retrieved ${plants.length} plants for recommendation calculation`,
+    )
 
     console.log(`[${getTimestamp()}] Processing ${plants.length} plants for recommendations`)
 
@@ -116,7 +151,9 @@ app.post('/plants/recommendations', (req, res) => {
       // Consider plant priority
       score += 4 - plant.priority
 
-      console.log(`[${getTimestamp()}] Plant: ${plant.name}, Score: ${score} (Sunlight: ${plant.sunlight_needs}, Water: ${plant.water_needs}, Maintenance: ${plant.maintenance_level})`)
+      console.log(
+        `[${getTimestamp()}] Plant: ${plant.name}, Score: ${score} (Sunlight: ${plant.sunlight_needs}, Water: ${plant.water_needs}, Maintenance: ${plant.maintenance_level})`,
+      )
 
       return { ...plant, score }
     })
@@ -138,7 +175,10 @@ app.get('/api/weather', async (req, res) => {
 
   try {
     const { lat, lon } = req.query
-    console.log(`[${getTimestamp()}][API] GET /api/weather - Fetching weather data for coordinates:`, { lat, lon })
+    console.log(
+      `[${getTimestamp()}][API] GET /api/weather - Fetching weather data for coordinates:`,
+      { lat, lon },
+    )
     const apiKey = process.env.OPENWEATHERMAP_API_KEY
     const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather`, {
       params: {

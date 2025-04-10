@@ -52,6 +52,9 @@
                   >Set Water Reminder</RouterLink
                 >
               </li>
+              <li>
+                <RouterLink to="/planting-guide" class="dropdown-item">Planting Guide</RouterLink>
+              </li>
             </ul>
           </li>
         </ul>

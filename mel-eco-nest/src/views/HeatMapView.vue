@@ -2,7 +2,10 @@
   <div class="heat-map-container">
     <h1 class="page-title">Melbourne Heat Island Map</h1>
     <p class="page-description">
-      This interactive map displays three key environmental indicators for Melbourne: <strong>Urban Heat Island Index</strong>, <strong>Real-time Temperature Distribution</strong>, and <strong>Vegetation Coverage</strong>. Data is regularly updated through OpenWeatherMap to help you better understand the city's environmental conditions.
+      This interactive map displays three key environmental indicators for Melbourne:
+      <strong>Urban Heat Island Index</strong>, <strong>Real-time Temperature Distribution</strong>,
+      and <strong>Vegetation Coverage</strong>. Data is regularly updated through OpenWeatherMap to
+      help you better understand the city's environmental conditions.
     </p>
 
     <div class="map-container">
