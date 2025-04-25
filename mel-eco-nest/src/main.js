@@ -7,6 +7,11 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
+// Clean up any authentication state from previous versions
+if (localStorage.getItem('isAuthenticated')) {
+  localStorage.removeItem('isAuthenticated')
+}
+
 const app = createApp(App)
 
 app.use(createPinia())
