@@ -11,7 +11,9 @@ import { RouterLink } from 'vue-router'
           Join us in shaping a better, more sustainable future for our cities
         </p>
         <div class="hero-buttons">
-          <RouterLink to="/heat-map" class="hero-button secondary">Check Urban Heat Island in Mel</RouterLink>
+          <RouterLink to="/heat-map" class="hero-button secondary"
+            >Check Urban Heat Island in Mel</RouterLink
+          >
         </div>
       </div>
     </div>
@@ -185,6 +187,14 @@ h1 {
   border: 2px solid white;
 }
 
+.hero-button.secondary:hover {
+  background: #034c26;
+  border-color: transparent;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .hero-button:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -195,7 +205,7 @@ h1 {
   flex-wrap: wrap;
   justify-content: space-between;
   max-width: 1200px;
-  margin: 0 auto 3rem;
+  margin: 5rem auto 3rem;
   padding: 0 2rem;
   gap: 2rem;
 }
@@ -203,15 +213,11 @@ h1 {
 .intro-card {
   flex: 1;
   min-width: 300px;
-  background-color: var(--color-background-soft);
+  background-color: white;
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-}
-
-.intro-card:hover {
-  transform: translateY(-5px);
 }
 
 .intro-icon {
@@ -252,15 +258,9 @@ h1 {
   max-width: 250px;
   text-align: center;
   padding: 2rem;
-  background-color: var(--color-background-soft);
+  background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
-
-.fact-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .fact-number {
@@ -296,15 +296,10 @@ h1 {
 }
 
 .impact-item {
-  background-color: var(--color-background-soft);
+  background-color: white;
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
-
-.impact-item:hover {
-  transform: translateY(-5px);
 }
 
 .impact-item h3 {
@@ -314,40 +309,43 @@ h1 {
 }
 
 .cta-section {
-  background-color: var(--vt-c-green);
   color: rgb(0, 0, 0);
   padding: 4rem 2rem;
   text-align: center;
   margin-bottom: 3rem;
+  margin-top: 4rem;
 }
 
 .cta-content {
-  max-width: 850px;
+  max-width: px;
   margin: 0 auto;
 }
 
 .cta-content h2 {
   font-size: 2rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 3rem;
 }
 
 .cta-content p {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
   font-size: 1.1rem;
 }
 
 .cta-button {
   display: inline-block;
   padding: 1rem 2rem;
-  background-color: rgb(0, 153, 82);
-  color: var(--vt-c-green);
+  background: #df8321;
+  color: rgb(255, 255, 255);
+  font-size: 1.3rem;
   font-weight: bold;
   text-decoration: none;
-  border-radius: 30px;
+  border-radius: 40px;
   transition: all 0.3s ease;
 }
 
 .cta-button:hover {
+  background: linear-gradient(135deg, #034c26, #0a8a43);
+  color: rgb(255, 255, 255);
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

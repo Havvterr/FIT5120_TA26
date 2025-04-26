@@ -1,22 +1,5 @@
 <template>
   <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h3>Melbourne Eco Nest</h3>
-        <p>
-          Dedicated to raising public awareness about Melbourne's urban heat island effect and
-          promoting sustainable urban development.
-        </p>
-
-        <div class="contact-info">
-          <h3>Contact Us</h3>
-          <p>Email: info@melecnest.org</p>
-          <p>Phone: (03) 1234 5678</p>
-          <p>Address: Melbourne CBD</p>
-        </div>
-      </div>
-    </div>
-
     <div class="footer-bottom">
       <p>&copy; 2025 Melbourne Eco Nest | Melbourne Urban Heat Island Research Project</p>
     </div>
@@ -25,7 +8,7 @@
 
 <style scoped>
 .footer {
-  background-color: #f8f9fa;
+  background-color: #dcdcdc;
   color: #333;
   padding: 2rem 0 0 0;
   margin-top: 3rem;

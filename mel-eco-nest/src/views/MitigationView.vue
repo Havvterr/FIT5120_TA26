@@ -116,30 +116,41 @@
 
       <div class="case-study">
         <div class="case-study-image melbourne-example"></div>
-        <a href="https://www.melbourne.vic.gov.au/green-our-rooftop-project" target="_blank" class="case-study-content">
+        <a
+          href="https://www.melbourne.vic.gov.au/green-our-rooftop-project"
+          target="_blank"
+          class="case-study-content"
+        >
           <h3>Green Our Rooftop Project</h3>
           <p>
-            A joint initiative between City of Melbourne and the Victorian Government at 1 Treasury Place in East Melbourne,
-            this $2.5 million project demonstrates innovative green roof retrofitting.
+            A joint initiative between City of Melbourne and the Victorian Government at 1 Treasury
+            Place in East Melbourne, this $2.5 million project demonstrates innovative green roof
+            retrofitting.
           </p>
           <p>
-            The project features diverse planting systems and indigenous species, providing significant environmental benefits in cooling,
-            biodiversity, and water management.
+            The project features diverse planting systems and indigenous species, providing
+            significant environmental benefits in cooling, biodiversity, and water management.
           </p>
         </a>
       </div>
 
       <div class="case-study reverse">
-        <a href="https://www.melbourne.vic.gov.au/greening-laneways" target="_blank" class="case-study-content">
+        <a
+          href="https://www.melbourne.vic.gov.au/greening-laneways"
+          target="_blank"
+          class="case-study-content"
+        >
           <h3>Green Your Laneway Program</h3>
           <p>
-            This program has revitalized over 400 city laneways, turning them into vibrant green spaces.
-            The pilot projects at Meyers Place, Guildford Lane, and Coromandel Place successfully created leafy,
-            welcoming areas that cool the city, boost biodiversity, and improve community wellbeing.
+            This program has revitalized over 400 city laneways, turning them into vibrant green
+            spaces. The pilot projects at Meyers Place, Guildford Lane, and Coromandel Place
+            successfully created leafy, welcoming areas that cool the city, boost biodiversity, and
+            improve community wellbeing.
           </p>
           <p>
-            These transformations have inspired sustainable greening models for laneways across Melbourne,
-            showcasing how urban spaces can be reimagined for environmental and social benefits.
+            These transformations have inspired sustainable greening models for laneways across
+            Melbourne, showcasing how urban spaces can be reimagined for environmental and social
+            benefits.
           </p>
         </a>
         <div class="case-study-image cool-streets"></div>
@@ -191,32 +202,6 @@
         </div>
       </div>
     </div>
-
-    <div class="resources-section">
-      <h2 class="section-title">Additional Resources</h2>
-
-      <div class="resources-grid">
-        <div class="resource-card">
-          <h3>Melbourne Green Roof Guide</h3>
-          <p>Learn how to install and maintain green roofs on your building</p>
-        </div>
-
-        <div class="resource-card">
-          <h3>Victoria Tree Planting Program</h3>
-          <p>Join community tree planting events and get free seedlings</p>
-        </div>
-
-        <div class="resource-card">
-          <h3>Building Energy Efficiency Rebates</h3>
-          <p>Learn about available government rebates and incentives</p>
-        </div>
-
-        <div class="resource-card">
-          <h3>Community Climate Action Toolkit</h3>
-          <p>Practical guide for organizing and participating in community climate actions</p>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -250,12 +235,13 @@
 .section-title {
   color: var(--color-heading);
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
   font-size: 2rem;
 }
 
 .strategies-section {
   margin-bottom: 4rem;
+  margin-top: 4rem;
 }
 
 .strategy-cards {
@@ -270,14 +256,8 @@
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-}
-
-.strategy-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 .strategy-card::before {
@@ -287,14 +267,14 @@
   left: 0;
   width: 100%;
   height: 5px;
-  background: linear-gradient(90deg, #2ecc71, #27ae60);
+  background: #034c26;
 }
 
 .strategy-icon {
   width: 80px;
   height: 80px;
   margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  background: #034c26;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -336,7 +316,7 @@
 }
 
 .strategy-tips li::before {
-  content: '•';
+  content: '-';
   color: #333;
   position: absolute;
   left: 0;
@@ -355,6 +335,12 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.case-study:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 .case-study-image {
@@ -407,11 +393,10 @@
   padding: 2rem;
   text-decoration: none;
   color: inherit;
-  transition: background-color 0.3s ease;
 }
 
 .case-study-content:hover {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .case-study-content h3 {
@@ -460,30 +445,6 @@
 .action-item li {
   margin-bottom: 0.8rem;
   line-height: 1.5;
-}
-
-.resources-section {
-  margin-bottom: 3rem;
-}
-
-.resources-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-}
-
-.resource-card {
-  background-color: var(--color-background-soft);
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  color: var(--color-text);
-}
-
-.resource-card h3 {
-  color: var(--color-heading);
-  margin-bottom: 1rem;
-  font-size: 1.3rem;
 }
 
 @media (max-width: 768px) {

@@ -2,10 +2,10 @@
   <div class="heat-map-container">
     <h1 class="page-title">Melbourne Heat Island Map</h1>
     <p class="page-description">
-      This interactive map displays three key environmental indicators for Melbourne:
-      <strong>Urban Heat Island Index</strong>, <strong>Real-time Temperature Distribution</strong>,
-      and <strong>Vegetation Coverage</strong>. Data is regularly updated through OpenWeatherMap to
-      help you better understand the city's environmental conditions.
+      This interactive map displays two key environmental indicators for Melbourne:
+      <strong>Urban Heat Island Index</strong> and <strong>Vegetation Coverage</strong>, along with
+      <strong>Real-time Temperature Data</strong>. Data is regularly updated through OpenWeatherMap
+      to help you better understand the city's environmental conditions.
     </p>
 
     <div class="map-container">
@@ -23,13 +23,6 @@
         <div class="layer-buttons">
           <button :class="{ active: activeLayer === 'uhi' }" @click="switchLayer('uhi')">
             UHI Index
-          </button>
-
-          <button
-            :class="{ active: activeLayer === 'temperature' }"
-            @click="switchLayer('temperature')"
-          >
-            Temperature
           </button>
           <button
             :class="{ active: activeLayer === 'vegetation' }"
@@ -86,7 +79,7 @@
         </div>
       </div>
 
-      <div class="map-overlay" v-if="activeLayer === 'temperature'">
+      <div class="map-overlay">
         <h3>Current Temperature</h3>
         <div v-if="currentWeather" class="current-weather">
           <div class="weather-main">
@@ -190,17 +183,12 @@ const currentWeather = ref(null)
 const isDataLoaded = ref(false)
 const activeLayer = ref('uhi')
 let map = null
-let heatLayer = null
 let vegetationLayer = null
 let uhiLayer = null
 let tempMarkers = []
 
 // Clean up function to remove map and layers
 function cleanup() {
-  if (heatLayer) {
-    heatLayer.remove()
-    heatLayer = null
-  }
   if (vegetationLayer) {
     vegetationLayer.remove()
     vegetationLayer = null
@@ -208,6 +196,12 @@ function cleanup() {
   if (uhiLayer) {
     uhiLayer.remove()
     uhiLayer = null
+  }
+  if (tempMarkers && tempMarkers.length > 0) {
+    tempMarkers.forEach((marker) => {
+      if (marker) marker.remove()
+    })
+    tempMarkers = []
   }
   if (map) {
     map.remove()
@@ -220,27 +214,18 @@ function switchLayer(layerName) {
   activeLayer.value = layerName
 
   // Hide all layers first
-  if (heatLayer) heatLayer.remove()
   if (vegetationLayer) vegetationLayer.remove()
   if (uhiLayer) uhiLayer.remove()
 
-  // Remove all temperature markers when not on temperature layer
-  if (layerName !== 'temperature' && tempMarkers && tempMarkers.length > 0) {
-    tempMarkers.forEach((marker) => {
-      if (marker) marker.remove()
-    })
-  }
-
   // Show the selected layer
-  if (layerName === 'temperature' && heatLayer) {
-    heatLayer.addTo(map)
-    // Re-add temperature markers
-    addTemperatureMarkers()
-  } else if (layerName === 'vegetation' && vegetationLayer) {
+  if (layerName === 'vegetation' && vegetationLayer) {
     vegetationLayer.addTo(map)
   } else if (layerName === 'uhi' && uhiLayer) {
     uhiLayer.addTo(map)
   }
+
+  // Always show temperature markers regardless of layer
+  addTemperatureMarkers()
 }
 
 // Function to load and setup vegetation coverage layer
@@ -365,8 +350,20 @@ function addTemperatureMarkers() {
       }
       tempMarkers = []
 
+      // Filter out the specified suburbs
+      const filteredPoints = points.filter((point) => {
+        // Filter out Kensington, Docklands, Fitzroy, South Melbourne, and Footscray points
+        return !(
+          (point.name && point.name.includes('Kensington')) ||
+          (point.name && point.name.includes('Docklands')) ||
+          (point.name && point.name.includes('Fitzroy')) ||
+          (point.name && point.name.includes('South Melbourne')) ||
+          (point.name && point.name.includes('Footscray'))
+        )
+      })
+
       // Add temperature markers with popups
-      points.forEach((point) => {
+      filteredPoints.forEach((point) => {
         // Determine color based on temperature
         let markerColor
         if (point.value < 12) {
@@ -431,49 +428,12 @@ async function initMap() {
     // Get current weather for Melbourne CBD
     currentWeather.value = await getCurrentMelbourneWeather()
 
-    // Get temperature data for heat map
-    const points = await getMelbourneTemperatures()
-
-    // Load leaflet.heat dynamically
-    await import('leaflet.heat')
-
-    // Add temperature markers only for temperature layer
-    if (activeLayer.value === 'temperature') {
-      addTemperatureMarkers()
-    }
-
-    // Create heat layer with optimized parameters
-    heatLayer = L.heatLayer(
-      points.map((point) => [
-        point.lat,
-        point.lng,
-        (point.value - 10) / 10, // Normalize temperature range (10-20) to (0-1)
-      ]),
-      {
-        radius: 60, // Increased radius for more coverage
-        blur: 40, // Increased blur for smoother transitions
-        maxZoom: 11,
-        minOpacity: 0.4, // Slightly increased opacity for better visibility
-        gradient: {
-          // Custom temperature color gradient for cooler temperatures
-          0.0: 'rgba(0, 50, 150, 0.7)', // Cold (10°C)
-          0.2: 'rgba(30, 90, 180, 0.7)', // Cool
-          0.4: 'rgba(60, 130, 210, 0.7)', // Mild
-          0.6: 'rgba(120, 160, 230, 0.7)', // Moderate
-          0.8: 'rgba(170, 200, 240, 0.7)', // Somewhat warm
-          1.0: 'rgba(220, 230, 255, 0.7)', // Warmer (20°C)
-        },
-      },
-    )
-
-    // Only add heat layer if temperature layer is active
-    if (activeLayer.value === 'temperature') {
-      heatLayer.addTo(map)
-    }
-
     // Load vegetation and UHI layers
     await loadVegetationLayer()
     await loadUHILayer()
+
+    // Add temperature markers
+    addTemperatureMarkers()
 
     isDataLoaded.value = true
   } catch (error) {
@@ -723,6 +683,7 @@ onUnmounted(() => {
 
 .data-section {
   margin-bottom: 3rem;
+  margin-top: 4rem;
 }
 
 .data-section h2 {
@@ -747,11 +708,6 @@ onUnmounted(() => {
   padding: 1.5rem;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
-
-.data-card:hover {
-  transform: translateY(-5px);
 }
 
 .data-card h3 {
@@ -770,6 +726,8 @@ onUnmounted(() => {
   background-color: var(--color-background-soft);
   border-radius: 8px;
   padding: 1.5rem;
+  padding-bottom: 3rem;
+  margin-top: 5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -777,14 +735,16 @@ onUnmounted(() => {
   color: var(--color-heading);
   text-align: center;
   margin-bottom: 1.5rem;
+  font-size: 2rem;
 }
 
 .chart-container {
   display: flex;
   justify-content: space-around;
   align-items: flex-end;
-  height: 300px;
+  height: 350px;
   padding: 0 1rem;
+  margin-bottom: 2rem;
 }
 
 .chart-bar {
@@ -805,6 +765,9 @@ onUnmounted(() => {
   bottom: -30px;
   color: var(--color-text);
   font-weight: 500;
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .temperature {
@@ -814,6 +777,7 @@ onUnmounted(() => {
 
 .factors-section {
   margin-bottom: 3rem;
+  margin-top: 4rem;
 }
 
 .factors-section h2 {
@@ -833,11 +797,6 @@ onUnmounted(() => {
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
-
-.factor-card:hover {
-  transform: translateY(-5px);
 }
 
 .factor-card h3 {
@@ -917,7 +876,8 @@ onUnmounted(() => {
   }
 
   .chart-container {
-    height: 250px;
+    height: 300px;
+    margin-bottom: 2.5rem;
   }
 
   .chart-bar {
