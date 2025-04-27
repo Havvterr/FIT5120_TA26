@@ -274,21 +274,21 @@ export default {
 
 .confirm-button {
   padding: 0.9rem 2.5rem;
-  background-color: #034c26;
+  background-color: #429bbc;
   color: white;
   border: none;
   border-radius: 40px;
   font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+  box-shadow: 0 4px 10px rgba(30, 106, 147, 0.3);
   white-space: nowrap;
   height: 100%;
   min-height: 3.2rem;
 }
 
 .confirm-button:hover {
-  background-color: #258146;
+  background-color: #034c26;
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
 }
@@ -361,7 +361,7 @@ export default {
 
 .plant-header {
   padding: 1.5rem 2rem;
-  background: #197948;
+  background: #034c26;
   color: rgb(244, 238, 238);
 }
 
@@ -369,6 +369,7 @@ export default {
   margin: 0;
   font-size: 1.8rem;
   font-weight: 600;
+  color: white;
 }
 
 .species {

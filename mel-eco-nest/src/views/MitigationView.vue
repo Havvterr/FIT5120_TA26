@@ -235,7 +235,7 @@
 .section-title {
   color: var(--color-heading);
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   font-size: 2rem;
 }
 
@@ -324,7 +324,8 @@
 }
 
 .case-studies-section {
-  margin-bottom: 4rem;
+  margin-bottom: 5rem;
+  margin-top: 5rem;
 }
 
 .case-study {
@@ -415,7 +416,7 @@
 }
 
 .community-action-section {
-  margin-bottom: 4rem;
+  margin-top: 5rem;
 }
 
 .action-grid {

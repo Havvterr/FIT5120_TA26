@@ -340,14 +340,36 @@ h1 {
   font-weight: bold;
   text-decoration: none;
   border-radius: 40px;
-  transition: all 0.3s ease;
+  transition:
+    all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1),
+    background 0.5s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.cta-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #034c26, #0a8a43);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  border-radius: 40px;
 }
 
 .cta-button:hover {
-  background: linear-gradient(135deg, #034c26, #0a8a43);
   color: rgb(255, 255, 255);
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.cta-button:hover::before {
+  opacity: 1;
 }
 
 @media (max-width: 768px) {

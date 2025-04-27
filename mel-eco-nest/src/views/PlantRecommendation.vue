@@ -23,19 +23,19 @@ const sunlightOptions = [
     value: 'Full Sun',
     icon: '☀️',
     description: 'Full Sun',
-    detail: '6+ hours of direct sunlight daily',
+    detail: '6+ hours of sunlight daily',
   },
   {
     value: 'Partial Shade',
     icon: '🌤️',
     description: 'Partial Shade',
-    detail: '3-6 hours of direct sunlight',
+    detail: '3-6 hours of sunlight',
   },
   {
     value: 'Shade',
     icon: '🌥️',
     description: 'Shade',
-    detail: 'Less than 3 hours of direct sunlight',
+    detail: 'Less than 3 hours',
   },
 ]
 
@@ -44,10 +44,10 @@ const waterNeedsOptions = [
   {
     value: 'Medium',
     icon: '💧💧',
-    description: 'Medium Water Needs',
+    description: 'Medium',
     detail: 'Water 2-3 times a week',
   },
-  { value: 'High', icon: '💧💧💧', description: 'High Water Needs', detail: 'Water daily or more' },
+  { value: 'High', icon: '💧💧💧', description: 'High', detail: 'Water daily or more' },
 ]
 
 const maintenanceLevelOptions = [
@@ -210,7 +210,7 @@ export default {
 
 <style scoped>
 .plant-recommendation {
-  max-width: 1000px;
+  max-width: 1170px;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -286,7 +286,7 @@ label {
 }
 
 .option-icon {
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .option-content h3 {
@@ -302,7 +302,7 @@ label {
 }
 
 .submit-button {
-  background-color: #33a06f;
+  background-color: #d06a21;
   color: white;
   border: none;
   padding: 1.2rem 2.5rem;
@@ -317,9 +317,15 @@ label {
 }
 
 .submit-button:hover:not(:disabled) {
-  background-color: #2c8c60;
+  background-color: #034c26;
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .recommendations {
