@@ -6,47 +6,53 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
-let vantaEffect = null
+const vantaEffect = ref(null)
 
-onMounted(() => {
-  const loadScript = (src) => {
-    return new Promise((resolve, reject) => {
+onMounted(async () => {
+
+  if (!window.THREE) {
+    await new Promise((resolve) => {
       const script = document.createElement('script')
-      script.src = src
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js'
       script.onload = resolve
-      script.onerror = reject
       document.head.appendChild(script)
     })
   }
 
-  Promise.all([
-    loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js'),
-    loadScript('https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js'),
-  ]).then(() => {
-    vantaEffect = window.VANTA.NET({
-      el: '#vanta-background',
-      mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
-      minHeight: 200.0,
-      minWidth: 200.0,
-      scale: 1.0,
-      scaleMobile: 1.0,
-      color: 0x39bdb3,
-      backgroundColor: 0x30312,
-      points: 14.0,
-      maxDistance: 15.0,
-      spacing: 15.0,
-      showDots: true,
+  if (!window.VANTA) {
+    await new Promise((resolve) => {
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js'
+      script.onload = resolve
+      document.head.appendChild(script)
     })
+  }
+
+
+  vantaEffect.value = window.VANTA.NET({
+    el: '#vanta-background',
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.0,
+    minWidth: 200.0,
+    scale: 1.0,
+    scaleMobile: 1.0,
+    color: 0x39bdb3,
+    backgroundColor: 0x30312,
+    points: 10.0,
+    maxDistance: 18.0,
+    spacing: 18.0,
+    showDots: true,
   })
 })
 
 onUnmounted(() => {
-  if (vantaEffect) {
-    vantaEffect.destroy()
+  if (vantaEffect.value) {
+    vantaEffect.value.destroy()
+    vantaEffect.value = null
   }
 })
 </script>
