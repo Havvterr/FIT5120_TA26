@@ -57,6 +57,28 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Energy Journey
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <RouterLink to="/energy-progress" class="dropdown-item">Energy Progress</RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/energy-plan" class="dropdown-item">My Plan</RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/energy-goals" class="dropdown-item">Goal Tracker</RouterLink>
+              </li>
+            </ul>
+          </li>
         </ul>
       </div>
     </div>

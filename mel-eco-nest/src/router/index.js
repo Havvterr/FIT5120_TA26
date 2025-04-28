@@ -5,6 +5,10 @@ import MitigationView from '../views/MitigationView.vue'
 import PlantRecommendation from '../views/PlantRecommendation.vue'
 import WaterReminderView from '../views/WaterReminderView.vue'
 import PlantingGuideView from '../views/PlantingGuideView.vue'
+// Import Energy Journey related components
+import EnergyProgressView from '../views/energy-journey/EnergyProgressView.vue'
+import MyPlanView from '../views/energy-journey/MyPlanView.vue'
+import GoalTrackerView from '../views/energy-journey/GoalTrackerView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +42,21 @@ const router = createRouter({
       path: '/planting-guide',
       name: 'planting-guide',
       component: PlantingGuideView,
+    },
+    {
+      path: '/energy-progress',
+      name: 'energyProgress',
+      component: EnergyProgressView,
+    },
+    {
+      path: '/energy-plan',
+      name: 'myPlan',
+      component: MyPlanView,
+    },
+    {
+      path: '/energy-goals',
+      name: 'goalTracker',
+      component: GoalTrackerView,
     },
   ],
 })
