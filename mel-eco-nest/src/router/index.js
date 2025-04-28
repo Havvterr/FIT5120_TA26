@@ -5,6 +5,7 @@ import MitigationView from '../views/MitigationView.vue'
 import PlantRecommendation from '../views/PlantRecommendation.vue'
 import WaterReminderView from '../views/WaterReminderView.vue'
 import PlantingGuideView from '../views/PlantingGuideView.vue'
+import AIBalconyPreviewView from '../views/AIBalconyPreviewView.vue'
 // Import Energy Journey related components
 import EnergyProgressView from '../views/energy-journey/EnergyProgressView.vue'
 import MyPlanView from '../views/energy-journey/MyPlanView.vue'
@@ -42,6 +43,11 @@ const router = createRouter({
       path: '/planting-guide',
       name: 'planting-guide',
       component: PlantingGuideView,
+    },
+    {
+      path: '/ai-balcony-preview',
+      name: 'aiBalconyPreview',
+      component: AIBalconyPreviewView,
     },
     {
       path: '/energy-progress',

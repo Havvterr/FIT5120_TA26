@@ -168,7 +168,7 @@ textarea.form-control {
 .submit-button {
   width: 100%;
   padding: 1rem;
-  background-color: #429bbc;
+  background-color: #396690;
   color: white;
   border: none;
   border-radius: 6px;

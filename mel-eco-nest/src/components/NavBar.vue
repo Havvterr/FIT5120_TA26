@@ -55,6 +55,11 @@
               <li>
                 <RouterLink to="/planting-guide" class="dropdown-item">Planting Guide</RouterLink>
               </li>
+              <li>
+                <RouterLink to="/ai-balcony-preview" class="dropdown-item"
+                  >AI Balcony Preview ✨</RouterLink
+                >
+              </li>
             </ul>
           </li>
           <li class="nav-item dropdown">
