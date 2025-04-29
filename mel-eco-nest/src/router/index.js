@@ -63,7 +63,7 @@ const router = createRouter({
       path: '/energy-goals',
       name: 'goalTracker',
       component: GoalTrackerView,
-    },
+    }
   ],
 })
 

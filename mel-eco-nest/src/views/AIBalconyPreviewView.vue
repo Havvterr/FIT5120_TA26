@@ -3,7 +3,7 @@
     <h1 class="title">Your AI Designer</h1>
     <div id="vanta-background"></div>
 
-    <!-- 文件上传区域 -->
+    <!-- File Upload Area -->
     <div class="upload-container">
       <div class="upload-box" @click="triggerFileInput">
         <input
@@ -15,11 +15,11 @@
         >
         <div v-if="!previewImage" class="upload-placeholder">
           <i class="upload-icon">📷</i>
-          <p>点击上传阳台照片</p>
-          <p class="upload-hint">支持 JPG、PNG 格式</p>
+          <p>Click to upload a balcony photo</p>
+          <p class="upload-hint">Supports JPG, PNG formats</p>
         </div>
         <div v-else class="preview-container">
-          <img :src="previewImage" alt="预览图片" class="preview-image">
+          <img :src="previewImage" alt="Preview Image" class="preview-image">
           <button class="remove-btn" @click.stop="removeImage">×</button>
         </div>
       </div>
@@ -28,22 +28,28 @@
         :disabled="!previewImage"
         @click="showPlantDialog"
       >
-        开始AI设计
+        Start AI Design
       </button>
     </div>
 
-    <!-- 植物选择对话框 -->
+    <!-- Plant Selection Dialog -->
     <div v-if="showDialog" class="dialog-overlay">
       <div class="dialog-content">
-        <h2>选择您想种植的植物（最多3种）</h2>
+        <h2>Select the plants you want to grow (up to 3)</h2>
         <div v-if="error" class="error-message">{{ error }}</div>
-        <div v-if="loading" class="loading">加载中...</div>
+        <div v-if="loading" class="loading">
+          <div class="loading-spinner"></div>
+          <p>{{ progressMessage }}</p>
+        </div>
         <div v-else class="plants-grid">
           <div
             v-for="plant in plants"
             :key="plant.name"
             class="plant-card"
-            :class="{ selected: selectedPlants.includes(plant.name), disabled: selectedPlants.length >= 3 && !selectedPlants.includes(plant.name) }"
+            :class="{
+              selected: selectedPlants.includes(plant.name),
+              disabled: selectedPlants.length >= 3 && !selectedPlants.includes(plant.name)
+            }"
             @click="togglePlant(plant.name)"
           >
             <div class="plant-image">
@@ -59,15 +65,47 @@
           </div>
         </div>
         <div class="dialog-actions">
-          <button class="cancel-btn" @click="closeDialog">取消</button>
+          <button class="cancel-btn" @click="closeDialog">Cancel</button>
           <button
             class="confirm-btn"
             :disabled="selectedPlants.length === 0 || loading"
             @click="startAIDesign"
           >
-            <span v-if="loading">处理中...</span>
-            <span v-else>开始设计</span>
+            <span v-if="loading">Processing...</span>
+            <span v-else>Start Design</span>
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Design Result Dialog -->
+    <div v-if="showResultDialog" class="dialog-overlay">
+      <div class="dialog-content result-dialog">
+        <h2>Design Result</h2>
+        <div class="result-container">
+          <div class="image-comparison">
+            <div class="original-image">
+              <h3>Original Image</h3>
+              <img :src="previewImage" alt="Original Balcony Photo">
+            </div>
+            <div class="result-image">
+              <h3>Design Effect</h3>
+              <img :src="designResult?.imageUrl" alt="Design Effect Image">
+              <a :href="designResult?.imageUrl" target="_blank" class="download-btn">
+                View Original
+              </a>
+            </div>
+          </div>
+          <div class="design-description">
+            <h3>Plant Configuration</h3>
+            <ul>
+              <li v-for="plant in selectedPlants" :key="plant">{{ plant }}</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="confirm-btn" @click="closeResultDialog">Done</button>
+          <button class="retry-btn" @click="retryDesign">Redesign</button>
         </div>
       </div>
     </div>
@@ -77,16 +115,24 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
 import { plantService } from '../services/plantService'
+import { aiDesignService } from '../services/aiDesignService'
 
 const vantaEffect = ref(null)
 const fileInput = ref(null)
 const previewImage = ref(null)
 const selectedFile = ref(null)
 const showDialog = ref(false)
+const showResultDialog = ref(false)
 const plants = ref([])
 const selectedPlants = ref([])
 const loading = ref(false)
 const error = ref(null)
+const designResult = ref(null)
+const designStatus = ref(null)
+const pollInterval = ref(null)
+const progressMessage = ref('')
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
 const triggerFileInput = () => {
   fileInput.value.click()
@@ -110,19 +156,18 @@ const removeImage = () => {
   fileInput.value.value = ''
 }
 
-// 获取所有植物数据
+// Fetch all plant data
 const fetchPlants = async () => {
   try {
     loading.value = true
     const allPlants = await plantService.getPlants()
-    // 只保留name和image_url字段
     plants.value = allPlants.map(p => ({
       name: p.name,
       image_url: p.image_url
     }))
   } catch (error) {
-    console.error('获取植物数据失败:', error)
-    error.value = '获取植物列表失败，请稍后重试'
+    console.error('Failed to fetch plant data:', error)
+    error.value = 'Failed to fetch plant list, please try again later'
   } finally {
     loading.value = false
   }
@@ -138,11 +183,22 @@ const closeDialog = () => {
   selectedPlants.value = []
 }
 
+const closeResultDialog = () => {
+  showResultDialog.value = false
+  removeImage()
+  selectedPlants.value = []
+}
+
+const retryDesign = () => {
+  showResultDialog.value = false
+  showPlantDialog()
+}
+
 const togglePlant = (plantName) => {
   const index = selectedPlants.value.indexOf(plantName)
   if (index === -1) {
     if (selectedPlants.value.length >= 3) {
-      alert('最多只能选择三种植物！')
+      alert('You can select up to three plants!')
       return
     }
     selectedPlants.value.push(plantName)
@@ -157,24 +213,69 @@ const startAIDesign = async () => {
   try {
     loading.value = true
     error.value = null
+    designResult.value = null
+    designStatus.value = 'pending'
+    progressMessage.value = 'Starting design...'
 
-    const formData = new FormData()
-    formData.append('file', selectedFile.value)
-    formData.append('plants', JSON.stringify(selectedPlants.value))
+    // Start design
+    const startResponse = await aiDesignService.startDesign(
+      selectedFile.value,
+      selectedPlants.value.map(name => name)
+    )
 
-    // TODO: 调用AI设计API
-    console.log('开始设计，选中的植物:', selectedPlants.value)
-    closeDialog()
+    // Start polling for results
+    designStatus.value = 'processing'
+    progressMessage.value = 'Generating image, please wait...'
+
+    const result = await aiDesignService.pollDesignResult(
+      startResponse.promptId,
+      {
+        interval: 5000, // Poll every 5 seconds
+        maxAttempts: 60, // Wait up to 5 minutes
+        onProgress: (progressData) => {
+          designStatus.value = progressData.status
+          progressMessage.value = progressData.message
+
+          if (progressData.status === 'error') {
+            error.value = progressData.message
+            loading.value = false
+          }
+        }
+      }
+    )
+
+    if (result.success && result.status === 'completed') {
+      designResult.value = result.result
+      showDialog.value = false
+      showResultDialog.value = true
+    } else {
+      throw new Error('Design generation failed')
+    }
   } catch (error) {
-    console.error('AI设计失败:', error)
-    error.value = 'AI设计启动失败，请稍后重试'
+    console.error('AI design failed:', error)
+
+    // Display user-friendly error messages based on error type
+    if (error.type === 'UPLOAD_ERROR') {
+      error.value = 'Image upload failed, please try again'
+    } else if (error.type === 'WORKFLOW_ERROR') {
+      error.value = 'Workflow configuration error, please contact the administrator'
+    } else if (error.type === 'SUBMISSION_ERROR') {
+      error.value = 'Design task submission failed, please try again'
+    } else if (error.type === 'SERVER_ERROR') {
+      error.value = 'Server error, please try again later'
+    } else if (error.type === 'HISTORY_ERROR') {
+      error.value = 'Failed to fetch history, please try again'
+    } else if (error.type === 'TIMEOUT') {
+      error.value = 'Design generation timed out, please try again later'
+    } else {
+      error.value = error.message || 'An error occurred during the design process, please try again later'
+    }
   } finally {
     loading.value = false
   }
 }
 
 onMounted(async () => {
-
   if (!window.THREE) {
     await new Promise((resolve) => {
       const script = document.createElement('script')
@@ -192,7 +293,6 @@ onMounted(async () => {
       document.head.appendChild(script)
     })
   }
-
 
   vantaEffect.value = window.VANTA.NET({
     el: '#vanta-background',
@@ -213,6 +313,9 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
+  if (pollInterval.value) {
+    clearInterval(pollInterval.value)
+  }
   if (vantaEffect.value) {
     vantaEffect.value.destroy()
     vantaEffect.value = null
@@ -504,5 +607,96 @@ onUnmounted(() => {
   padding: 40px;
   font-size: 1.2rem;
   color: #666;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #39bdb3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.result-dialog {
+  max-width: 1200px;
+  width: 90%;
+}
+
+.image-comparison {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.original-image,
+.result-image {
+  flex: 1;
+  text-align: center;
+}
+
+.original-image img,
+.result-image img {
+  max-width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.retry-btn {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.retry-btn:hover {
+  background: #f57c00;
+}
+
+.download-btn {
+  display: inline-block;
+  margin-top: 10px;
+  background: #4CAF50;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.download-btn:hover {
+  background: #45a049;
+}
+
+.design-description {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.design-description ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.design-description li {
+  background: #f0f8ff;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 </style>

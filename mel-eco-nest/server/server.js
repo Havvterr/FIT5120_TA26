@@ -5,6 +5,7 @@ const multer = require('multer')
 const path = require('path')
 require('dotenv').config()
 const axios = require('axios')
+const fs = require('fs').promises
 
 const app = express()
 
@@ -213,52 +214,74 @@ app.get('/api/weather', async (req, res) => {
   }
 })
 
-// AI设计API端点
-app.post('/api/ai-design', upload.single('file'), async (req, res) => {
-  console.log(`[${getTimestamp()}] POST /api/ai-design - 开始AI设计`)
+// 读取ComfyUI工作流配置
+const workflowPath = path.join(__dirname, '../comfyapi/flux.1_img2img.json')
+let workflow = null
 
+// 加载工作流配置
+const loadWorkflow = async () => {
+  try {
+    const data = await fs.readFile(workflowPath, 'utf8')
+    workflow = JSON.parse(data)
+    console.log(`[${getTimestamp()}] Successfully loaded ComfyUI workflow`)
+  } catch (error) {
+    console.error(`[${getTimestamp()}] Error loading workflow:`, error)
+  }
+}
+
+loadWorkflow()
+
+// AI设计开始接口
+app.post('/api/ai-design/start', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
-      throw new Error('没有上传文件')
+      throw new Error('No file uploaded')
     }
 
-    // 获取上传的文件和选择的植物
     const file = req.file
-    const plants = JSON.parse(req.body.plants || '[]')
+    const selectedPlants = JSON.parse(req.body.plants || '[]')
 
-    console.log(`[${getTimestamp()}] 文件上传成功:`, {
-      filename: file.filename,
-      path: file.path,
-      size: file.size
-    })
+    // 构建提示词
+    const prompt = `Lightly decorate the existing balcony with ${selectedPlants.join(', ')}.
+    Place them naturally and aesthetically, maintaining the original balcony structure.
+    Keep it realistic and clean.`
 
-    // 获取选中的植物详细信息
-    const plantQuery = 'SELECT * FROM plant WHERE id IN (?)'
-    const [plantResults] = await connection.promise().query(plantQuery, [plants])
+    // 更新工作流配置
+    if (workflow) {
+      // 更新图片路径
+      if (workflow['27'] && workflow['27'].inputs) {
+        workflow['27'].inputs.image = file.filename
+      }
 
-    console.log(`[${getTimestamp()}] 获取到植物信息:`, plantResults)
+      // 更新提示词
+      if (workflow['6'] && workflow['6'].inputs) {
+        workflow['6'].inputs.text = prompt
+      }
 
-    // 调用ComfyUI API进行AI设计
+      // 生成随机种子
+      const randomSeed = Math.floor(Math.random() * (2**32 - 1))
+      if (workflow['25'] && workflow['25'].inputs) {
+        workflow['25'].inputs.noise_seed = randomSeed
+      }
+    }
+
+    // 调用ComfyUI API
     const comfyResponse = await axios.post('http://58.178.177.133:8188/prompt', {
-      // TODO: 根据ComfyUI的API要求构建请求体
+      prompt: workflow
     })
 
-    // 返回设计结果
     res.json({
       success: true,
-      message: 'AI设计开始',
-      designId: comfyResponse.data.prompt_id,
-      uploadedFile: {
-        filename: file.filename,
-        path: `/uploads/${file.filename}` // 客户端可访问的URL
-      }
+      message: 'AI design started',
+      promptId: comfyResponse.data.prompt_id,
+      originalImage: file.filename
     })
 
   } catch (error) {
-    console.error(`[${getTimestamp()}] AI设计失败:`, error)
+    console.error(`[${getTimestamp()}] AI design error:`, error)
     res.status(500).json({
       success: false,
-      message: 'AI设计失败',
+      message: 'Failed to start AI design',
       error: error.message
     })
   }
@@ -278,6 +301,55 @@ app.get('/api/plants/basic', (req, res) => {
     console.log(`[${getTimestamp()}] Successfully retrieved ${results.length} plants basic info`)
     res.json(results)
   })
+})
+
+// 获取设计结果接口
+app.get('/api/ai-design/result/:promptId', async (req, res) => {
+  try {
+    const { promptId } = req.params
+
+    // 检查ComfyUI的历史记录
+    const historyResponse = await axios.get('http://58.178.177.133:8188/history')
+    const history = historyResponse.data[promptId]
+
+    if (!history) {
+      return res.json({
+        success: true,
+        status: 'pending',
+        message: 'Design is still processing'
+      })
+    }
+
+    // 获取生成的图片
+    if (history.outputs && Object.keys(history.outputs).length > 0) {
+      const outputNode = Object.values(history.outputs)[0]
+      if (outputNode.images && outputNode.images.length > 0) {
+        const imageName = outputNode.images[0].filename
+        return res.json({
+          success: true,
+          status: 'completed',
+          message: 'Design completed',
+          result: {
+            imageUrl: `http://58.178.177.133:8188/view?filename=${imageName}`
+          }
+        })
+      }
+    }
+
+    res.json({
+      success: true,
+      status: 'processing',
+      message: 'Design is being processed'
+    })
+
+  } catch (error) {
+    console.error(`[${getTimestamp()}] Error getting design result:`, error)
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get design result',
+      error: error.message
+    })
+  }
 })
 
 // Start server
