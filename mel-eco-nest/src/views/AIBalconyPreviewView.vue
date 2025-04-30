@@ -12,22 +12,18 @@
           @change="handleFileChange"
           accept="image/*"
           style="display: none"
-        >
+        />
         <div v-if="!previewImage" class="upload-placeholder">
           <i class="upload-icon">📷</i>
           <p>Click to upload a balcony photo</p>
           <p class="upload-hint">Supports JPG, PNG formats</p>
         </div>
         <div v-else class="preview-container">
-          <img :src="previewImage" alt="Preview Image" class="preview-image">
+          <img :src="previewImage" alt="Preview Image" class="preview-image" />
           <button class="remove-btn" @click.stop="removeImage">×</button>
         </div>
       </div>
-      <button
-        class="upload-btn"
-        :disabled="!previewImage"
-        @click="showPlantDialog"
-      >
+      <button class="upload-btn" :disabled="!previewImage" @click="showPlantDialog">
         Start AI Design
       </button>
     </div>
@@ -39,7 +35,10 @@
         <div v-if="error" class="error-message">{{ error }}</div>
         <div v-if="loading" class="loading">
           <div class="loading-spinner"></div>
-          <p>Generating your balcony design...<br> This process may take up to 1 minute.</p>
+          <p>
+            Generating your balcony design...<br />
+            This process may take up to 1 minute.
+          </p>
           <div class="fun-fact-container">
             <div class="fun-fact" :key="currentFunFactIndex">
               <p class="fun-fact-title">🌿 Plant Fun Fact</p>
@@ -54,7 +53,7 @@
             class="plant-card"
             :class="{
               selected: selectedPlants.includes(plant.name),
-              disabled: selectedPlants.length >= 1 && !selectedPlants.includes(plant.name)
+              disabled: selectedPlants.length >= 1 && !selectedPlants.includes(plant.name),
             }"
             @click="togglePlant(plant.name)"
           >
@@ -62,7 +61,7 @@
               <img
                 :src="plant.image_url || 'https://via.placeholder.com/150'"
                 :alt="plant.name"
-                @error="e => e.target.src='https://via.placeholder.com/150'"
+                @error="(e) => (e.target.src = 'https://via.placeholder.com/150')"
               />
             </div>
             <div class="plant-info">
@@ -92,20 +91,31 @@
           <div class="image-comparison">
             <div class="original-image">
               <h3>Original Image</h3>
-              <img :src="previewImage" alt="Original Balcony Photo" @click="openImagePreview(previewImage)">
+              <img
+                :src="previewImage"
+                alt="Original Balcony Photo"
+                @click="openImagePreview(previewImage)"
+              />
             </div>
             <div class="result-image">
               <h3>Design with {{ selectedPlants[0] }}</h3>
-              <img v-if="designResult?.imageUrl"
-                   :src="designResult.imageUrl"
-                   alt="Design Effect Image"
-                   @click="openImagePreview(designResult.imageUrl)">
+              <img
+                v-if="designResult?.imageUrl"
+                :src="designResult.imageUrl"
+                alt="Design Effect Image"
+                @click="openImagePreview(designResult.imageUrl)"
+              />
               <div v-else class="loading-placeholder">
                 <div class="loading-spinner"></div>
                 <p>Loading generated image...</p>
               </div>
               <div class="ai-disclaimer">
-                <p>{{ designResult?.disclaimer || 'This image is AI-generated and is for reference only. Results may vary in real implementation.' }}</p>
+                <p>
+                  {{
+                    designResult?.disclaimer ||
+                    'This image is AI-generated and is for reference only. Results may vary in real implementation.'
+                  }}
+                </p>
               </div>
             </div>
           </div>
@@ -124,7 +134,7 @@
     <!-- Image Preview Modal -->
     <div v-if="showImagePreview" class="image-preview-overlay" @click="closeImagePreview">
       <div class="image-preview-container">
-        <img :src="previewImageUrl" alt="Preview" class="preview-full-image">
+        <img :src="previewImageUrl" alt="Preview" class="preview-full-image" />
         <button class="close-preview-btn" @click="closeImagePreview">&times;</button>
       </div>
     </div>
@@ -136,53 +146,58 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import { plantService } from '../services/plantService'
 import { aiDesignService } from '../services/aiDesignService'
 
-// 添加图片压缩相关函数
 const compressImage = async (file, maxLongSide = 960, maxFileSize = 1024 * 1024) => {
-  // 如果文件已经小于最大大小，直接返回
+  // If file is already smaller than maximum size, return directly
   if (file.size <= maxFileSize) {
-    return file;
+    return file
   }
 
   return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
     reader.onload = (e) => {
-      const img = new Image();
-      img.src = e.target.result;
+      const img = new Image()
+      img.src = e.target.result
 
       img.onload = () => {
-        // 计算尺寸
-        let { width, height } = img;
-        const longSide = Math.max(width, height);
+        // Calculate dimensions
+        let { width, height } = img
+        const longSide = Math.max(width, height)
 
-        // 如果长边超过限制，按比例缩小
+        // If the longest side exceeds the limit, scale proportionally
         if (longSide > maxLongSide) {
-          const ratio = maxLongSide / longSide;
-          width = Math.round(width * ratio);
-          height = Math.round(height * ratio);
+          const ratio = maxLongSide / longSide
+          width = Math.round(width * ratio)
+          height = Math.round(height * ratio)
         }
 
-        // 创建canvas并绘制调整后的图片
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
+        // Create canvas and draw resized image
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0, width, height)
 
-        // 转换为Blob
-        canvas.toBlob((blob) => {
-          // 创建新的File对象
-          const compressedFile = new File([blob], file.name, {
-            type: 'image/jpeg',
-            lastModified: Date.now()
-          });
-          console.log(`原图大小: ${(file.size / 1024).toFixed(2)}KB, 压缩后: ${(compressedFile.size / 1024).toFixed(2)}KB`);
-          resolve(compressedFile);
-        }, 'image/jpeg', 0.8); // 使用0.8的JPEG质量
-      };
-    };
-  });
-};
+        // Convert to Blob
+        canvas.toBlob(
+          (blob) => {
+            // Create new File object
+            const compressedFile = new File([blob], file.name, {
+              type: 'image/jpeg',
+              lastModified: Date.now(),
+            })
+            console.log(
+              `Original size: ${(file.size / 1024).toFixed(2)}KB, Compressed size: ${(compressedFile.size / 1024).toFixed(2)}KB`,
+            )
+            resolve(compressedFile)
+          },
+          'image/jpeg',
+          0.8,
+        ) // Use 0.8 JPEG quality
+      }
+    }
+  })
+}
 
 const vantaEffect = ref(null)
 const fileInput = ref(null)
@@ -200,29 +215,29 @@ const designResult = ref(null)
 const pollInterval = ref(null)
 const progressMessage = ref('')
 
-// 添加植物趣味知识数组
+// Add plant fun facts array
 const plantFunFacts = [
-  "Did you know? Plants can communicate with each other through chemical signals!",
-  "Plants can recognize their siblings and be more cooperative with them.",
-  "Some plants can count! Venus flytraps count the triggers before snapping shut.",
-  "Plants can hear water and will grow roots towards it.",
-  "Plants release oxygen during the day but consume it at night.",
-  "Some trees communicate and share nutrients through an underground fungal network.",
-  "Plants can feel touch and respond to it!",
-  "Bamboo can grow up to 35 inches in a single day!",
-  "Plants have their own immune system to fight off diseases!",
-  "Some plants can produce caffeine to prevent other plants from growing nearby.",
-  "The oldest living tree is over 5,000 years old!",
-  "Plants can see! They can detect different wavelengths of light."
+  'Did you know? Plants can communicate with each other through chemical signals!',
+  'Plants can recognize their siblings and be more cooperative with them.',
+  'Some plants can count! Venus flytraps count the triggers before snapping shut.',
+  'Plants can hear water and will grow roots towards it.',
+  'Plants release oxygen during the day but consume it at night.',
+  'Some trees communicate and share nutrients through an underground fungal network.',
+  'Plants can feel touch and respond to it!',
+  'Bamboo can grow up to 35 inches in a single day!',
+  'Plants have their own immune system to fight off diseases!',
+  'Some plants can produce caffeine to prevent other plants from growing nearby.',
+  'The oldest living tree is over 5,000 years old!',
+  'Plants can see! They can detect different wavelengths of light.',
 ]
 
 const currentFunFactIndex = ref(0)
 
-// 添加自动轮播函数
+// Add auto-rotation function
 const startFunFactRotation = () => {
   return setInterval(() => {
     currentFunFactIndex.value = (currentFunFactIndex.value + 1) % plantFunFacts.length
-  }, 5000) // 每5秒切换一次
+  }, 5000) // Switch every 5 seconds
 }
 
 const triggerFileInput = () => {
@@ -232,21 +247,23 @@ const triggerFileInput = () => {
 const handleFileChange = async (event) => {
   const file = event.target.files[0]
   if (file) {
-    // 先保存原始文件引用，以便显示预览
-    const originalFile = file;
+    // Save original file reference for preview display
+    const originalFile = file
 
-    // 压缩图片
-    const compressedFile = await compressImage(file);
-    selectedFile.value = compressedFile;
+    // Compress image
+    const compressedFile = await compressImage(file)
+    selectedFile.value = compressedFile
 
-    // 使用原始文件显示预览（保持预览质量）
+    // Use original file for preview (to maintain preview quality)
     const reader = new FileReader()
     reader.onload = (e) => {
       previewImage.value = e.target.result
     }
     reader.readAsDataURL(originalFile)
 
-    console.log(`使用压缩后的图片：${selectedFile.value.name}, 大小: ${(selectedFile.value.size / 1024).toFixed(2)}KB`);
+    console.log(
+      `Using compressed image: ${selectedFile.value.name}, Size: ${(selectedFile.value.size / 1024).toFixed(2)}KB`,
+    )
   }
 }
 
@@ -261,9 +278,9 @@ const fetchPlants = async () => {
   try {
     loading.value = true
     const allPlants = await plantService.getPlants()
-    plants.value = allPlants.map(p => ({
+    plants.value = allPlants.map((p) => ({
       name: p.name,
-      image_url: p.image_url
+      image_url: p.image_url,
     }))
   } catch (error) {
     console.error('Failed to fetch plant data:', error)
@@ -297,12 +314,12 @@ const retryDesign = () => {
 const togglePlant = (plantName) => {
   const index = selectedPlants.value.indexOf(plantName)
   if (index === -1) {
-    // 清空之前的选择
-    selectedPlants.value = [];
-    // 添加新选择的植物
+    // Clear previous selections
+    selectedPlants.value = []
+    // Add newly selected plant
     selectedPlants.value.push(plantName)
   } else {
-    // 允许取消选择
+    // Allow deselection
     selectedPlants.value.splice(index, 1)
   }
 }
@@ -314,40 +331,39 @@ const startAIDesign = async () => {
     loading.value = true
     error.value = null
 
-    // 开始趣味知识轮播
+    // Start fun fact rotation
     const funFactInterval = startFunFactRotation()
 
-    // 清除旧结果
+    // Clear previous results
     if (designResult.value?.imageUrl) {
-      console.log('清理旧的Blob URL')
+      console.log('Cleaning up previous Blob URL')
       URL.revokeObjectURL(designResult.value.imageUrl)
       designResult.value = null
     }
 
     progressMessage.value = 'Starting design...'
 
-    // 构建基础提示词（简化版，详细增强会在后端完成）
+    // Build base prompt (simplified version, detailed enhancement will be done on backend)
     const prompt = selectedPlants.value.join(', ')
 
-    console.log('开始生成AI设计...')
-    // 调用新的生成API
-    const result = await aiDesignService.generateBalconyImage(
-      selectedFile.value,
-      prompt
-    )
+    console.log('Starting AI design generation...')
+    // Call the new generation API
+    const result = await aiDesignService.generateBalconyImage(selectedFile.value, prompt)
 
-    // 停止趣味知识轮播
+    // Stop fun fact rotation
     clearInterval(funFactInterval)
 
-    console.log('获取生成结果:', result)
+    console.log('Received generation result:', result)
     if (result.success && result.imageUrl) {
-      // 确保图片URL正确设置
+      // Ensure image URL is properly set
       designResult.value = {
         imageUrl: result.imageUrl,
         isAIGenerated: result.isAIGenerated || true,
-        disclaimer: result.disclaimer || 'This image is AI-generated and is for reference only. Results may vary in real implementation.',
+        disclaimer:
+          result.disclaimer ||
+          'This image is AI-generated and is for reference only. Results may vary in real implementation.',
       }
-      console.log('设置设计结果URL:', designResult.value.imageUrl)
+      console.log('Setting design result URL:', designResult.value.imageUrl)
       showDialog.value = false
       showResultDialog.value = true
     } else {
@@ -355,13 +371,14 @@ const startAIDesign = async () => {
     }
   } catch (error) {
     console.error('AI design failed:', error)
-    error.value = error.message || 'An error occurred during the design process, please try again later'
+    error.value =
+      error.message || 'An error occurred during the design process, please try again later'
   } finally {
     loading.value = false
   }
 }
 
-// 添加图片预览函数
+// Add image preview function
 const openImagePreview = (imageUrl) => {
   previewImageUrl.value = imageUrl
   showImagePreview.value = true
@@ -625,14 +642,14 @@ onUnmounted(() => {
   background: white;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .plant-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .plant-card.selected {
@@ -675,7 +692,8 @@ onUnmounted(() => {
   margin-top: 20px;
 }
 
-.cancel-btn, .confirm-btn {
+.cancel-btn,
+.confirm-btn {
   padding: 10px 20px;
   border-radius: 5px;
   border: none;
@@ -725,8 +743,12 @@ onUnmounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .result-dialog {
@@ -778,7 +800,7 @@ onUnmounted(() => {
 .download-btn {
   display: inline-block;
   margin-top: 10px;
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   padding: 5px 15px;
   border-radius: 5px;
@@ -809,7 +831,7 @@ onUnmounted(() => {
   padding: 5px 15px;
   border-radius: 20px;
   font-size: 14px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .loading-placeholder {
@@ -846,7 +868,7 @@ onUnmounted(() => {
   padding: 8px 20px;
   border-radius: 20px;
   font-size: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: inline-block;
   margin-top: 10px;
   color: #333;

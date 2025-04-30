@@ -132,7 +132,7 @@ const answers = ref({
   openToNewIdeas: '',
 })
 
-// 存储键名
+// Storage keys
 const STORAGE_KEY = 'energy_tracker_goals'
 const LEGACY_KEY = 'trackedGoals'
 
@@ -144,34 +144,34 @@ const isTracked = (planId) => {
   return trackedGoals.value.some((goal) => goal.id === planId)
 }
 
-// 保存目标到localStorage - 同时保存到两个key中确保兼容性
+// Save goals to localStorage - Save to both keys for compatibility
 const saveGoals = () => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(trackedGoals.value))
     localStorage.setItem(LEGACY_KEY, JSON.stringify(trackedGoals.value))
   } catch (e) {
-    console.error('无法保存目标数据:', e)
+    console.error('Unable to save goal data:', e)
   }
 }
 
-// 从localStorage加载数据
+// Load data from localStorage
 const loadGoals = () => {
   try {
-    // 优先尝试新的存储键名
+    // Try new storage key first
     let savedGoals = localStorage.getItem(STORAGE_KEY)
     if (!savedGoals) {
-      // 如果没有找到，尝试旧的键名
+      // If not found, try legacy key
       savedGoals = localStorage.getItem(LEGACY_KEY)
     }
 
     if (savedGoals) {
       trackedGoals.value = JSON.parse(savedGoals)
-      console.log('MyPlanView: 成功加载了', trackedGoals.value.length, '个目标')
+      console.log('MyPlanView: Successfully loaded', trackedGoals.value.length, 'goals')
     } else {
-      console.log('MyPlanView: 没有找到已保存的目标数据')
+      console.log('MyPlanView: No saved goal data found')
     }
   } catch (e) {
-    console.error('MyPlanView: 加载目标数据时出错:', e)
+    console.error('MyPlanView: Error loading goal data:', e)
   }
 }
 
@@ -190,7 +190,7 @@ const trackGoal = (plan) => {
     }
     trackedGoals.value.push(newGoal)
 
-    // 保存到localStorage
+    // Save to localStorage
     saveGoals()
   }
 }
@@ -201,7 +201,7 @@ const untrackGoal = (goalId) => {
   if (goalIndex !== -1) {
     trackedGoals.value.splice(goalIndex, 1)
 
-    // 保存到localStorage
+    // Save to localStorage
     saveGoals()
   }
 }
@@ -762,14 +762,14 @@ const getPlanTarget = (plan) => {
 }
 
 onMounted(() => {
-  // 初始化动画
+  // Initialize animations
   AOS.init({
     duration: 800,
     easing: 'ease-out',
-    once: true, // 改为true，动画只播放一次
+    once: true, // Set to true, animation plays only once
   })
 
-  // 从localStorage加载已追踪的计划
+  // Load tracked plans from localStorage
   loadGoals()
 })
 </script>

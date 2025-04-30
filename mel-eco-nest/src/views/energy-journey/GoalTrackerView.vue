@@ -155,7 +155,7 @@ const customGoal = ref({
   description: '',
 })
 
-// Storage key - 使用一个固定的key名称
+// Storage key - Using a fixed key name
 const STORAGE_KEY = 'energy_tracker_goals'
 
 // Calculate the number of completed goals
@@ -169,27 +169,27 @@ const completionPercentage = computed(() => {
   return Math.round((completedGoalsCount.value / trackedGoals.value.length) * 100)
 })
 
-// 保存数据到localStorage
+// Save data to localStorage
 const saveGoals = () => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(trackedGoals.value))
   } catch (e) {
-    console.error('无法保存目标数据:', e)
+    console.error('Unable to save goal data:', e)
   }
 }
 
-// 从localStorage加载数据
+// Load data from localStorage
 const loadGoals = () => {
   try {
     const savedGoals = localStorage.getItem(STORAGE_KEY)
     if (savedGoals) {
       trackedGoals.value = JSON.parse(savedGoals)
-      console.log('成功加载了', trackedGoals.value.length, '个目标')
+      console.log('Successfully loaded', trackedGoals.value.length, 'goals')
     } else {
-      console.log('没有找到已保存的目标数据')
+      console.log('No saved goal data found')
     }
   } catch (e) {
-    console.error('加载目标数据时出错:', e)
+    console.error('Error loading goal data:', e)
   }
 }
 
@@ -204,12 +204,12 @@ const markAsCompleted = (goalId) => {
       day: 'numeric',
     })
 
-    // 保存更改
+    // Save changes
     saveGoals()
 
-    // 强制刷新视图
+    // Force view refresh
     nextTick(() => {
-      // 在DOM更新后，手动刷新AOS（但不会影响已经移除了AOS的卡片）
+      // Refresh AOS after DOM update (without affecting cards with AOS removed)
       AOS.refresh()
     })
   }
@@ -221,12 +221,12 @@ const untrackGoal = (goalId) => {
   if (goalIndex !== -1) {
     trackedGoals.value.splice(goalIndex, 1)
 
-    // 保存更改
+    // Save changes
     saveGoals()
 
-    // 强制刷新视图
+    // Force view refresh
     nextTick(() => {
-      // 在DOM更新后，手动刷新AOS（但不会影响已经移除了AOS的卡片）
+      // Refresh AOS after DOM update (without affecting cards with AOS removed)
       AOS.refresh()
     })
   }
@@ -252,7 +252,7 @@ const addCustomGoal = () => {
 
   trackedGoals.value.push(newGoal)
 
-  // 保存更改
+  // Save changes
   saveGoals()
 
   // Reset form
@@ -305,30 +305,30 @@ const getPlanTarget = (plan) => {
   }
 }
 
-// 在组件挂载时同步MyPlanView.vue中的跟踪数据
+// Sync with MyPlanView.vue tracked data on component mount
 const syncWithMyPlanData = () => {
   try {
-    // 读取MyPlanView中保存的跟踪数据
+    // Read tracked data from MyPlanView
     const planViewData = localStorage.getItem('trackedGoals')
 
     if (planViewData) {
       const planGoals = JSON.parse(planViewData)
 
-      // 如果当前没有数据但是MyPlanView有数据，直接使用MyPlanView的数据
+      // If we have no data but MyPlanView has data, use MyPlanView's data
       if (trackedGoals.value.length === 0 && planGoals.length > 0) {
         trackedGoals.value = planGoals
-        saveGoals() // 保存到我们的新键名下
-        console.log('已从MyPlanView同步了', planGoals.length, '个目标')
+        saveGoals() // Save to our new key
+        console.log('Synced', planGoals.length, 'goals from MyPlanView')
       }
-      // 如果都有数据，确保数据一致性
+      // If both have data, ensure data consistency
       else if (trackedGoals.value.length > 0 && planGoals.length > 0) {
-        // 先保留我们的数据，然后将其保存到MyPlanView使用的键名下
+        // First keep our data, then save it to MyPlanView's key
         localStorage.setItem('trackedGoals', JSON.stringify(trackedGoals.value))
-        console.log('已将跟踪数据同步到MyPlanView')
+        console.log('Synced tracking data to MyPlanView')
       }
     }
   } catch (e) {
-    console.error('同步数据时出错:', e)
+    console.error('Error syncing data:', e)
   }
 }
 
@@ -336,13 +336,13 @@ onMounted(() => {
   AOS.init({
     duration: 800,
     easing: 'ease-out',
-    once: true, // 改为true，动画只播放一次
+    once: true, // Set to true, animation plays only once
   })
 
-  // 加载保存的目标数据
+  // Load saved goal data
   loadGoals()
 
-  // 与MyPlanView数据同步
+  // Sync with MyPlanView data
   syncWithMyPlanData()
 })
 </script>
