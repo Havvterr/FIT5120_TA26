@@ -160,7 +160,7 @@ const questions = [
       { value: 'ac', label: 'Air conditioning' },
       { value: 'fans', label: 'Fans (ceiling or portable)' },
       { value: 'ventilation', label: 'Natural ventilation (open windows)' },
-      { value: 'shading', label: 'Shading/reflective curtains or rooftop paint' },
+      { value: 'shading', label: 'Shading curtains or rooftop paint' },
       { value: 'none', label: 'None of the above' },
     ],
     multiSelect: true,
@@ -453,327 +453,6 @@ const allEnergyPlans = [
       openToNewIdeas: ['veryOpen'],
     },
   },
-
-  // New additions: Smart Home Solutions
-  {
-    id: 'smart-blinds',
-    title: 'Install Automated Smart Blinds',
-    description:
-      'Automatically adjust blinds based on sunlight and temperature to optimize cooling and heating.',
-    savings: 'Up to 15% on cooling and heating',
-    difficulty: 'Medium',
-    cost: '$$$',
-    applicableFor: {
-      homeType: ['apartment', 'house', 'townhouse'],
-      heatTiming: ['afternoon', 'allDay'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
-    },
-  },
-  {
-    id: 'smart-power-strips',
-    title: 'Use Smart Power Strips',
-    description:
-      'Automatically cut power to devices in standby mode, reducing phantom energy usage.',
-    savings: 'Up to 10% on electricity bills',
-    difficulty: 'Easy',
-    cost: '$',
-    applicableFor: {
-      homeType: ['apartment', 'house', 'townhouse', 'other'],
-      residents: ['solo', 'duo', 'family', 'large'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
-    },
-  },
-  {
-    id: 'home-energy-monitor',
-    title: 'Install a Home Energy Monitor',
-    description:
-      'Track your energy usage in real-time to identify energy hogs and optimize usage patterns.',
-    savings: 'Up to 15% on total energy costs',
-    difficulty: 'Easy',
-    cost: '$$',
-    applicableFor: {
-      homeType: ['apartment', 'house', 'townhouse'],
-      residents: ['duo', 'family', 'large'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
-    },
-  },
-
-  // Apartment-Specific Solutions
-  {
-    id: 'apartment-balcony-shade',
-    title: 'Create Balcony Shade with Plants or Screens',
-    description:
-      'Use potted plants or shade screens on balconies to block direct sunlight from entering windows.',
-    savings: 'Up to 10% on cooling costs',
-    difficulty: 'Easy',
-    cost: '$',
-    applicableFor: {
-      homeType: ['apartment'],
-      heatTiming: ['afternoon'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
-    },
-  },
-  {
-    id: 'portable-ac-optimization',
-    title: 'Optimize Portable Air Conditioner Placement',
-    description:
-      'Position portable AC units strategically and ensure proper venting to maximize efficiency.',
-    savings: 'Up to 15% on cooling costs',
-    difficulty: 'Easy',
-    cost: 'Free',
-    applicableFor: {
-      homeType: ['apartment', 'other'],
-      coolingMethod: ['ac'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
-    },
-  },
-
-  // Single-Person Household Solutions
-  {
-    id: 'zone-cooling',
-    title: 'Implement Zone Cooling',
-    description:
-      'Focus cooling efforts only on the rooms you actively use instead of the entire home.',
-    savings: 'Up to 30% on cooling costs',
-    difficulty: 'Easy',
-    cost: 'Free',
-    applicableFor: {
-      residents: ['solo', 'duo'],
-      coolingMethod: ['ac', 'fans'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
-    },
-  },
-
-  // Large Family Solutions
-  {
-    id: 'family-energy-challenge',
-    title: 'Start a Family Energy-Saving Challenge',
-    description:
-      'Create a game or challenge with rewards to encourage family members to adopt energy-saving habits.',
-    savings: 'Up to 20% on total energy costs',
-    difficulty: 'Easy',
-    cost: 'Free',
-    applicableFor: {
-      residents: ['family', 'large'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
-    },
-  },
-  {
-    id: 'staggered-appliance-use',
-    title: 'Implement Staggered Appliance Usage',
-    description:
-      'Avoid running multiple high-energy appliances simultaneously to reduce peak demand charges.',
-    savings: 'Up to 10% on electricity bills',
-    difficulty: 'Easy',
-    cost: 'Free',
-    applicableFor: {
-      residents: ['family', 'large'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
-    },
-  },
-
-  // Low-Cost Quick Wins
-  {
-    id: 'ceiling-fan-direction',
-    title: 'Optimize Ceiling Fan Direction',
-    description: 'Set fans to rotate counterclockwise in summer to create a cooling downdraft.',
-    savings: 'Up to 15% on cooling costs',
-    difficulty: 'Very Easy',
-    cost: 'Free',
-    applicableFor: {
-      homeType: ['apartment', 'house', 'townhouse'],
-      coolingMethod: ['fans'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
-    },
-  },
-  {
-    id: 'refrigerator-maintenance',
-    title: 'Optimize Refrigerator Settings and Maintenance',
-    description:
-      'Clean coils, check door seals, and set optimal temperatures to reduce energy consumption.',
-    savings: 'Up to 15% on refrigerator energy use',
-    difficulty: 'Easy',
-    cost: 'Free',
-    applicableFor: {
-      residents: ['solo', 'duo', 'family', 'large'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
-    },
-  },
-
-  // Natural Cooling Solutions
-  {
-    id: 'green-roof',
-    title: 'Install a Green Roof or Rooftop Garden',
-    description:
-      'Grow plants on your roof to provide natural insulation and reduce heat absorption.',
-    savings: 'Up to 25% on cooling costs',
-    difficulty: 'Hard',
-    cost: '$$$',
-    applicableFor: {
-      homeType: ['house'],
-      heatTiming: ['afternoon', 'allDay'],
-      openToNewIdeas: ['veryOpen'],
-    },
-  },
-  {
-    id: 'cool-paving',
-    title: 'Use Cool Paving for Driveways and Walkways',
-    description: 'Replace dark, heat-absorbing pavement with reflective or permeable materials.',
-    savings: 'Up to 10% on cooling costs',
-    difficulty: 'Hard',
-    cost: '$$$',
-    applicableFor: {
-      homeType: ['house'],
-      heatTiming: ['afternoon', 'allDay'],
-      openToNewIdeas: ['veryOpen'],
-    },
-  },
-
-  // Technological Solutions
-  {
-    id: 'smart-ceiling-fans',
-    title: 'Install Smart Ceiling Fans with Sensors',
-    description:
-      'Advanced fans that automatically adjust speed based on room occupancy and temperature.',
-    savings: 'Up to 20% on cooling costs',
-    difficulty: 'Medium',
-    cost: '$$',
-    applicableFor: {
-      homeType: ['apartment', 'house', 'townhouse'],
-      coolingMethod: ['fans'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
-    },
-  },
-  {
-    id: 'window-sensors',
-    title: 'Install Window and Door Sensors',
-    description: 'Alerts you when windows or doors are left open while AC is running.',
-    savings: 'Up to 10% on cooling costs',
-    difficulty: 'Easy',
-    cost: '$$',
-    applicableFor: {
-      homeType: ['apartment', 'house', 'townhouse'],
-      coolingMethod: ['ac'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
-    },
-  },
-
-  // Behavioral Solutions
-  {
-    id: 'clothing-adaptation',
-    title: 'Adapt Clothing Choices for Indoor Comfort',
-    description:
-      'Wear lightweight, breathable clothing at home to stay comfortable at higher thermostat settings.',
-    savings: 'Up to 10% on cooling costs',
-    difficulty: 'Very Easy',
-    cost: 'Free',
-    applicableFor: {
-      residents: ['solo', 'duo', 'family', 'large'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
-    },
-  },
-  {
-    id: 'cold-meals',
-    title: 'Prepare Cold Meals During Hot Days',
-    description:
-      'Reduce indoor heat generation by preparing meals that do not require cooking during peak heat hours.',
-    savings: 'Up to 5% on cooling and cooking energy',
-    difficulty: 'Easy',
-    cost: 'Free',
-    applicableFor: {
-      heatTiming: ['afternoon', 'allDay'],
-      residents: ['solo', 'duo', 'family', 'large'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
-    },
-  },
-
-  // Special Situations
-  {
-    id: 'night-cooling-apartment',
-    title: 'Create a Night Cooling System for Apartments',
-    description:
-      'Use window fans strategically at night to pull in cool air, particularly effective for upper floor apartments.',
-    savings: 'Up to 25% on cooling costs',
-    difficulty: 'Easy',
-    cost: '$',
-    applicableFor: {
-      homeType: ['apartment'],
-      heatTiming: ['night', 'allDay'],
-      coolingMethod: ['fans', 'ventilation'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
-    },
-  },
-
-  // Advanced Technical Solutions
-  {
-    id: 'phase-change-materials',
-    title: 'Install Phase Change Materials',
-    description:
-      'These advanced materials absorb and release heat as they change phase, helping to regulate indoor temperatures.',
-    savings: 'Up to 20% on heating and cooling',
-    difficulty: 'Hard',
-    cost: '$$$',
-    applicableFor: {
-      homeType: ['house', 'townhouse'],
-      openToNewIdeas: ['veryOpen'],
-    },
-  },
-
-  // Economic Solutions
-  {
-    id: 'community-solar',
-    title: 'Join a Community Solar Program',
-    description:
-      'Subscribe to a shared solar farm to offset your electricity use with renewable energy.',
-    savings: 'Up to 15% on electricity bills',
-    difficulty: 'Easy',
-    cost: '$',
-    applicableFor: {
-      homeType: ['apartment', 'house', 'townhouse', 'other'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
-    },
-  },
-  {
-    id: 'time-of-use-plan',
-    title: 'Switch to a Time-of-Use Electricity Rate Plan',
-    description:
-      'Change to a utility plan that offers lower rates during off-peak hours, then shift your usage accordingly.',
-    savings: 'Up to 20% on electricity bills',
-    difficulty: 'Medium',
-    cost: 'Free',
-    applicableFor: {
-      residents: ['solo', 'duo', 'family', 'large'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
-    },
-  },
-
-  // Water-Energy Nexus Solutions
-  {
-    id: 'water-heater-timer',
-    title: 'Install a Water Heater Timer',
-    description: 'Set your water heater to run only during times when you need hot water.',
-    savings: 'Up to 15% on water heating costs',
-    difficulty: 'Easy',
-    cost: '$',
-    applicableFor: {
-      homeType: ['house', 'townhouse'],
-      residents: ['solo', 'duo', 'family', 'large'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
-    },
-  },
-  {
-    id: 'shorter-showers',
-    title: 'Take Shorter, Cooler Showers',
-    description:
-      'Reduce hot water usage to save on water heating energy, which is typically 18% of home energy use.',
-    savings: 'Up to 10% on water heating costs',
-    difficulty: 'Easy',
-    cost: 'Free',
-    applicableFor: {
-      residents: ['solo', 'duo', 'family', 'large'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
-    },
-  },
 ]
 
 // Set answer for selected option
@@ -792,11 +471,9 @@ const selectOption = (questionIndex, option) => {
     } else {
       answers.value[questionId].splice(index, 1)
     }
-    console.log(`Updated multi-select answer for ${questionId}:`, answers.value[questionId])
   } else {
     // Handle single-select questions
     answers.value[questionId] = option.value
-    console.log(`Selected answer for ${questionId}:`, option.value)
 
     // If this is not the last question, proceed to the next one
     if (questionIndex < questions.length - 1) {
@@ -879,115 +556,72 @@ const generateResults = () => {
 const personalizedPlans = computed(() => {
   if (!showResults.value) return []
 
-  console.log('Generating plans with answers:', JSON.stringify(answers.value))
-
   // Score each plan based on how well it matches the user's situation
   const scoredPlans = allEnergyPlans.map((plan) => {
     let score = 0
     let matchesRequired = false
-    let matches = []
 
-    // Check home type match - high importance
+    // Check home type match
     if (
       plan.applicableFor.homeType &&
       plan.applicableFor.homeType.includes(answers.value.homeType)
     ) {
-      score += 5 // Increased weight
+      score += 2
       matchesRequired = true
-      matches.push('homeType')
-    } else if (plan.applicableFor.homeType) {
-      // Penalize if home type doesn't match but plan has home type requirement
-      score -= 3
     }
 
-    // Check residents match - medium importance
+    // Check residents match
     if (
       plan.applicableFor.residents &&
       plan.applicableFor.residents.includes(answers.value.residents)
     ) {
-      score += 3 // Increased weight
+      score += 1
       matchesRequired = true
-      matches.push('residents')
     }
 
-    // Check heat timing match - high importance
+    // Check heat timing match
     if (
       plan.applicableFor.heatTiming &&
       plan.applicableFor.heatTiming.includes(answers.value.heatTiming)
     ) {
-      score += 4 // Increased weight
+      score += 2
       matchesRequired = true
-      matches.push('heatTiming')
-    } else if (plan.applicableFor.heatTiming) {
-      // Penalize if heat timing doesn't match but plan has heat timing requirement
-      score -= 2
     }
 
-    // Check cooling method match - highest importance
+    // Check cooling method match
     if (plan.applicableFor.coolingMethod && answers.value.coolingMethod) {
       const methodsMatch = answers.value.coolingMethod.some((method) =>
         plan.applicableFor.coolingMethod.includes(method),
       )
       if (methodsMatch) {
-        score += 6 // Increased weight
+        score += 3
         matchesRequired = true
-        matches.push('coolingMethod')
-      } else {
-        // Penalize if no cooling methods match
-        score -= 4
       }
     }
 
-    // Check openness to new ideas - impacts all recommendations
+    // Check openness to new ideas
     if (
       plan.applicableFor.openToNewIdeas &&
       plan.applicableFor.openToNewIdeas.includes(answers.value.openToNewIdeas)
     ) {
-      score += 2
+      score += 1
       matchesRequired = true
-      matches.push('openToNewIdeas')
-    } else if (plan.applicableFor.openToNewIdeas) {
-      // Significant penalty if user isn't open to this level of change
-      score -= 5
-    }
-
-    // Additional weighting for specific combinations
-    if (matches.includes('homeType') && matches.includes('heatTiming')) {
-      score += 2 // Bonus for solutions that match both home type and heat timing
-    }
-
-    if (matches.includes('coolingMethod') && matches.includes('openToNewIdeas')) {
-      score += 2 // Bonus for cooling solutions that match user's openness
     }
 
     return {
       ...plan,
       score,
       matchesRequired,
-      matches,
     }
   })
 
-  // More strict filtering - require positive score and at least one match
+  // Filter plans that match at least one criterion and sort by score
   const eligiblePlans = scoredPlans
-    .filter((plan) => plan.matchesRequired && plan.score > 0)
+    .filter((plan) => plan.matchesRequired)
     .sort((a, b) => b.score - a.score)
 
-  console.log('Eligible plans count:', eligiblePlans.length)
-
-  if (eligiblePlans.length > 0) {
-    console.log('Top 3 scoring plans:')
-    eligiblePlans.slice(0, 3).forEach((plan, idx) => {
-      console.log(
-        `${idx + 1}. ${plan.title} (score: ${plan.score}, matches: ${plan.matches.join(', ')})`,
-      )
-    })
-  } else {
-    console.log('No eligible plans found!')
-  }
-
-  // Take top plans to ensure we have enough after diversity filtering
-  const topPlans = eligiblePlans.slice(0, 15) // Increased from 8 to 15 to get more variety
+  // Take top 8 plans to ensure we have enough after diversity filtering
+  const topPlans = eligiblePlans.slice(0, 8)
 
   // Ensure diversity of solutions by categorizing and selecting from different categories
   const categorized = {}
@@ -1001,30 +635,14 @@ const personalizedPlans = computed(() => {
     categorized[category].push(plan)
   })
 
-  console.log('Categories found:', Object.keys(categorized).join(', '))
-
   // Select at most 2 from each category to ensure diversity
   let diversePlans = []
   Object.values(categorized).forEach((categoryPlans) => {
     diversePlans = diversePlans.concat(categoryPlans.slice(0, 2))
   })
 
-  // If we don't have enough plans after diversity filtering, add more from top scoring
-  if (diversePlans.length < 6 && eligiblePlans.length > diversePlans.length) {
-    const additionalPlans = eligiblePlans
-      .filter((plan) => !diversePlans.some((p) => p.id === plan.id))
-      .slice(0, 8 - diversePlans.length)
-
-    diversePlans = diversePlans.concat(additionalPlans)
-    console.log('Added additional plans to reach minimum count')
-  }
-
-  // Sort by score and return the top plans (or fewer if not enough eligible)
-  // Increased from 6 to 8 plans to show more options
-  const finalPlans = diversePlans.sort((a, b) => b.score - a.score).slice(0, 8)
-  console.log('Final plans selected:', finalPlans.map((p) => p.title).join(', '))
-
-  return finalPlans
+  // Sort by score and take top 6 plans
+  return diversePlans.sort((a, b) => b.score - a.score).slice(0, 6)
 })
 
 // Reset the quiz
@@ -1046,34 +664,25 @@ onMounted(() => {
     easing: 'ease-out',
     once: false,
   })
-
-  // Check if allEnergyPlans is properly defined
-  console.log('Energy plans available:', allEnergyPlans.length)
-  console.log('First energy plan:', allEnergyPlans[0]?.title)
-
-  // Print a few examples of applicableFor criteria to verify matching logic
-  allEnergyPlans.slice(0, 3).forEach((plan) => {
-    console.log(`Plan "${plan.title}" criteria:`, JSON.stringify(plan.applicableFor))
-  })
 })
 </script>
 
 <style scoped>
 .my-plan-view {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .questionnaire-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.5rem;
 }
 
 .questionnaire-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .questionnaire-header h1 {
@@ -1092,17 +701,17 @@ onMounted(() => {
 .questions-list {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 4rem;
 }
 
 .question-section {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
 .question-text {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   color: #2d3748;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.75rem;
   font-weight: 600;
   border-bottom: 1px solid #e2e8f0;
   padding-bottom: 0.75rem;
@@ -1111,39 +720,43 @@ onMounted(() => {
 .options-list {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
+  gap: 1.5rem;
   justify-content: space-between;
 }
 
 .option-card {
   background-color: white;
   border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 1rem;
+  border-radius: 10px;
+  padding: 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
   flex: 1;
   min-width: 0; /* Prevent content overflow */
+  min-height: 80px;
+  display: flex;
+  align-items: center;
 }
 
 .option-card:hover {
   border-color: #4299e1;
   background-color: #ebf8ff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .option-card.selected {
   border-color: #48bb78;
   background-color: #f0fff4;
-  box-shadow: 0 2px 6px rgba(72, 187, 120, 0.2);
+  box-shadow: 0 4px 8px rgba(72, 187, 120, 0.2);
 }
 
 .option-content {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
+  width: 100%;
 }
 
 .selection-indicator {
@@ -1151,8 +764,8 @@ onMounted(() => {
 }
 
 .check-mark {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: 2px solid #48bb78;
   background-color: #48bb78;
@@ -1160,20 +773,25 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .empty-circle {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: 2px solid #cbd5e0;
+}
+
+.option-content span {
+  font-size: 1.2rem;
+  font-weight: 500;
 }
 
 .submit-container {
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 3rem;
   margin-bottom: 2rem;
 }
 
@@ -1181,9 +799,9 @@ onMounted(() => {
   background: linear-gradient(135deg, #4299e1, #3182ce);
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-size: 1.1rem;
+  padding: 1.25rem 2.5rem;
+  border-radius: 10px;
+  font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1231,22 +849,22 @@ onMounted(() => {
 }
 
 .results-header h1 {
-  font-size: 2rem;
+  font-size: 2.2rem;
   color: #2d3748;
   margin-bottom: 0.5rem;
 }
 
 .results-header p {
   color: #718096;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   max-width: 800px;
   margin: 0 auto;
 }
 
 .plan-actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2.5rem;
   margin-bottom: 3rem;
 }
 
@@ -1304,9 +922,10 @@ onMounted(() => {
 
 .action-description {
   color: #4a5568;
-  padding: 1.5rem;
+  padding: 1.75rem;
   line-height: 1.6;
   flex-grow: 1;
+  font-size: 1.1rem;
 }
 
 .no-results {
@@ -1321,16 +940,17 @@ onMounted(() => {
 .restart-container {
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 2.5rem;
 }
 
 .restart-button {
   background-color: #edf2f7;
   color: #4a5568;
   border: none;
-  padding: 0.8rem 1.5rem;
+  padding: 1rem 2rem;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
@@ -1346,12 +966,25 @@ onMounted(() => {
 @media (max-width: 768px) {
   .options-list {
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1.25rem;
   }
 
   .action-stats {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.75rem;
+  }
+
+  .option-card {
+    min-height: 60px;
+  }
+
+  .question-text {
+    font-size: 1.4rem;
+  }
+
+  .submit-button {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
   }
 }
 </style>

@@ -11,7 +11,6 @@ import { onMounted, onUnmounted, ref } from 'vue'
 const vantaEffect = ref(null)
 
 onMounted(async () => {
-
   if (!window.THREE) {
     await new Promise((resolve) => {
       const script = document.createElement('script')
@@ -29,7 +28,6 @@ onMounted(async () => {
       document.head.appendChild(script)
     })
   }
-
 
   vantaEffect.value = window.VANTA.NET({
     el: '#vanta-background',
