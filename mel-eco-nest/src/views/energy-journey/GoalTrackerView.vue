@@ -107,7 +107,7 @@
       <h2>Create a Custom Goal</h2>
       <div class="add-goal-card" data-aos="zoom-in" data-aos-delay="700">
         <div class="add-goal-icon">
-          <i class="fas fa-plus-circle"></i>
+          <i class="fas fa-caret-down"></i>
         </div>
         <h3>Add a New Energy Saving Goal</h3>
 
@@ -631,7 +631,7 @@ onMounted(() => {
 }
 
 .add-goal-btn:hover {
-  background-color: #165a7d;
+  background-color: #179d24;
 }
 
 @media (max-width: 768px) {
