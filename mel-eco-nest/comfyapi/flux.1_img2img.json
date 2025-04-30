@@ -186,7 +186,7 @@
   "30": {
     "inputs": {
       "upscale_method": "nearest-exact",
-      "width": 960,
+      "width": 720,
       "height": 720,
       "crop": "disabled",
       "samples": [

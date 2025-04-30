@@ -3,16 +3,38 @@ const mysql = require('mysql2')
 const cors = require('cors')
 const multer = require('multer')
 const path = require('path')
+const { spawn } = require('child_process')
+const fs = require('fs').promises
+const fsSync = require('fs')
 require('dotenv').config()
 const axios = require('axios')
-const fs = require('fs').promises
 
 const app = express()
+
+// 创建必要的目录
+const createDirectories = async () => {
+  const directories = [
+    path.join(__dirname, 'uploads'),
+    path.join(__dirname, 'temp')
+  ]
+
+  for (const dir of directories) {
+    if (!fsSync.existsSync(dir)) {
+      await fs.mkdir(dir, { recursive: true })
+      console.log(`[${getTimestamp()}] Created directory: ${dir}`)
+    }
+  }
+}
 
 // 配置文件上传
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, 'uploads'))
+    const uploadDir = path.join(__dirname, 'uploads')
+    // 确保上传目录存在
+    if (!fsSync.existsSync(uploadDir)) {
+      fsSync.mkdirSync(uploadDir, { recursive: true })
+    }
+    cb(null, uploadDir)
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
@@ -254,8 +276,18 @@ app.post('/api/ai-design/start', upload.single('file'), async (req, res) => {
       }
 
       // 更新提示词
-      if (workflow['6'] && workflow['6'].inputs) {
-        workflow['6'].inputs.text = prompt
+      let foundPrompt = false
+      for (const nodeId in workflow) {
+        const node = workflow[nodeId]
+        if (node.class_type === 'CLIPTextEncode' && node.inputs && 'text' in node.inputs) {
+          // 增强的提示词，强调保留原始图像特性
+          const enhancedPrompt = `Subtly add ${prompt.trim()} to the existing balcony, preserving 95% of the original image's composition, lighting, colors, and style. Do not change any existing furniture, railings, walls, floor, or background. Only add small plants in appropriate containers. Maintain exact perspective, shadows, and time of day. The final result should look like the original photo with minimal, realistic plant additions that respect the original aesthetic.`;
+          
+          node.inputs.text = enhancedPrompt;
+          console.log(`[${getTimestamp()}] Enhanced prompt: ${enhancedPrompt}`);
+          foundPrompt = true;
+          break;
+        }
       }
 
       // 生成随机种子
@@ -352,9 +384,204 @@ app.get('/api/ai-design/result/:promptId', async (req, res) => {
   }
 })
 
-// Start server
-const PORT = process.env.PORT || 3000
-app.listen(PORT, () => {
-  console.log(`[${getTimestamp()}][Server] Started successfully on port`, PORT)
-  console.log(`[${getTimestamp()}][Server] Environment:`, process.env.NODE_ENV || 'development')
+// 生成随机字符串
+const generateRandomString = (length) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
+// 简化图像尺寸处理函数，主要用于获取尺寸信息
+const getImageDimensions = async (imagePath) => {
+  try {
+    const sharp = require('sharp');
+    const metadata = await sharp(imagePath).metadata();
+    return { 
+      width: metadata.width, 
+      height: metadata.height 
+    };
+  } catch (err) {
+    console.error(`[${getTimestamp()}] Error getting image dimensions:`, err);
+    // 返回默认尺寸
+    return { width: 720, height: 720 };
+  }
+};
+
+// API endpoint for generating balcony image
+app.post('/api/generate-balcony', upload.single('image'), async (req, res) => {
+  console.log(`[${getTimestamp()}] POST /api/generate-balcony - Starting image generation`)
+  
+  try {
+    const { prompt } = req.body
+    if (!prompt) {
+      return res.status(400).json({ error: 'Prompt is required' })
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'Image file is required' })
+    }
+
+    if (!workflow) {
+      return res.status(500).json({ error: 'Workflow configuration not loaded' })
+    }
+
+    // 创建临时目录用于存储生成的图片
+    const tempDir = path.join(__dirname, 'temp')
+    if (!fsSync.existsSync(tempDir)) {
+      await fs.mkdir(tempDir, { recursive: true })
+    }
+
+    // 获取上传的图片路径
+    const uploadedImagePath = path.join(__dirname, 'uploads', req.file.filename)
+    
+    // 获取图像尺寸 - 图片已在前端压缩，这里只获取信息
+    const dimensions = await getImageDimensions(uploadedImagePath);
+    const imageWidth = dimensions.width;
+    const imageHeight = dimensions.height;
+    console.log(`[${getTimestamp()}] Image dimensions: ${imageWidth}x${imageHeight}`);
+
+    // 更新工作流配置
+    const updatedWorkflow = JSON.parse(JSON.stringify(workflow)) // 深拷贝工作流
+
+    // 更新图片路径
+    if (updatedWorkflow['27'] && updatedWorkflow['27'].inputs) {
+      updatedWorkflow['27'].inputs.image = req.file.filename
+    }
+    
+    // 更新图像尺寸设置
+    if (updatedWorkflow['30'] && updatedWorkflow['30'].inputs) {
+      updatedWorkflow['30'].inputs.width = imageWidth;
+      updatedWorkflow['30'].inputs.height = imageHeight;
+    }
+
+    // 更新提示词
+    let foundPrompt = false
+    for (const nodeId in updatedWorkflow) {
+      const node = updatedWorkflow[nodeId]
+      if (node.class_type === 'CLIPTextEncode' && node.inputs && 'text' in node.inputs) {
+        // 提示词现在使用单个植物
+        const plantName = prompt.trim();
+        // 增强的提示词，强调保留原始图像特性
+        const enhancedPrompt = `Subtly integrate ${plantName} into the existing balcony, ensuring the plant is placed correctly, such as in a pot, and has a natural and harmonious effect in the photo while preserving 95% of the original image's composition, lighting, colors, and style. Do not alter any existing furniture, railings, walls, floor, or background. Only add ${plantName} in appropriate containers or positions. Maintain exact perspective, shadows, and time of day. The final result should resemble the original photo, with ${plantName} additions that are realistic and respect the original aesthetic.`;        
+        node.inputs.text = enhancedPrompt;
+        console.log(`[${getTimestamp()}] Enhanced prompt with plant '${plantName}': ${enhancedPrompt}`);
+        foundPrompt = true;
+        break;
+      }
+    }
+
+    if (!foundPrompt) {
+      return res.status(500).json({ error: 'Prompt node not found in workflow' })
+    }
+
+    // 生成随机种子
+    const randomSeed = Math.floor(Math.random() * (2**32 - 1))
+    console.log(`[${getTimestamp()}] Generated random seed: ${randomSeed}`)
+
+    // 更新随机种子
+    for (const nodeId in updatedWorkflow) {
+      const node = updatedWorkflow[nodeId]
+      if (node.inputs && 'noise_seed' in node.inputs) {
+        node.inputs.noise_seed = randomSeed
+      }
+    }
+
+    // 执行Python脚本
+    const pythonProcess = spawn('python', [
+      path.join(__dirname, '../comfyapi/requset.py'),
+      '--prompt', prompt,
+      '--image', uploadedImagePath,
+      '--workflow', JSON.stringify(updatedWorkflow)
+    ])
+
+    let output = ''
+    let error = ''
+
+    pythonProcess.stdout.on('data', (data) => {
+      output += data.toString()
+    })
+
+    pythonProcess.stderr.on('data', (data) => {
+      error += data.toString()
+    })
+
+    pythonProcess.on('close', async (code) => {
+      // 删除上传的原始图片
+      try {
+        await fs.unlink(uploadedImagePath)
+      } catch (err) {
+        console.error(`[${getTimestamp()}] Error deleting uploaded image:`, err)
+      }
+
+      if (code !== 0) {
+        console.error(`[${getTimestamp()}] Python script execution failed:`, error)
+        return res.status(500).json({ error: 'Image generation failed' })
+      }
+
+      // 查找生成的最新图片
+      const outputDir = path.join(__dirname) // 从当前server目录查找图片
+      const files = await fs.readdir(outputDir)
+      // 找到所有符合条件的图片，并按修改时间降序排列，取最新
+      const imageFiles = files
+        .filter(file => file.startsWith('output_ComfyUI_') && file.endsWith('.png'))
+        .map(file => ({
+          file,
+          time: fsSync.statSync(path.join(outputDir, file)).mtime.getTime()
+        }))
+        .sort((a, b) => b.time - a.time)
+      const imageFile = imageFiles.length > 0 ? imageFiles[0].file : null;
+      
+      if (!imageFile) {
+        return res.status(500).json({ error: 'Generated image not found' })
+      }
+
+      console.log(`[${getTimestamp()}] Found generated image: ${imageFile}`)
+
+      // 生成新的文件名
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+      const randomStr = generateRandomString(6)
+      const newFileName = `balcony_design_${timestamp}_${randomStr}.png`
+      
+      // 将图片移动到temp目录并重命名
+      const sourcePath = path.join(outputDir, imageFile)
+      const targetPath = path.join(tempDir, newFileName)
+      await fs.rename(sourcePath, targetPath)
+
+      console.log(`[${getTimestamp()}] Generated image saved as: ${newFileName}`)
+
+      // 读取图片文件
+      const imageBuffer = await fs.readFile(targetPath)
+
+      // 设置响应头
+      res.set({
+        'Content-Type': 'image/png',
+        'Content-Disposition': 'inline',
+        'Cache-Control': 'no-cache'
+      })
+
+      // 返回图片
+      res.send(imageBuffer)
+
+    })
+
+  } catch (error) {
+    console.error(`[${getTimestamp()}] Error in image generation:`, error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
+
+// 在服务器启动时创建必要的目录
+createDirectories().then(() => {
+  // Start server
+  const PORT = process.env.PORT || 3000
+  app.listen(PORT, () => {
+    console.log(`[${getTimestamp()}][Server] Started successfully on port`, PORT)
+    console.log(`[${getTimestamp()}][Server] Environment:`, process.env.NODE_ENV || 'development')
+  })
+}).catch(error => {
+  console.error(`[${getTimestamp()}] Failed to create directories:`, error)
+  process.exit(1)
 })

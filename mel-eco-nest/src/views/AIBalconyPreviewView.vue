@@ -35,11 +35,11 @@
     <!-- Plant Selection Dialog -->
     <div v-if="showDialog" class="dialog-overlay">
       <div class="dialog-content">
-        <h2>Select the plants you want to grow (up to 3)</h2>
+        <h2>Select one plant for your balcony design</h2>
         <div v-if="error" class="error-message">{{ error }}</div>
         <div v-if="loading" class="loading">
           <div class="loading-spinner"></div>
-          <p>{{ progressMessage }}</p>
+          <p>Generating your balcony design...</p>
         </div>
         <div v-else class="plants-grid">
           <div
@@ -48,7 +48,7 @@
             class="plant-card"
             :class="{
               selected: selectedPlants.includes(plant.name),
-              disabled: selectedPlants.length >= 3 && !selectedPlants.includes(plant.name)
+              disabled: selectedPlants.length >= 1 && !selectedPlants.includes(plant.name)
             }"
             @click="togglePlant(plant.name)"
           >
@@ -89,23 +89,22 @@
               <img :src="previewImage" alt="Original Balcony Photo">
             </div>
             <div class="result-image">
-              <h3>Design Effect</h3>
-              <img :src="designResult?.imageUrl" alt="Design Effect Image">
-              <a :href="designResult?.imageUrl" target="_blank" class="download-btn">
-                View Original
-              </a>
+              <h3>Design with {{ selectedPlants[0] }}</h3>
+              <img v-if="designResult?.imageUrl" :src="designResult.imageUrl" alt="Design Effect Image">
+              <div v-else class="loading-placeholder">
+                <div class="loading-spinner"></div>
+                <p>Loading generated image...</p>
+              </div>
             </div>
           </div>
           <div class="design-description">
-            <h3>Plant Configuration</h3>
-            <ul>
-              <li v-for="plant in selectedPlants" :key="plant">{{ plant }}</li>
-            </ul>
+            <h3>Selected Plant</h3>
+            <div class="selected-plant-tag">{{ selectedPlants[0] }}</div>
           </div>
         </div>
         <div class="dialog-actions">
           <button class="confirm-btn" @click="closeResultDialog">Done</button>
-          <button class="retry-btn" @click="retryDesign">Redesign</button>
+          <button class="retry-btn" @click="retryDesign">Try Different Plant</button>
         </div>
       </div>
     </div>
@@ -116,6 +115,54 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import { plantService } from '../services/plantService'
 import { aiDesignService } from '../services/aiDesignService'
+
+// 添加图片压缩相关函数
+const compressImage = async (file, maxLongSide = 960, maxFileSize = 1024 * 1024) => {
+  // 如果文件已经小于最大大小，直接返回
+  if (file.size <= maxFileSize) {
+    return file;
+  }
+
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target.result;
+      
+      img.onload = () => {
+        // 计算尺寸
+        let { width, height } = img;
+        const longSide = Math.max(width, height);
+        
+        // 如果长边超过限制，按比例缩小
+        if (longSide > maxLongSide) {
+          const ratio = maxLongSide / longSide;
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        
+        // 创建canvas并绘制调整后的图片
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // 转换为Blob
+        canvas.toBlob((blob) => {
+          // 创建新的File对象
+          const compressedFile = new File([blob], file.name, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          });
+          console.log(`原图大小: ${(file.size / 1024).toFixed(2)}KB, 压缩后: ${(compressedFile.size / 1024).toFixed(2)}KB`);
+          resolve(compressedFile);
+        }, 'image/jpeg', 0.8); // 使用0.8的JPEG质量
+      };
+    };
+  });
+};
 
 const vantaEffect = ref(null)
 const fileInput = ref(null)
@@ -138,15 +185,24 @@ const triggerFileInput = () => {
   fileInput.value.click()
 }
 
-const handleFileChange = (event) => {
+const handleFileChange = async (event) => {
   const file = event.target.files[0]
   if (file) {
-    selectedFile.value = file
+    // 先保存原始文件引用，以便显示预览
+    const originalFile = file;
+    
+    // 压缩图片
+    const compressedFile = await compressImage(file);
+    selectedFile.value = compressedFile;
+    
+    // 使用原始文件显示预览（保持预览质量）
     const reader = new FileReader()
     reader.onload = (e) => {
       previewImage.value = e.target.result
     }
-    reader.readAsDataURL(file)
+    reader.readAsDataURL(originalFile)
+    
+    console.log(`使用压缩后的图片：${selectedFile.value.name}, 大小: ${(selectedFile.value.size / 1024).toFixed(2)}KB`);
   }
 }
 
@@ -197,12 +253,12 @@ const retryDesign = () => {
 const togglePlant = (plantName) => {
   const index = selectedPlants.value.indexOf(plantName)
   if (index === -1) {
-    if (selectedPlants.value.length >= 3) {
-      alert('You can select up to three plants!')
-      return
-    }
+    // 清空之前的选择
+    selectedPlants.value = [];
+    // 添加新选择的植物
     selectedPlants.value.push(plantName)
   } else {
+    // 允许取消选择
     selectedPlants.value.splice(index, 1)
   }
 }
@@ -213,63 +269,41 @@ const startAIDesign = async () => {
   try {
     loading.value = true
     error.value = null
-    designResult.value = null
-    designStatus.value = 'pending'
+    
+    // 清除旧结果
+    if (designResult.value?.imageUrl) {
+      console.log('清理旧的Blob URL')
+      URL.revokeObjectURL(designResult.value.imageUrl)
+      designResult.value = null
+    }
+    
     progressMessage.value = 'Starting design...'
 
-    // Start design
-    const startResponse = await aiDesignService.startDesign(
+    // 构建基础提示词（简化版，详细增强会在后端完成）
+    const prompt = selectedPlants.value.join(', ')
+
+    console.log('开始生成AI设计...')
+    // 调用新的生成API
+    const result = await aiDesignService.generateBalconyImage(
       selectedFile.value,
-      selectedPlants.value.map(name => name)
+      prompt
     )
 
-    // Start polling for results
-    designStatus.value = 'processing'
-    progressMessage.value = 'Generating image, please wait...'
-
-    const result = await aiDesignService.pollDesignResult(
-      startResponse.promptId,
-      {
-        interval: 5000, // Poll every 5 seconds
-        maxAttempts: 60, // Wait up to 5 minutes
-        onProgress: (progressData) => {
-          designStatus.value = progressData.status
-          progressMessage.value = progressData.message
-
-          if (progressData.status === 'error') {
-            error.value = progressData.message
-            loading.value = false
-          }
-        }
+    console.log('获取生成结果:', result)
+    if (result.success && result.imageUrl) {
+      // 确保图片URL正确设置
+      designResult.value = {
+        imageUrl: result.imageUrl
       }
-    )
-
-    if (result.success && result.status === 'completed') {
-      designResult.value = result.result
+      console.log('设置设计结果URL:', designResult.value.imageUrl)
       showDialog.value = false
       showResultDialog.value = true
     } else {
-      throw new Error('Design generation failed')
+      throw new Error('Design generation failed - missing image URL')
     }
   } catch (error) {
     console.error('AI design failed:', error)
-
-    // Display user-friendly error messages based on error type
-    if (error.type === 'UPLOAD_ERROR') {
-      error.value = 'Image upload failed, please try again'
-    } else if (error.type === 'WORKFLOW_ERROR') {
-      error.value = 'Workflow configuration error, please contact the administrator'
-    } else if (error.type === 'SUBMISSION_ERROR') {
-      error.value = 'Design task submission failed, please try again'
-    } else if (error.type === 'SERVER_ERROR') {
-      error.value = 'Server error, please try again later'
-    } else if (error.type === 'HISTORY_ERROR') {
-      error.value = 'Failed to fetch history, please try again'
-    } else if (error.type === 'TIMEOUT') {
-      error.value = 'Design generation timed out, please try again later'
-    } else {
-      error.value = error.message || 'An error occurred during the design process, please try again later'
-    }
+    error.value = error.message || 'An error occurred during the design process, please try again later'
   } finally {
     loading.value = false
   }
@@ -313,6 +347,14 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
+  if (designResult.value?.imageUrl) {
+    URL.revokeObjectURL(designResult.value.imageUrl)
+  }
+  
+  if (window._lastBlobUrl) {
+    URL.revokeObjectURL(window._lastBlobUrl)
+  }
+  
   if (pollInterval.value) {
     clearInterval(pollInterval.value)
   }
@@ -698,5 +740,46 @@ onUnmounted(() => {
   border-radius: 20px;
   font-size: 14px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.loading-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.loading-placeholder .loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #39bdb3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+.result-image img {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.design-description .selected-plant-tag {
+  background: #f0f8ff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: inline-block;
+  margin-top: 10px;
+  color: #333;
+  font-weight: 500;
 }
 </style>
