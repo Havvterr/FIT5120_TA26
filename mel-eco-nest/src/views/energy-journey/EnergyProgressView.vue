@@ -620,75 +620,6 @@
         </div>
       </div>
 
-      <div class="action-grid">
-        <h3 class="subsection-title" data-aos="fade-up">
-          <i class="fas fa-tasks"></i>
-          Sector Deep Dive
-        </h3>
-
-        <div class="action-cards">
-          <div class="action-card" data-aos="zoom-in" data-aos-delay="200">
-            <div class="action-icon">
-              <i class="fas fa-industry"></i>
-            </div>
-            <h4>Industrial Sector</h4>
-            <ul>
-              <li>High-efficiency motors and drives deployment</li>
-              <li>Process optimization and waste heat recovery</li>
-              <li>Smart energy management systems</li>
-            </ul>
-            <div class="action-potential">
-              Contribution to Sector Emissions Reduction: <span>25-30%</span>
-            </div>
-          </div>
-
-          <div class="action-card" data-aos="zoom-in" data-aos-delay="400">
-            <div class="action-icon">
-              <i class="fas fa-building"></i>
-            </div>
-            <h4>Buildings</h4>
-            <ul>
-              <li>Zero-carbon building design principles</li>
-              <li>Heat pump deployment for heating and cooling</li>
-              <li>Deep renovations of existing structures</li>
-            </ul>
-            <div class="action-potential">
-              Contribution to Sector Emissions Reduction: <span>30-40%</span>
-            </div>
-          </div>
-
-          <div class="action-card" data-aos="zoom-in" data-aos-delay="600">
-            <div class="action-icon">
-              <i class="fas fa-car-side"></i>
-            </div>
-            <h4>Transportation</h4>
-            <ul>
-              <li>Electric vehicle adoption acceleration</li>
-              <li>Public transportation system development</li>
-              <li>Behavioral changes (shared mobility solutions)</li>
-            </ul>
-            <div class="action-potential">
-              Contribution to Sector Emissions Reduction: <span>15-20%</span>
-            </div>
-          </div>
-
-          <div class="action-card" data-aos="zoom-in" data-aos-delay="800">
-            <div class="action-icon">
-              <i class="fas fa-users"></i>
-            </div>
-            <h4>Behavioral Change</h4>
-            <ul>
-              <li>Transportation choices and patterns</li>
-              <li>Demand-side response in consumption</li>
-              <li>Energy-saving awareness enhancement</li>
-            </ul>
-            <div class="action-potential">
-              Contribution to Total Emissions Reduction: <span>4-6%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="cta-container" data-aos="fade-up">
         <h3>Unlocking the Potential: What Must Change Now?</h3>
         <p>
@@ -696,7 +627,7 @@
           lowest-cost means of reducing emissions and is indispensable at every stage of the path to
           net zero.
         </p>
-        <button class="cta-button">Create My Efficiency Plan</button>
+        <router-link to="/energy-plan" class="cta-button">Create My Efficiency Plan</router-link>
       </div>
     </section>
   </div>
@@ -705,6 +636,7 @@
 <script setup>
 // Component logic
 import { onMounted } from 'vue'
+import { RouterLink } from 'vue-router'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
@@ -733,6 +665,8 @@ section {
   max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
+  background-color: #dcdcdc;
+  border-radius: 10px;
 }
 
 .section-title {
@@ -776,7 +710,7 @@ section {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background: linear-gradient(135deg, #f2f9f1, #e0f7e0);
+  background: #dcdcdc;
   position: relative;
   padding: 0 1.5%;
   max-width: 1600px;
@@ -854,7 +788,7 @@ section {
 
 /* Why Efficiency Section Styles */
 .why-efficiency {
-  background-color: #fff;
+  background-color: #dcdcdc;
 }
 
 .challenge-grid {
@@ -981,7 +915,7 @@ blockquote:after {
 
 /* Current Situation Section Styles */
 .current-situation {
-  background-color: #f7f9fc;
+  background-color: #dcdcdc;
 }
 
 .warning-banner {
@@ -1046,7 +980,7 @@ blockquote:after {
 }
 
 .situation-icon {
-  background-color: #e0f7e0;
+  background-color: #dcdcdc;
   color: #0a8a43;
   padding: 1rem;
   border-radius: 10px;
@@ -1270,7 +1204,7 @@ blockquote:after {
 }
 
 .legend-item:hover {
-  background-color: #e9ecef;
+  background-color: #dcdcdc;
 }
 
 .color-box {
@@ -1349,7 +1283,7 @@ blockquote:after {
 }
 
 .action-card {
-  background: linear-gradient(135deg, #f5f9ff, #e0f7e0);
+  background: white;
   border-radius: 10px;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -1412,7 +1346,7 @@ blockquote:after {
   margin: 0 auto;
   text-align: center;
   padding: 3rem 2%;
-  background-color: #f2f9f1;
+  background-color: white;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
@@ -1441,6 +1375,8 @@ blockquote:after {
   border-radius: 20px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .cta-button:hover {

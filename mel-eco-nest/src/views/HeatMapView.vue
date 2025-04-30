@@ -45,11 +45,11 @@
             <span class="color-box" style="background-color: #009900"></span>
             <span>40-60%</span>
           </div>
-          <div class="legend-item">
+            <div class="legend-item">
             <span class="color-box" style="background-color: #66cc00"></span>
             <span>20-40%</span>
-          </div>
-          <div class="legend-item">
+            </div>
+            <div class="legend-item">
             <span class="color-box" style="background-color: #ccff99"></span>
             <span>0-20%</span>
           </div>
@@ -59,19 +59,19 @@
           <div class="legend-item">
             <span class="color-box" style="background-color: #b10026"></span>
             <span>Very High (8+)</span>
-          </div>
-          <div class="legend-item">
+            </div>
+            <div class="legend-item">
             <span class="color-box" style="background-color: #e31a1c"></span>
             <span>High (6-8)</span>
-          </div>
-          <div class="legend-item">
+            </div>
+            <div class="legend-item">
             <span class="color-box" style="background-color: #fc4e2a"></span>
             <span>Moderate (4-6)</span>
-          </div>
-          <div class="legend-item">
+            </div>
+            <div class="legend-item">
             <span class="color-box" style="background-color: #fd8d3c"></span>
             <span>Low (2-4)</span>
-          </div>
+            </div>
           <div class="legend-item">
             <span class="color-box" style="background-color: #fed976"></span>
             <span>Very Low (0-2)</span>

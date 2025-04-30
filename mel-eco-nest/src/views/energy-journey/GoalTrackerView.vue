@@ -20,27 +20,27 @@
               />
               <path
                 class="circle"
-                stroke-dasharray="65, 100"
+                :stroke-dasharray="`${completionPercentage}, 100`"
                 d="M18 2.0845
                 a 15.9155 15.9155 0 0 1 0 31.831
                 a 15.9155 15.9155 0 0 1 0 -31.831"
               />
-              <text x="18" y="18.5" class="percentage">65%</text>
+              <text x="18" y="18.5" class="percentage">{{ completionPercentage }}%</text>
               <text x="18" y="23.5" class="percentage-label">Complete</text>
             </svg>
           </div>
           <div class="goals-overview">
             <div class="goal-stat" data-aos="fade-left" data-aos-delay="400">
               <div class="stat-label">Total Goals</div>
-              <div class="stat-value">5</div>
+              <div class="stat-value">{{ trackedGoals.length }}</div>
             </div>
             <div class="goal-stat completed" data-aos="fade-left" data-aos-delay="500">
               <div class="stat-label">Completed</div>
-              <div class="stat-value">3</div>
+              <div class="stat-value">{{ completedGoalsCount }}</div>
             </div>
             <div class="goal-stat in-progress" data-aos="fade-left" data-aos-delay="600">
               <div class="stat-label">In Progress</div>
-              <div class="stat-value">2</div>
+              <div class="stat-value">{{ trackedGoals.length - completedGoalsCount }}</div>
             </div>
           </div>
         </div>
@@ -50,153 +50,300 @@
     <div class="goals-list" data-aos="fade-up" data-aos-delay="300">
       <h2>Your Current Goals</h2>
       <div class="goal-items">
-        <div class="goal-item completed" data-aos="fade-right" data-aos-delay="100">
-          <div class="goal-status">
-            <i class="fas fa-check-circle"></i>
-          </div>
-          <div class="goal-content">
-            <h3>Reduce electricity consumption by 15%</h3>
-            <div class="goal-details">
-              <div class="goal-progress">
-                <div class="progress-bar">
-                  <div class="progress-fill" style="width: 100%"></div>
+        <template v-if="trackedGoals.length > 0">
+          <div
+            v-for="goal in trackedGoals"
+            :key="goal.id"
+            class="goal-item"
+            :class="{
+              completed: goal.isCompleted,
+              'in-progress': !goal.isCompleted,
+              'custom-goal': goal.isCustom,
+            }"
+          >
+            <div class="goal-status">
+              <i :class="goal.isCompleted ? 'fas fa-check-circle' : 'fas fa-spinner'"></i>
+            </div>
+            <div class="goal-content">
+              <h3>{{ goal.title }}</h3>
+              <div class="goal-details">
+                <p class="goal-description">{{ goal.description }}</p>
+                <div class="goal-meta">
+                  <span class="goal-date">
+                    <i :class="goal.isCompleted ? 'fas fa-calendar-check' : 'fas fa-calendar'"></i>
+                    {{ goal.isCompleted ? 'Achieved: ' : 'Added: ' }} {{ goal.date }}
+                  </span>
+                  <span v-if="!goal.isCustom && goal.savings" class="goal-impact">
+                    <i class="fas fa-leaf"></i> {{ goal.savings }}
+                  </span>
+                  <span v-if="!goal.isCustom && getPlanTarget(goal)" class="goal-target">
+                    <i class="fas fa-bullseye"></i> Target: {{ getPlanTarget(goal) }}
+                  </span>
                 </div>
-                <span class="progress-text">100% Complete</span>
-              </div>
-              <div class="goal-meta">
-                <span class="goal-date"
-                  ><i class="fas fa-calendar-check"></i> Achieved: Jan 30, 2023</span
-                >
-                <span class="goal-impact"><i class="fas fa-bolt"></i> Saved: 230 kWh</span>
+                <div class="goal-actions">
+                  <button
+                    v-if="!goal.isCompleted"
+                    class="complete-button"
+                    @click="markAsCompleted(goal.id)"
+                  >
+                    Mark as Completed
+                  </button>
+                  <button class="untrack-button" @click="untrackGoal(goal.id)">Untrack Goal</button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="goal-item completed" data-aos="fade-right" data-aos-delay="200">
-          <div class="goal-status">
-            <i class="fas fa-check-circle"></i>
-          </div>
-          <div class="goal-content">
-            <h3>Install LED lighting throughout home</h3>
-            <div class="goal-details">
-              <div class="goal-progress">
-                <div class="progress-bar">
-                  <div class="progress-fill" style="width: 100%"></div>
-                </div>
-                <span class="progress-text">100% Complete</span>
-              </div>
-              <div class="goal-meta">
-                <span class="goal-date"
-                  ><i class="fas fa-calendar-check"></i> Achieved: Dec 15, 2022</span
-                >
-                <span class="goal-impact"
-                  ><i class="fas fa-dollar-sign"></i> Saved: $145 annually</span
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="goal-item completed" data-aos="fade-right" data-aos-delay="300">
-          <div class="goal-status">
-            <i class="fas fa-check-circle"></i>
-          </div>
-          <div class="goal-content">
-            <h3>Reduce standby power consumption</h3>
-            <div class="goal-details">
-              <div class="goal-progress">
-                <div class="progress-bar">
-                  <div class="progress-fill" style="width: 100%"></div>
-                </div>
-                <span class="progress-text">100% Complete</span>
-              </div>
-              <div class="goal-meta">
-                <span class="goal-date"
-                  ><i class="fas fa-calendar-check"></i> Achieved: Feb 10, 2023</span
-                >
-                <span class="goal-impact"><i class="fas fa-leaf"></i> Reduced: 85 kg CO2</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="goal-item in-progress" data-aos="fade-right" data-aos-delay="400">
-          <div class="goal-status">
-            <i class="fas fa-spinner"></i>
-          </div>
-          <div class="goal-content">
-            <h3>Improve home insulation</h3>
-            <div class="goal-details">
-              <div class="goal-progress">
-                <div class="progress-bar">
-                  <div class="progress-fill" style="width: 60%"></div>
-                </div>
-                <span class="progress-text">60% Complete</span>
-              </div>
-              <div class="goal-meta">
-                <span class="goal-date"><i class="fas fa-calendar"></i> Due: May 1, 2023</span>
-                <span class="goal-impact"
-                  ><i class="fas fa-temperature-low"></i> Target: 20% heating reduction</span
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="goal-item in-progress" data-aos="fade-right" data-aos-delay="500">
-          <div class="goal-status">
-            <i class="fas fa-spinner"></i>
-          </div>
-          <div class="goal-content">
-            <h3>Install solar hot water system</h3>
-            <div class="goal-details">
-              <div class="goal-progress">
-                <div class="progress-bar">
-                  <div class="progress-fill" style="width: 25%"></div>
-                </div>
-                <span class="progress-text">25% Complete</span>
-              </div>
-              <div class="goal-meta">
-                <span class="goal-date"><i class="fas fa-calendar"></i> Due: July 15, 2023</span>
-                <span class="goal-impact"
-                  ><i class="fas fa-leaf"></i> Target: 250 kg CO2 reduction</span
-                >
-              </div>
-            </div>
-          </div>
+        </template>
+        <div v-else class="no-goals-message">
+          <p>
+            You haven't added any goals to track yet. Visit the Energy Plan page to add goals or
+            create a custom goal below.
+          </p>
         </div>
       </div>
     </div>
 
     <div class="add-goal-section" data-aos="fade-up" data-aos-delay="600">
-      <h2>Set a New Goal</h2>
+      <h2>Create a Custom Goal</h2>
       <div class="add-goal-card" data-aos="zoom-in" data-aos-delay="700">
         <div class="add-goal-icon">
           <i class="fas fa-plus-circle"></i>
         </div>
         <h3>Add a New Energy Saving Goal</h3>
-        <p>
-          Create a personalized energy saving goal to track your progress towards a more sustainable
-          lifestyle.
-        </p>
-        <button class="add-goal-btn">Create New Goal</button>
+
+        <form @submit.prevent="addCustomGoal" class="custom-goal-form">
+          <div class="form-group">
+            <label for="goalTitle">Goal Title</label>
+            <input
+              type="text"
+              id="goalTitle"
+              v-model="customGoal.title"
+              placeholder="e.g., Reduce hot water usage"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="goalDescription">Description</label>
+            <textarea
+              id="goalDescription"
+              v-model="customGoal.description"
+              placeholder="Describe your energy saving goal..."
+              rows="3"
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="add-goal-btn">Create Custom Goal</button>
+        </form>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+
+// Load tracked goals
+const trackedGoals = ref([])
+
+// Custom goal form
+const customGoal = ref({
+  title: '',
+  description: '',
+})
+
+// Storage key - 使用一个固定的key名称
+const STORAGE_KEY = 'energy_tracker_goals'
+
+// Calculate the number of completed goals
+const completedGoalsCount = computed(() => {
+  return trackedGoals.value.filter((goal) => goal.isCompleted).length
+})
+
+// Calculate completion percentage
+const completionPercentage = computed(() => {
+  if (trackedGoals.value.length === 0) return 0
+  return Math.round((completedGoalsCount.value / trackedGoals.value.length) * 100)
+})
+
+// 保存数据到localStorage
+const saveGoals = () => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(trackedGoals.value))
+  } catch (e) {
+    console.error('无法保存目标数据:', e)
+  }
+}
+
+// 从localStorage加载数据
+const loadGoals = () => {
+  try {
+    const savedGoals = localStorage.getItem(STORAGE_KEY)
+    if (savedGoals) {
+      trackedGoals.value = JSON.parse(savedGoals)
+      console.log('成功加载了', trackedGoals.value.length, '个目标')
+    } else {
+      console.log('没有找到已保存的目标数据')
+    }
+  } catch (e) {
+    console.error('加载目标数据时出错:', e)
+  }
+}
+
+// Mark a goal as completed
+const markAsCompleted = (goalId) => {
+  const goalIndex = trackedGoals.value.findIndex((goal) => goal.id === goalId)
+  if (goalIndex !== -1) {
+    trackedGoals.value[goalIndex].isCompleted = true
+    trackedGoals.value[goalIndex].date = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+
+    // 保存更改
+    saveGoals()
+
+    // 强制刷新视图
+    nextTick(() => {
+      // 在DOM更新后，手动刷新AOS（但不会影响已经移除了AOS的卡片）
+      AOS.refresh()
+    })
+  }
+}
+
+// Untrack a goal
+const untrackGoal = (goalId) => {
+  const goalIndex = trackedGoals.value.findIndex((goal) => goal.id === goalId)
+  if (goalIndex !== -1) {
+    trackedGoals.value.splice(goalIndex, 1)
+
+    // 保存更改
+    saveGoals()
+
+    // 强制刷新视图
+    nextTick(() => {
+      // 在DOM更新后，手动刷新AOS（但不会影响已经移除了AOS的卡片）
+      AOS.refresh()
+    })
+  }
+}
+
+// Add custom goal
+const addCustomGoal = () => {
+  // Create unique ID for custom goal
+  const customId = 'custom-' + Date.now()
+
+  const newGoal = {
+    id: customId,
+    title: customGoal.value.title,
+    description: customGoal.value.description,
+    date: new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }),
+    isCompleted: false,
+    isCustom: true, // Mark as custom goal
+  }
+
+  trackedGoals.value.push(newGoal)
+
+  // 保存更改
+  saveGoals()
+
+  // Reset form
+  customGoal.value = {
+    title: '',
+    description: '',
+  }
+}
+
+// Get target based on plan type
+const getPlanTarget = (plan) => {
+  // Skip target display for custom goals
+  if (plan.isCustom) {
+    return null
+  }
+
+  const category = plan.id.split('-')[0]
+
+  switch (category) {
+    case 'led':
+      return 'Reduce lighting costs by 80%'
+    case 'smart':
+      return 'Optimize temperature control by 25%'
+    case 'window':
+      return 'Reduce indoor heat gain by 40%'
+    case 'roof':
+      return 'Lower cooling costs by 30%'
+    case 'reflective':
+      return 'Reduce surface temperature by 30°C'
+    case 'natural':
+      return 'Cut artificial lighting use by 25%'
+    case 'weatherstripping':
+      return 'Eliminate 90% of drafts around openings'
+    case 'insulation':
+      return 'Reduce heat transfer by 60%'
+    case 'indoor':
+      return 'Improve air quality and reduce temperature by 2-3°C'
+    case 'hang':
+      return 'Eliminate 100% of dryer energy usage'
+    case 'defrost':
+      return 'Improve refrigerator efficiency by 15%'
+    case 'day':
+      return 'Reduce indoor temperature by up to 5°C'
+    case 'night':
+      return 'Lower cooling costs by 20% overnight'
+    case 'timed':
+      return 'Eliminate standby power by 95%'
+    default:
+      return 'Reduce energy consumption significantly'
+  }
+}
+
+// 在组件挂载时同步MyPlanView.vue中的跟踪数据
+const syncWithMyPlanData = () => {
+  try {
+    // 读取MyPlanView中保存的跟踪数据
+    const planViewData = localStorage.getItem('trackedGoals')
+
+    if (planViewData) {
+      const planGoals = JSON.parse(planViewData)
+
+      // 如果当前没有数据但是MyPlanView有数据，直接使用MyPlanView的数据
+      if (trackedGoals.value.length === 0 && planGoals.length > 0) {
+        trackedGoals.value = planGoals
+        saveGoals() // 保存到我们的新键名下
+        console.log('已从MyPlanView同步了', planGoals.length, '个目标')
+      }
+      // 如果都有数据，确保数据一致性
+      else if (trackedGoals.value.length > 0 && planGoals.length > 0) {
+        // 先保留我们的数据，然后将其保存到MyPlanView使用的键名下
+        localStorage.setItem('trackedGoals', JSON.stringify(trackedGoals.value))
+        console.log('已将跟踪数据同步到MyPlanView')
+      }
+    }
+  } catch (e) {
+    console.error('同步数据时出错:', e)
+  }
+}
 
 onMounted(() => {
   AOS.init({
     duration: 800,
     easing: 'ease-out',
-    once: false,
+    once: true, // 改为true，动画只播放一次
   })
+
+  // 加载保存的目标数据
+  loadGoals()
+
+  // 与MyPlanView数据同步
+  syncWithMyPlanData()
 })
 </script>
 
@@ -510,5 +657,96 @@ onMounted(() => {
   .goal-status {
     justify-content: center;
   }
+}
+
+.goal-description {
+  color: #4a5568;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.goal-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.complete-button {
+  background: #1e6a93;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.complete-button:hover {
+  background: #165a7d;
+}
+
+.untrack-button {
+  background: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.untrack-button:hover {
+  background: #c53030;
+}
+
+.custom-goal-form {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #1e6a93;
+  outline: none;
+}
+
+.no-goals-message {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  text-align: center;
+  color: #718096;
+}
+
+.custom-goal {
+  border-left: 4px solid #805ad5;
+}
+
+.custom-goal .goal-status i {
+  color: #805ad5;
 }
 </style>
