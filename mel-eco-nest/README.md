@@ -17,7 +17,25 @@ Recommended to use [VSCode](https://code.visualstudio.com/) as the development t
 - [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (please disable Vetur)
 - [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin)
 
-## Project Setup
+## Quick Start Guide
+
+### 1. Start Backend Server
+```sh
+cd mel-eco-nest
+cd server
+npm install
+node server.js
+```
+
+### 2. Start Frontend Development Server
+Open a new terminal, then:
+```sh
+cd mel-eco-nest
+npm install
+npm run dev
+```
+
+## Detailed Project Setup
 
 ### 1. Environment Configuration
 1. Frontend Configuration
@@ -36,54 +54,20 @@ Recommended to use [VSCode](https://code.visualstudio.com/) as the development t
      DB_NAME=your_database_name
      ```
    - Ask Ruifeng(rlia0025@student.monash.edu) for the database connection information
-   
-### 2. Install Dependencies
-1. Install Frontend Dependencies
-   ```sh
-   # In the project root directory
-   npm install
-   ```
 
-2. Install Backend Dependencies
-   ```sh
-   # Navigate to server directory
-   cd server
-   npm install
-   ```
-
-### 3. Start the Application
-To start both frontend and backend servers simultaneously:
-```sh
-npm run start:all
-```
-This command will start the backend server and then launch the frontend development server.
-1. Start Backend Server
-   ```sh
-   # In the server directory
-   npm start
-   ```
-   The backend server will start on http://localhost:3000
-
-2. Start Frontend Development Server
-   ```sh
-   # In the project root directory
-   npm run dev
-   ```
-   After starting, visit the prompted URL in your browser (usually http://localhost:5173)
-
-### 4. Production Build
+### 2. Production Build
 Build for production:
 ```sh
 npm run build
 ```
 
-### 5. Unit Tests
+### 3. Unit Tests
 Run unit tests:
 ```sh
 npm run test:unit
 ```
 
-### 6. Code Linting
+### 4. Code Linting
 Run ESLint check:
 ```sh
 npm run lint
@@ -146,16 +130,6 @@ server {
     return 301 https://$host$request_uri;
 }
 ```
-1. create a new file named `meleconest_me.conf` in the `/etc/nginx/sites-available` directory
-2. copy the above configuration into the file
-3. create a symbolic link to enable the site:
-   ```sh
-   sudo ln -s /etc/nginx/sites-available/meleconest_me.conf /etc/nginx/sites-enabled/
-   ```
-4. restart Nginx to apply the changes:
-   ```sh
-   sudo systemctl restart nginx
-   ```
 
 ## Configuration Reference
 

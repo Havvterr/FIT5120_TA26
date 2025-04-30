@@ -21,9 +21,9 @@ parser.add_argument('--workflow', type=str, required=True, help='JSON string of 
 args = parser.parse_args()
 
 # Configuration Area
-# COMFYUI_API = "http://192.168.1.119:8188/" # local network address
+COMFYUI_API = "http://192.168.1.119:8188/" # local network address
 # COMFYUI_API = "http://127.0.0.1:8188/"  # this is the local address for testing
-COMFYUI_API = "http://58.178.177.133:8188/"  # This is the remote address.
+# COMFYUI_API = "http://58.178.177.133:8188/"  # This is the remote address.
 
 
 # 使用传入的工作流配置

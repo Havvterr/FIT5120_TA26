@@ -493,7 +493,7 @@ app.post('/api/generate-balcony', upload.single('image'), async (req, res) => {
     }
 
     // 执行Python脚本
-    const pythonProcess = spawn('python', [
+    const pythonProcess = spawn('python3', [
       path.join(__dirname, '../comfyapi/requset.py'),
       '--prompt', prompt,
       '--image', uploadedImagePath,
