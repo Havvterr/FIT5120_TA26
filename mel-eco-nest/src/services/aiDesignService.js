@@ -47,24 +47,31 @@ export const aiDesignService = {
 
       // 检查响应类型
       console.log('📧 Response received, content-type:', response.headers['content-type']);
-      
+
       if (response.headers['content-type'].includes('image/')) {
         // 如果之前存在的Blob URL，先释放它
         if (window._lastBlobUrl) {
           URL.revokeObjectURL(window._lastBlobUrl);
         }
-        
+
         // 创建新的Blob URL
         const blob = new Blob([response.data], { type: response.headers['content-type'] });
         const imageUrl = URL.createObjectURL(blob);
-        
+
         // 保存最后创建的Blob URL以便后续清理
         window._lastBlobUrl = imageUrl;
-        
+
         console.log('✅ Image generated successfully, URL created');
+
+        // 检查是否包含AI生成的标记和其他元数据
+        const isAIGenerated = response.headers['x-ai-generated'] === 'true';
+        const disclaimer = 'This image is AI-generated and is for reference only. Results may vary in real implementation.';
+
         return {
           success: true,
-          imageUrl: imageUrl
+          imageUrl: imageUrl,
+          isAIGenerated: isAIGenerated,
+          disclaimer: disclaimer,
         };
       } else {
         // 如果不是图片，尝试解析错误信息

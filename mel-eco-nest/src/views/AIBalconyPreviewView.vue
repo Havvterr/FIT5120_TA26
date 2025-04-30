@@ -39,7 +39,13 @@
         <div v-if="error" class="error-message">{{ error }}</div>
         <div v-if="loading" class="loading">
           <div class="loading-spinner"></div>
-          <p>Generating your balcony design...</p>
+          <p>Generating your balcony design...<br> This process may take up to 1 minute.</p>
+          <div class="fun-fact-container">
+            <div class="fun-fact" :key="currentFunFactIndex">
+              <p class="fun-fact-title">🌿 Plant Fun Fact</p>
+              <p class="fun-fact-text">{{ plantFunFacts[currentFunFactIndex] }}</p>
+            </div>
+          </div>
         </div>
         <div v-else class="plants-grid">
           <div
@@ -86,14 +92,20 @@
           <div class="image-comparison">
             <div class="original-image">
               <h3>Original Image</h3>
-              <img :src="previewImage" alt="Original Balcony Photo">
+              <img :src="previewImage" alt="Original Balcony Photo" @click="openImagePreview(previewImage)">
             </div>
             <div class="result-image">
               <h3>Design with {{ selectedPlants[0] }}</h3>
-              <img v-if="designResult?.imageUrl" :src="designResult.imageUrl" alt="Design Effect Image">
+              <img v-if="designResult?.imageUrl"
+                   :src="designResult.imageUrl"
+                   alt="Design Effect Image"
+                   @click="openImagePreview(designResult.imageUrl)">
               <div v-else class="loading-placeholder">
                 <div class="loading-spinner"></div>
                 <p>Loading generated image...</p>
+              </div>
+              <div class="ai-disclaimer">
+                <p>{{ designResult?.disclaimer || 'This image is AI-generated and is for reference only. Results may vary in real implementation.' }}</p>
               </div>
             </div>
           </div>
@@ -106,6 +118,14 @@
           <button class="confirm-btn" @click="closeResultDialog">Done</button>
           <button class="retry-btn" @click="retryDesign">Try Different Plant</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div v-if="showImagePreview" class="image-preview-overlay" @click="closeImagePreview">
+      <div class="image-preview-container">
+        <img :src="previewImageUrl" alt="Preview" class="preview-full-image">
+        <button class="close-preview-btn" @click="closeImagePreview">&times;</button>
       </div>
     </div>
   </div>
@@ -129,26 +149,26 @@ const compressImage = async (file, maxLongSide = 960, maxFileSize = 1024 * 1024)
     reader.onload = (e) => {
       const img = new Image();
       img.src = e.target.result;
-      
+
       img.onload = () => {
         // 计算尺寸
         let { width, height } = img;
         const longSide = Math.max(width, height);
-        
+
         // 如果长边超过限制，按比例缩小
         if (longSide > maxLongSide) {
           const ratio = maxLongSide / longSide;
           width = Math.round(width * ratio);
           height = Math.round(height * ratio);
         }
-        
+
         // 创建canvas并绘制调整后的图片
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
-        
+
         // 转换为Blob
         canvas.toBlob((blob) => {
           // 创建新的File对象
@@ -170,16 +190,40 @@ const previewImage = ref(null)
 const selectedFile = ref(null)
 const showDialog = ref(false)
 const showResultDialog = ref(false)
+const showImagePreview = ref(false)
+const previewImageUrl = ref(null)
 const plants = ref([])
 const selectedPlants = ref([])
 const loading = ref(false)
 const error = ref(null)
 const designResult = ref(null)
-const designStatus = ref(null)
 const pollInterval = ref(null)
 const progressMessage = ref('')
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+// 添加植物趣味知识数组
+const plantFunFacts = [
+  "Did you know? Plants can communicate with each other through chemical signals!",
+  "Plants can recognize their siblings and be more cooperative with them.",
+  "Some plants can count! Venus flytraps count the triggers before snapping shut.",
+  "Plants can hear water and will grow roots towards it.",
+  "Plants release oxygen during the day but consume it at night.",
+  "Some trees communicate and share nutrients through an underground fungal network.",
+  "Plants can feel touch and respond to it!",
+  "Bamboo can grow up to 35 inches in a single day!",
+  "Plants have their own immune system to fight off diseases!",
+  "Some plants can produce caffeine to prevent other plants from growing nearby.",
+  "The oldest living tree is over 5,000 years old!",
+  "Plants can see! They can detect different wavelengths of light."
+]
+
+const currentFunFactIndex = ref(0)
+
+// 添加自动轮播函数
+const startFunFactRotation = () => {
+  return setInterval(() => {
+    currentFunFactIndex.value = (currentFunFactIndex.value + 1) % plantFunFacts.length
+  }, 5000) // 每5秒切换一次
+}
 
 const triggerFileInput = () => {
   fileInput.value.click()
@@ -190,18 +234,18 @@ const handleFileChange = async (event) => {
   if (file) {
     // 先保存原始文件引用，以便显示预览
     const originalFile = file;
-    
+
     // 压缩图片
     const compressedFile = await compressImage(file);
     selectedFile.value = compressedFile;
-    
+
     // 使用原始文件显示预览（保持预览质量）
     const reader = new FileReader()
     reader.onload = (e) => {
       previewImage.value = e.target.result
     }
     reader.readAsDataURL(originalFile)
-    
+
     console.log(`使用压缩后的图片：${selectedFile.value.name}, 大小: ${(selectedFile.value.size / 1024).toFixed(2)}KB`);
   }
 }
@@ -269,14 +313,17 @@ const startAIDesign = async () => {
   try {
     loading.value = true
     error.value = null
-    
+
+    // 开始趣味知识轮播
+    const funFactInterval = startFunFactRotation()
+
     // 清除旧结果
     if (designResult.value?.imageUrl) {
       console.log('清理旧的Blob URL')
       URL.revokeObjectURL(designResult.value.imageUrl)
       designResult.value = null
     }
-    
+
     progressMessage.value = 'Starting design...'
 
     // 构建基础提示词（简化版，详细增强会在后端完成）
@@ -289,11 +336,16 @@ const startAIDesign = async () => {
       prompt
     )
 
+    // 停止趣味知识轮播
+    clearInterval(funFactInterval)
+
     console.log('获取生成结果:', result)
     if (result.success && result.imageUrl) {
       // 确保图片URL正确设置
       designResult.value = {
-        imageUrl: result.imageUrl
+        imageUrl: result.imageUrl,
+        isAIGenerated: result.isAIGenerated || true,
+        disclaimer: result.disclaimer || 'This image is AI-generated and is for reference only. Results may vary in real implementation.',
       }
       console.log('设置设计结果URL:', designResult.value.imageUrl)
       showDialog.value = false
@@ -307,6 +359,17 @@ const startAIDesign = async () => {
   } finally {
     loading.value = false
   }
+}
+
+// 添加图片预览函数
+const openImagePreview = (imageUrl) => {
+  previewImageUrl.value = imageUrl
+  showImagePreview.value = true
+}
+
+const closeImagePreview = () => {
+  showImagePreview.value = false
+  previewImageUrl.value = null
 }
 
 onMounted(async () => {
@@ -350,11 +413,11 @@ onUnmounted(() => {
   if (designResult.value?.imageUrl) {
     URL.revokeObjectURL(designResult.value.imageUrl)
   }
-  
+
   if (window._lastBlobUrl) {
     URL.revokeObjectURL(window._lastBlobUrl)
   }
-  
+
   if (pollInterval.value) {
     clearInterval(pollInterval.value)
   }
@@ -688,6 +751,13 @@ onUnmounted(() => {
   max-width: 100%;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.original-image img:hover,
+.result-image img:hover {
+  transform: scale(1.02);
 }
 
 .retry-btn {
@@ -781,5 +851,106 @@ onUnmounted(() => {
   margin-top: 10px;
   color: #333;
   font-weight: 500;
+}
+
+.ai-disclaimer {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: rgba(255, 247, 224, 0.9);
+  border-left: 4px solid #ffc107;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #856404;
+  text-align: left;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.fun-fact-container {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.fun-fact {
+  animation: fadeInOut 5s ease-in-out infinite;
+}
+
+.fun-fact-title {
+  font-size: 1.1rem;
+  color: #39bdb3;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.fun-fact-text {
+  font-size: 1.1rem;
+  color: #333;
+  line-height: 1.4;
+  margin: 0;
+  padding: 0 10px;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.image-preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.image-preview-container {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.preview-full-image {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+}
+
+.close-preview-btn {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 32px;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+}
+
+.close-preview-btn:hover {
+  color: #ddd;
 }
 </style>

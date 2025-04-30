@@ -282,7 +282,7 @@ app.post('/api/ai-design/start', upload.single('file'), async (req, res) => {
         if (node.class_type === 'CLIPTextEncode' && node.inputs && 'text' in node.inputs) {
           // 增强的提示词，强调保留原始图像特性
           const enhancedPrompt = `Subtly add ${prompt.trim()} to the existing balcony, preserving 95% of the original image's composition, lighting, colors, and style. Do not change any existing furniture, railings, walls, floor, or background. Only add small plants in appropriate containers. Maintain exact perspective, shadows, and time of day. The final result should look like the original photo with minimal, realistic plant additions that respect the original aesthetic.`;
-          
+
           node.inputs.text = enhancedPrompt;
           console.log(`[${getTimestamp()}] Enhanced prompt: ${enhancedPrompt}`);
           foundPrompt = true;
@@ -362,7 +362,10 @@ app.get('/api/ai-design/result/:promptId', async (req, res) => {
           status: 'completed',
           message: 'Design completed',
           result: {
-            imageUrl: `http://58.178.177.133:8188/view?filename=${imageName}`
+            imageUrl: `http://58.178.177.133:8188/view?filename=${imageName}`,
+            isAIGenerated: true,
+            disclaimer: 'This image is AI-generated and is for reference only. Results may vary in real implementation.',
+            disclaimerCN: '此图片由AI生成，仅供参考。实际效果可能有所不同。'
           }
         })
       }
@@ -399,9 +402,9 @@ const getImageDimensions = async (imagePath) => {
   try {
     const sharp = require('sharp');
     const metadata = await sharp(imagePath).metadata();
-    return { 
-      width: metadata.width, 
-      height: metadata.height 
+    return {
+      width: metadata.width,
+      height: metadata.height
     };
   } catch (err) {
     console.error(`[${getTimestamp()}] Error getting image dimensions:`, err);
@@ -413,7 +416,7 @@ const getImageDimensions = async (imagePath) => {
 // API endpoint for generating balcony image
 app.post('/api/generate-balcony', upload.single('image'), async (req, res) => {
   console.log(`[${getTimestamp()}] POST /api/generate-balcony - Starting image generation`)
-  
+
   try {
     const { prompt } = req.body
     if (!prompt) {
@@ -436,7 +439,7 @@ app.post('/api/generate-balcony', upload.single('image'), async (req, res) => {
 
     // 获取上传的图片路径
     const uploadedImagePath = path.join(__dirname, 'uploads', req.file.filename)
-    
+
     // 获取图像尺寸 - 图片已在前端压缩，这里只获取信息
     const dimensions = await getImageDimensions(uploadedImagePath);
     const imageWidth = dimensions.width;
@@ -450,7 +453,7 @@ app.post('/api/generate-balcony', upload.single('image'), async (req, res) => {
     if (updatedWorkflow['27'] && updatedWorkflow['27'].inputs) {
       updatedWorkflow['27'].inputs.image = req.file.filename
     }
-    
+
     // 更新图像尺寸设置
     if (updatedWorkflow['30'] && updatedWorkflow['30'].inputs) {
       updatedWorkflow['30'].inputs.width = imageWidth;
@@ -465,7 +468,7 @@ app.post('/api/generate-balcony', upload.single('image'), async (req, res) => {
         // 提示词现在使用单个植物
         const plantName = prompt.trim();
         // 增强的提示词，强调保留原始图像特性
-        const enhancedPrompt = `Subtly integrate ${plantName} into the existing balcony, ensuring the plant is placed correctly, such as in a pot, and has a natural and harmonious effect in the photo while preserving 95% of the original image's composition, lighting, colors, and style. Do not alter any existing furniture, railings, walls, floor, or background. Only add ${plantName} in appropriate containers or positions. Maintain exact perspective, shadows, and time of day. The final result should resemble the original photo, with ${plantName} additions that are realistic and respect the original aesthetic.`;        
+        const enhancedPrompt = `Subtly integrate ${plantName} into the existing balcony, ensuring the plant is placed correctly, such as in a pot, and has a natural and harmonious effect in the photo while preserving 95% of the original image's composition, lighting, colors, and style. Do not alter any existing furniture, railings, walls, floor, or background. Only add ${plantName} in appropriate containers or positions. Maintain exact perspective, shadows, and time of day. The final result should resemble the original photo, with ${plantName} additions that are realistic and respect the original aesthetic.`;
         node.inputs.text = enhancedPrompt;
         console.log(`[${getTimestamp()}] Enhanced prompt with plant '${plantName}': ${enhancedPrompt}`);
         foundPrompt = true;
@@ -533,7 +536,7 @@ app.post('/api/generate-balcony', upload.single('image'), async (req, res) => {
         }))
         .sort((a, b) => b.time - a.time)
       const imageFile = imageFiles.length > 0 ? imageFiles[0].file : null;
-      
+
       if (!imageFile) {
         return res.status(500).json({ error: 'Generated image not found' })
       }
@@ -544,7 +547,7 @@ app.post('/api/generate-balcony', upload.single('image'), async (req, res) => {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
       const randomStr = generateRandomString(6)
       const newFileName = `balcony_design_${timestamp}_${randomStr}.png`
-      
+
       // 将图片移动到temp目录并重命名
       const sourcePath = path.join(outputDir, imageFile)
       const targetPath = path.join(tempDir, newFileName)
@@ -559,7 +562,8 @@ app.post('/api/generate-balcony', upload.single('image'), async (req, res) => {
       res.set({
         'Content-Type': 'image/png',
         'Content-Disposition': 'inline',
-        'Cache-Control': 'no-cache'
+        'Cache-Control': 'no-cache',
+        'X-AI-Generated': 'true'
       })
 
       // 返回图片
