@@ -60,7 +60,6 @@
               'in-progress': !goal.isCompleted,
               'custom-goal': goal.isCustom,
             }"
-            data-aos="fade-right"
           >
             <div class="goal-status">
               <i :class="goal.isCompleted ? 'fas fa-check-circle' : 'fas fa-spinner'"></i>
@@ -143,7 +142,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
@@ -156,6 +155,9 @@ const customGoal = ref({
   description: '',
 })
 
+// Storage key - 使用一个固定的key名称
+const STORAGE_KEY = 'energy_tracker_goals'
+
 // Calculate the number of completed goals
 const completedGoalsCount = computed(() => {
   return trackedGoals.value.filter((goal) => goal.isCompleted).length
@@ -167,6 +169,30 @@ const completionPercentage = computed(() => {
   return Math.round((completedGoalsCount.value / trackedGoals.value.length) * 100)
 })
 
+// 保存数据到localStorage
+const saveGoals = () => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(trackedGoals.value))
+  } catch (e) {
+    console.error('无法保存目标数据:', e)
+  }
+}
+
+// 从localStorage加载数据
+const loadGoals = () => {
+  try {
+    const savedGoals = localStorage.getItem(STORAGE_KEY)
+    if (savedGoals) {
+      trackedGoals.value = JSON.parse(savedGoals)
+      console.log('成功加载了', trackedGoals.value.length, '个目标')
+    } else {
+      console.log('没有找到已保存的目标数据')
+    }
+  } catch (e) {
+    console.error('加载目标数据时出错:', e)
+  }
+}
+
 // Mark a goal as completed
 const markAsCompleted = (goalId) => {
   const goalIndex = trackedGoals.value.findIndex((goal) => goal.id === goalId)
@@ -177,8 +203,15 @@ const markAsCompleted = (goalId) => {
       month: 'short',
       day: 'numeric',
     })
-    // Save to localStorage
-    localStorage.setItem('trackedGoals', JSON.stringify(trackedGoals.value))
+
+    // 保存更改
+    saveGoals()
+
+    // 强制刷新视图
+    nextTick(() => {
+      // 在DOM更新后，手动刷新AOS（但不会影响已经移除了AOS的卡片）
+      AOS.refresh()
+    })
   }
 }
 
@@ -187,8 +220,15 @@ const untrackGoal = (goalId) => {
   const goalIndex = trackedGoals.value.findIndex((goal) => goal.id === goalId)
   if (goalIndex !== -1) {
     trackedGoals.value.splice(goalIndex, 1)
-    // Save to localStorage
-    localStorage.setItem('trackedGoals', JSON.stringify(trackedGoals.value))
+
+    // 保存更改
+    saveGoals()
+
+    // 强制刷新视图
+    nextTick(() => {
+      // 在DOM更新后，手动刷新AOS（但不会影响已经移除了AOS的卡片）
+      AOS.refresh()
+    })
   }
 }
 
@@ -211,7 +251,9 @@ const addCustomGoal = () => {
   }
 
   trackedGoals.value.push(newGoal)
-  localStorage.setItem('trackedGoals', JSON.stringify(trackedGoals.value))
+
+  // 保存更改
+  saveGoals()
 
   // Reset form
   customGoal.value = {
@@ -263,18 +305,45 @@ const getPlanTarget = (plan) => {
   }
 }
 
+// 在组件挂载时同步MyPlanView.vue中的跟踪数据
+const syncWithMyPlanData = () => {
+  try {
+    // 读取MyPlanView中保存的跟踪数据
+    const planViewData = localStorage.getItem('trackedGoals')
+
+    if (planViewData) {
+      const planGoals = JSON.parse(planViewData)
+
+      // 如果当前没有数据但是MyPlanView有数据，直接使用MyPlanView的数据
+      if (trackedGoals.value.length === 0 && planGoals.length > 0) {
+        trackedGoals.value = planGoals
+        saveGoals() // 保存到我们的新键名下
+        console.log('已从MyPlanView同步了', planGoals.length, '个目标')
+      }
+      // 如果都有数据，确保数据一致性
+      else if (trackedGoals.value.length > 0 && planGoals.length > 0) {
+        // 先保留我们的数据，然后将其保存到MyPlanView使用的键名下
+        localStorage.setItem('trackedGoals', JSON.stringify(trackedGoals.value))
+        console.log('已将跟踪数据同步到MyPlanView')
+      }
+    }
+  } catch (e) {
+    console.error('同步数据时出错:', e)
+  }
+}
+
 onMounted(() => {
   AOS.init({
     duration: 800,
     easing: 'ease-out',
-    once: false,
+    once: true, // 改为true，动画只播放一次
   })
 
-  // Load tracked goals from localStorage
-  const savedGoals = localStorage.getItem('trackedGoals')
-  if (savedGoals) {
-    trackedGoals.value = JSON.parse(savedGoals)
-  }
+  // 加载保存的目标数据
+  loadGoals()
+
+  // 与MyPlanView数据同步
+  syncWithMyPlanData()
 })
 </script>
 

@@ -14,16 +14,14 @@
           <div class="strategy-icon">
             <i class="fas fa-tree"></i>
           </div>
-          <h3>Increase Urban Greenery</h3>
+          <h3>Enhance Urban Green Spaces</h3>
           <p>
-            Trees and vegetation can significantly reduce surrounding temperatures through
-            transpiration and shading. Research shows that increasing urban greenery by 30% can
-            reduce urban temperatures by 2-4°C.
+            Adding 30% more urban greenery can reduce temperatures by 2-4°C through natural shading
+            and cooling.
           </p>
           <ul class="strategy-tips">
             <li>Plant more trees in communities and streets</li>
             <li>Develop urban parks and green spaces</li>
-            <li>Encourage residents to plant native species in their yards</li>
           </ul>
         </div>
 
@@ -32,15 +30,10 @@
             <i class="fas fa-building"></i>
           </div>
           <h3>Use Reflective Building Materials</h3>
-          <p>
-            High-reflectivity roof and wall materials can reflect more solar radiation, reducing
-            heat absorption. These "cool roof" technologies can lower building surface temperatures
-            by 30-40°C.
-          </p>
+          <p>Light-colored, reflective materials can lower surface temperatures by up to 40°C.</p>
           <ul class="strategy-tips">
             <li>Install light-colored or reflective roofing materials</li>
             <li>Use special coatings to increase building reflectivity</li>
-            <li>Choose light-colored pavement materials</li>
           </ul>
         </div>
 
@@ -50,13 +43,12 @@
           </div>
           <h3>Promote Green Roofs and Walls</h3>
           <p>
-            Planting vegetation on building roofs and walls provides additional insulation, reduces
-            indoor temperatures, and increases urban green space.
+            Building-integrated vegetation provides natural insulation and cooling while adding
+            green space.
           </p>
           <ul class="strategy-tips">
             <li>Install green roof systems on flat-roofed buildings</li>
             <li>Construct vertical gardens and green walls</li>
-            <li>Combine with rainwater collection systems to maintain plants</li>
           </ul>
         </div>
 
@@ -64,15 +56,13 @@
           <div class="strategy-icon">
             <i class="fas fa-bus"></i>
           </div>
-          <h3>Reduce Traffic Emissions</h3>
+          <h3>Minimize Transport Pollution</h3>
           <p>
-            Heat from motor vehicles is a major contributor to urban heat island effect. Reducing
-            vehicle use and promoting public transport can mitigate this impact.
+            Decreasing vehicle traffic helps minimize heat waste from engines and exhaust systems.
           </p>
           <ul class="strategy-tips">
             <li>Use public transportation</li>
             <li>Promote cycling and walking</li>
-            <li>Support electric vehicles and ride-sharing services</li>
           </ul>
         </div>
 
@@ -82,14 +72,12 @@
           </div>
           <h3>Support Community Green Initiatives</h3>
           <p>
-            Collective action is powerful. Even if you can't change building structures yourself,
-            supporting or initiating sustainability projects in your apartment complex can lead to
-            broader impact.
+            Collective environmental projects amplify individual efforts for broader neighborhood
+            impact.
           </p>
           <ul class="strategy-tips">
             <li>Encourage your body corporate to explore green roof funding</li>
             <li>Join local environmental or sustainability groups</li>
-            <li>Vote in favor of community gardening or green wall installations</li>
           </ul>
         </div>
 
@@ -99,13 +87,11 @@
           </div>
           <h3>Use Energy-Efficient Cooling Habits</h3>
           <p>
-            Efficient use of appliances helps reduce electricity demand and associated heat
-            emissions from power generation.
+            Smarter appliance use reduces energy consumption and associated urban heat production.
           </p>
           <ul class="strategy-tips">
             <li>Use fans combined with AC to circulate air more effectively</li>
             <li>Set air conditioners to 25-26°C with energy-saving mode</li>
-            <li>Turn off appliances when not in use and switch to energy-rated devices</li>
           </ul>
         </div>
       </div>
@@ -123,13 +109,10 @@
         >
           <h3>Green Our Rooftop Project</h3>
           <p>
-            A joint initiative between City of Melbourne and the Victorian Government at 1 Treasury
-            Place in East Melbourne, this $2.5 million project demonstrates innovative green roof
-            retrofitting.
-          </p>
-          <p>
-            The project features diverse planting systems and indigenous species, providing
-            significant environmental benefits in cooling, biodiversity, and water management.
+            This $2.5 million joint initiative between the City of Melbourne and Victorian
+            Government demonstrates innovative green roof retrofitting at 1 Treasury Place,
+            featuring diverse plant systems that provide significant cooling, biodiversity, and
+            water management benefits.
           </p>
         </a>
       </div>
@@ -142,15 +125,9 @@
         >
           <h3>Green Your Laneway Program</h3>
           <p>
-            This program has revitalized over 400 city laneways, turning them into vibrant green
-            spaces. The pilot projects at Meyers Place, Guildford Lane, and Coromandel Place
-            successfully created leafy, welcoming areas that cool the city, boost biodiversity, and
-            improve community wellbeing.
-          </p>
-          <p>
-            These transformations have inspired sustainable greening models for laneways across
-            Melbourne, showcasing how urban spaces can be reimagined for environmental and social
-            benefits.
+            This program has transformed over 400 city laneways into vibrant green spaces, with
+            successful pilot projects at Meyers Place, Guildford Lane, and Coromandel Place that
+            cool the urban environment, boost biodiversity, and improve community wellbeing.
           </p>
         </a>
         <div class="case-study-image cool-streets"></div>
@@ -162,12 +139,10 @@
 
       <div class="action-grid">
         <div class="action-item">
-          <h3>Individual Actions</h3>
+          <h3>Individual Initiatives</h3>
           <ul>
             <li>Plant trees and plants in your yard or balcony</li>
-            <li>Install shading devices to reduce direct sunlight</li>
             <li>Choose light-colored roofing and wall materials</li>
-            <li>Reduce unnecessary vehicle use</li>
           </ul>
         </div>
 
@@ -176,8 +151,6 @@
           <ul>
             <li>Organize community tree-planting events</li>
             <li>Create community gardens and green spaces</li>
-            <li>Host educational workshops on heat island effect</li>
-            <li>Advocate for increased greening budgets</li>
           </ul>
         </div>
 
@@ -185,19 +158,15 @@
           <h3>Business Engagement</h3>
           <ul>
             <li>Install green roofs or solar panels on commercial buildings</li>
-            <li>Improve building insulation</li>
             <li>Support employee use of public transport and remote work</li>
-            <li>Sponsor community greening projects</li>
           </ul>
         </div>
 
         <div class="action-item">
-          <h3>Policy Advocacy</h3>
+          <h3>Legislative Advocacy</h3>
           <ul>
             <li>Support policies to increase urban greening</li>
             <li>Advocate for stricter building energy standards</li>
-            <li>Promote investment in public transport and cycling infrastructure</li>
-            <li>Participate in urban planning consultations</li>
           </ul>
         </div>
       </div>
@@ -301,8 +270,8 @@
 }
 
 .strategy-tips {
-  list-style: none;
-  padding: 0;
+  list-style: disc;
+  padding: 0 0 0 1.2rem;
   margin: 0;
 }
 
@@ -311,16 +280,7 @@
   color: #555;
   font-size: 0.95rem;
   line-height: 1.5;
-  padding-left: 1rem;
-  position: relative;
-}
-
-.strategy-tips li::before {
-  content: '-';
-  color: #333;
-  position: absolute;
-  left: 0;
-  font-weight: bold;
+  padding-left: 0.3rem;
 }
 
 .case-studies-section {

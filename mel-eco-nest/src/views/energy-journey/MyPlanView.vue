@@ -132,12 +132,47 @@ const answers = ref({
   openToNewIdeas: '',
 })
 
+// 存储键名
+const STORAGE_KEY = 'energy_tracker_goals'
+const LEGACY_KEY = 'trackedGoals'
+
 // Tracked goals data
 const trackedGoals = ref([])
 
 // Check if a plan is already being tracked
 const isTracked = (planId) => {
   return trackedGoals.value.some((goal) => goal.id === planId)
+}
+
+// 保存目标到localStorage - 同时保存到两个key中确保兼容性
+const saveGoals = () => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(trackedGoals.value))
+    localStorage.setItem(LEGACY_KEY, JSON.stringify(trackedGoals.value))
+  } catch (e) {
+    console.error('无法保存目标数据:', e)
+  }
+}
+
+// 从localStorage加载数据
+const loadGoals = () => {
+  try {
+    // 优先尝试新的存储键名
+    let savedGoals = localStorage.getItem(STORAGE_KEY)
+    if (!savedGoals) {
+      // 如果没有找到，尝试旧的键名
+      savedGoals = localStorage.getItem(LEGACY_KEY)
+    }
+
+    if (savedGoals) {
+      trackedGoals.value = JSON.parse(savedGoals)
+      console.log('MyPlanView: 成功加载了', trackedGoals.value.length, '个目标')
+    } else {
+      console.log('MyPlanView: 没有找到已保存的目标数据')
+    }
+  } catch (e) {
+    console.error('MyPlanView: 加载目标数据时出错:', e)
+  }
 }
 
 // Add plan to tracking list
@@ -154,8 +189,9 @@ const trackGoal = (plan) => {
       progress: 0,
     }
     trackedGoals.value.push(newGoal)
-    // Save to localStorage
-    localStorage.setItem('trackedGoals', JSON.stringify(trackedGoals.value))
+
+    // 保存到localStorage
+    saveGoals()
   }
 }
 
@@ -164,8 +200,9 @@ const untrackGoal = (goalId) => {
   const goalIndex = trackedGoals.value.findIndex((goal) => goal.id === goalId)
   if (goalIndex !== -1) {
     trackedGoals.value.splice(goalIndex, 1)
-    // Save to localStorage
-    localStorage.setItem('trackedGoals', JSON.stringify(trackedGoals.value))
+
+    // 保存到localStorage
+    saveGoals()
   }
 }
 
@@ -725,18 +762,15 @@ const getPlanTarget = (plan) => {
 }
 
 onMounted(() => {
-  // Initialize animations
+  // 初始化动画
   AOS.init({
     duration: 800,
     easing: 'ease-out',
-    once: false,
+    once: true, // 改为true，动画只播放一次
   })
 
-  // Load tracked goals from localStorage
-  const savedGoals = localStorage.getItem('trackedGoals')
-  if (savedGoals) {
-    trackedGoals.value = JSON.parse(savedGoals)
-  }
+  // 从localStorage加载已追踪的计划
+  loadGoals()
 })
 </script>
 
@@ -877,7 +911,9 @@ onMounted(() => {
   font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    all 0.5s ease,
+    background 0.5s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -885,8 +921,9 @@ onMounted(() => {
 }
 
 .submit-button:hover {
+  background: #14642e;
   transform: translateY(-3px);
-  box-shadow: 0 6px 10px rgba(66, 153, 225, 0.4);
+  box-shadow: 0 6px 10px rgba(3, 76, 38, 0.4);
 }
 
 .submit-button:disabled {
@@ -894,6 +931,7 @@ onMounted(() => {
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  transition: none;
 }
 
 .button-enabled {
@@ -1037,26 +1075,28 @@ onMounted(() => {
 }
 
 .restart-button {
-  background-color: #edf2f7;
-  color: #4a5568;
+  background-color: #3182ce;
+  color: #ffffff;
   border: none;
   padding: 1rem 2rem;
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 500;
   cursor: pointer;
+  transition:
+    all 0.5s ease,
+    background-color 0.5s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  /* Remove transition effect */
-  /* transition: all 0.3s ease; */
 }
 
-/* Remove restart button hover effect */
-/* .restart-button:hover {
-  background-color: #e2e8f0;
+.restart-button:hover {
+  background-color: #14642e;
+  color: white;
   transform: translateY(-2px);
-} */
+  box-shadow: 0 4px 8px rgba(3, 76, 38, 0.3);
+}
 
 .goal-action {
   position: absolute;
