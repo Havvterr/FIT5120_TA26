@@ -65,27 +65,43 @@
         </p>
       </div>
 
-      <div class="plan-actions" data-aos="fade-up">
+      <div class="goal-items">
         <template v-if="personalizedPlans.length > 0">
           <div
-            v-for="(plan, index) in personalizedPlans"
+            v-for="plan in personalizedPlans"
             :key="plan.id"
-            class="action-card"
+            class="goal-item"
             data-aos="fade-up"
-            :data-aos-delay="index * 100"
+            data-aos-duration="800"
           >
-            <div class="action-header">
+            <div class="goal-status">
+              <i class="fas fa-lightbulb"></i>
+            </div>
+            <div class="goal-content">
               <h3>{{ plan.title }}</h3>
-              <div class="action-stats">
-                <span class="savings">{{ plan.savings }}</span>
-                <span class="difficulty">Difficulty: {{ plan.difficulty }}</span>
-                <span class="cost">Cost: {{ plan.cost }}</span>
+              <div class="goal-details">
+                <p class="plan-description">{{ plan.description }}</p>
+                <div class="goal-meta">
+                  <span class="goal-impact"><i class="fas fa-leaf"></i> {{ plan.savings }}</span>
+                  <span class="goal-target"
+                    ><i class="fas fa-bullseye"></i> Target: {{ getPlanTarget(plan) }}</span
+                  >
+                </div>
               </div>
             </div>
-            <p class="action-description">{{ plan.description }}</p>
+            <div class="goal-action">
+              <button v-if="!isTracked(plan.id)" class="track-button" @click="trackGoal(plan)">
+                <i class="fas fa-plus"></i>
+                Track Goal
+              </button>
+              <button v-else class="untrack-button" @click="untrackGoal(plan.id)">
+                <i class="fas fa-times"></i>
+                Untrack Goal
+              </button>
+            </div>
           </div>
         </template>
-        <div v-else class="no-results" data-aos="fade-up">
+        <div v-else class="no-results">
           <p>
             We couldn't generate enough recommendations based on your answers. Try changing your
             selections.
@@ -93,7 +109,7 @@
         </div>
       </div>
 
-      <div class="restart-container" data-aos="fade-up">
+      <div class="restart-container">
         <button class="restart-button" @click="resetQuiz">Start Over</button>
       </div>
     </div>
@@ -115,6 +131,43 @@ const answers = ref({
   coolingMethod: [],
   openToNewIdeas: '',
 })
+
+// Tracked goals data
+const trackedGoals = ref([])
+
+// Check if a plan is already being tracked
+const isTracked = (planId) => {
+  return trackedGoals.value.some((goal) => goal.id === planId)
+}
+
+// Add plan to tracking list
+const trackGoal = (plan) => {
+  if (!isTracked(plan.id)) {
+    const newGoal = {
+      ...plan,
+      date: new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      }),
+      isCompleted: false,
+      progress: 0,
+    }
+    trackedGoals.value.push(newGoal)
+    // Save to localStorage
+    localStorage.setItem('trackedGoals', JSON.stringify(trackedGoals.value))
+  }
+}
+
+// Untrack a goal
+const untrackGoal = (goalId) => {
+  const goalIndex = trackedGoals.value.findIndex((goal) => goal.id === goalId)
+  if (goalIndex !== -1) {
+    trackedGoals.value.splice(goalIndex, 1)
+    // Save to localStorage
+    localStorage.setItem('trackedGoals', JSON.stringify(trackedGoals.value))
+  }
+}
 
 // Compute visible questions based on current progress
 const visibleQuestions = computed(() => {
@@ -179,85 +232,173 @@ const questions = [
 
 // Energy saving plans database
 const allEnergyPlans = [
-  // Cooling Solutions
+  // Lighting & Electrical Solutions
   {
-    id: 'ceiling-fans',
-    title: 'Install Energy-Efficient Ceiling Fans',
+    id: 'led-lighting',
+    title: 'Replace All Lights with Energy-Efficient LEDs',
     description:
-      'Ceiling fans use much less electricity than air conditioners and can make a room feel 4°C cooler.',
-    savings: 'Up to 40% on cooling costs',
-    difficulty: 'Medium',
-    cost: '$$',
+      'LED bulbs use up to 90% less energy than traditional incandescent bulbs and last up to 25 times longer.',
+    savings: 'Up to 15% on electricity bills',
+    difficulty: 'Easy',
+    cost: '$',
     applicableFor: {
-      homeType: ['apartment', 'house', 'townhouse'],
-      residents: ['solo', 'duo', 'family', 'large'],
-      heatTiming: ['afternoon', 'night', 'allDay'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
+      homeType: ['apartment', 'house', 'townhouse', 'other'],
+      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
     },
   },
   {
-    id: 'programmable-thermostat',
-    title: 'Install a Programmable Thermostat',
+    id: 'smart-thermostat',
+    title: 'Install Smart Programmable Thermostat',
     description:
-      "Set higher temperatures when you're away and cooler temperatures when you're home.",
+      'Smart thermostats learn your schedule and automatically adjust temperature settings for optimal comfort and efficiency.',
     savings: 'Up to 10% on heating and cooling',
-    difficulty: 'Easy',
+    difficulty: 'Moderate',
     cost: '$$',
     applicableFor: {
       homeType: ['apartment', 'house', 'townhouse'],
       coolingMethod: ['ac'],
+      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
+    },
+  },
+  {
+    id: 'smart-power-strips',
+    title: 'Use Smart Power Strips to Eliminate Standby Power',
+    description:
+      'Automatically cut power to devices when they\'re not in use, eliminating "phantom" energy consumption.',
+    savings: 'Up to 5% on electricity bills',
+    difficulty: 'Easy',
+    cost: '$',
+    applicableFor: {
+      homeType: ['apartment', 'house', 'townhouse', 'other'],
+      residents: ['solo', 'duo', 'family', 'large'],
       openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
     },
   },
   {
-    id: 'window-films',
-    title: 'Apply Reflective Window Films',
-    description: 'Reduces solar heat gain while still allowing light to enter your home.',
-    savings: 'Up to 30% on cooling costs',
+    id: 'timed-outlets',
+    title: 'Install Timer Outlets for Scheduled Power Control',
+    description:
+      'Set specific times for devices to turn on and off, ensuring they only use power when needed.',
+    savings: 'Up to 3% on electricity bills',
     difficulty: 'Easy',
     cost: '$',
     applicableFor: {
-      homeType: ['apartment', 'house', 'townhouse'],
+      homeType: ['apartment', 'house', 'townhouse', 'other'],
+      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
+    },
+  },
+  {
+    id: 'natural-lighting',
+    title: 'Maximize Natural Daylight Usage',
+    description:
+      'Rearrange furniture and keep windows clean to maximize natural light and reduce the need for artificial lighting.',
+    savings: 'Up to 5% on lighting costs',
+    difficulty: 'Easy',
+    cost: 'Free',
+    applicableFor: {
+      homeType: ['apartment', 'house', 'townhouse', 'other'],
+      heatTiming: ['rarely', 'night'],
+      coolingMethod: ['ventilation', 'fans', 'shading'],
+      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
+    },
+  },
+
+  // Insulation & Energy Retention
+  {
+    id: 'weatherstripping',
+    title: 'Install Weather Stripping on Doors and Windows',
+    description:
+      'Seal gaps around doors and windows to prevent air leakage, keeping cool air in during summer and warm air in during winter.',
+    savings: 'Up to 15% on heating and cooling',
+    difficulty: 'Easy',
+    cost: '$',
+    applicableFor: {
+      homeType: ['apartment', 'house', 'townhouse', 'other'],
       heatTiming: ['afternoon', 'allDay'],
       openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
     },
   },
   {
-    id: 'evening-cooling',
-    title: 'Strategic Evening Cooling',
+    id: 'insulation',
+    title: 'Add Insulation to Walls and Ceiling',
     description:
-      "Open windows at night when it's cooler and close them before it gets hot in the morning.",
-    savings: 'Up to 20% on cooling costs',
-    difficulty: 'Easy',
-    cost: 'Free',
-    applicableFor: {
-      heatTiming: ['afternoon', 'night'],
-      coolingMethod: ['ventilation', 'fans'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
-    },
-  },
-  {
-    id: 'roof-painting',
-    title: 'Cool Roof Coating',
-    description: 'Apply reflective white coating to your roof to reduce heat absorption.',
-    savings: 'Up to 20% on cooling costs',
+      'Proper insulation creates a thermal barrier that reduces heat transfer, keeping your home cooler in summer and warmer in winter.',
+    savings: 'Up to 20% on heating and cooling',
     difficulty: 'Hard',
     cost: '$$$',
     applicableFor: {
       homeType: ['house', 'townhouse'],
-      heatTiming: ['allDay', 'afternoon'],
+      heatTiming: ['afternoon', 'allDay'],
       openToNewIdeas: ['veryOpen'],
     },
   },
 
-  // Shading Solutions
+  // Heat Reduction Strategies
+  {
+    id: 'window-curtains',
+    title: 'Install Thermal Curtains or Blinds',
+    description:
+      'Block direct sunlight during hot periods while still allowing ambient light to enter, significantly reducing indoor temperature.',
+    savings: 'Up to 10% on cooling costs',
+    difficulty: 'Easy',
+    cost: '$$',
+    applicableFor: {
+      homeType: ['apartment', 'house', 'townhouse', 'other'],
+      heatTiming: ['afternoon', 'allDay'],
+      coolingMethod: ['ac', 'fans', 'ventilation', 'shading'],
+      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
+    },
+  },
+  {
+    id: 'window-film',
+    title: 'Apply Reflective Window Film',
+    description:
+      'Heat-rejecting window films block up to 80% of solar heat without blocking light, reducing indoor temperatures and UV damage.',
+    savings: 'Up to 15% on cooling costs',
+    difficulty: 'Moderate',
+    cost: '$$',
+    applicableFor: {
+      homeType: ['apartment', 'house', 'townhouse'],
+      heatTiming: ['afternoon', 'allDay'],
+      coolingMethod: ['ac', 'fans', 'shading'],
+      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
+    },
+  },
+  {
+    id: 'roof-garden',
+    title: 'Create Rooftop or Balcony Green Space',
+    description:
+      'Plants absorb heat and provide shade, while evaporation from soil and leaves creates natural cooling.',
+    savings: 'Up to 8% on cooling costs',
+    difficulty: 'Moderate',
+    cost: '$$',
+    applicableFor: {
+      homeType: ['house', 'townhouse', 'apartment'],
+      heatTiming: ['afternoon', 'allDay'],
+      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
+    },
+  },
+  {
+    id: 'reflective-paint',
+    title: 'Apply Cool-Colored Paint to Exterior Walls',
+    description:
+      'Light-colored, reflective exterior paints can reject up to 90% of solar heat, keeping interior temperatures lower.',
+    savings: 'Up to 15% on cooling costs',
+    difficulty: 'Hard',
+    cost: '$$$',
+    applicableFor: {
+      homeType: ['house', 'townhouse'],
+      heatTiming: ['afternoon', 'allDay'],
+      openToNewIdeas: ['veryOpen'],
+    },
+  },
   {
     id: 'window-awnings',
-    title: 'Install External Window Awnings',
+    title: 'Install Window Awnings or Overhangs',
     description:
-      'Blocks direct sunlight before it enters your windows, especially effective for west-facing windows.',
+      'External shading prevents direct sunlight from reaching and heating windows, creating cooler indoor temperatures.',
     savings: 'Up to 15% on cooling costs',
-    difficulty: 'Medium',
+    difficulty: 'Moderate',
     cost: '$$',
     applicableFor: {
       homeType: ['house', 'townhouse'],
@@ -266,191 +407,78 @@ const allEnergyPlans = [
     },
   },
   {
-    id: 'thermal-curtains',
-    title: 'Use Thermal or Blackout Curtains',
+    id: 'indoor-plants',
+    title: 'Add Indoor Plants for Natural Cooling',
     description:
-      'These specialized curtains block heat and light more effectively than standard curtains.',
-    savings: 'Up to 10% on cooling costs',
+      'Plants release moisture into the air through transpiration, creating a natural cooling effect and improving air quality.',
+    savings: 'Up to 3% on cooling costs',
     difficulty: 'Easy',
     cost: '$',
     applicableFor: {
       homeType: ['apartment', 'house', 'townhouse', 'other'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
-    },
-  },
-  {
-    id: 'strategic-landscaping',
-    title: 'Strategic Tree Planting',
-    description:
-      'Plant deciduous trees on the east and west sides of your home for natural shading.',
-    savings: 'Up to 25% on cooling costs',
-    difficulty: 'Medium',
-    cost: '$$',
-    applicableFor: {
-      homeType: ['house'],
-      heatTiming: ['afternoon', 'allDay'],
-      openToNewIdeas: ['veryOpen'],
+      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
     },
   },
 
-  // Ventilation Improvements
+  // Appliance Efficiency
   {
-    id: 'whole-house-fan',
-    title: 'Install a Whole-House Fan',
+    id: 'hang-drying',
+    title: 'Air Dry Clothes Instead of Using Dryer',
     description:
-      'Pulls cool outside air in through windows while exhausting hot air through the attic.',
-    savings: 'Up to 50% on cooling costs',
-    difficulty: 'Hard',
-    cost: '$$$',
+      'Hang clothes to dry naturally instead of using an energy-intensive dryer. Outdoor drying in the sun also has antimicrobial benefits.',
+    savings: 'Up to 5% on electricity bills',
+    difficulty: 'Easy',
+    cost: 'Free',
     applicableFor: {
-      homeType: ['house', 'townhouse'],
-      heatTiming: ['night', 'allDay'],
-      openToNewIdeas: ['veryOpen'],
+      homeType: ['apartment', 'house', 'townhouse', 'other'],
+      residents: ['solo', 'duo', 'family', 'large'],
+      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
     },
   },
   {
-    id: 'cross-ventilation',
-    title: 'Optimize Cross-Ventilation',
-    description: 'Position fans to create a cooling breeze across your living space.',
-    savings: 'Up to 15% on cooling costs',
+    id: 'defrost-fridge',
+    title: 'Regularly Defrost Your Refrigerator',
+    description:
+      'Even a thin layer of ice in your freezer can increase energy consumption by 10%. Regular defrosting keeps your appliance running efficiently.',
+    savings: 'Up to 5% on refrigeration costs',
     difficulty: 'Easy',
-    cost: 'Free or $',
+    cost: 'Free',
     applicableFor: {
+      homeType: ['apartment', 'house', 'townhouse', 'other'],
+      residents: ['solo', 'duo', 'family', 'large'],
+      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
+    },
+  },
+
+  // Ventilation Strategies
+  {
+    id: 'day-night-ventilation',
+    title: 'Implement Day-Night Ventilation Strategy',
+    description:
+      'Close windows during hot daylight hours and open them during cooler evening and night hours to flush accumulated heat.',
+    savings: 'Up to 10% on cooling costs',
+    difficulty: 'Easy',
+    cost: 'Free',
+    applicableFor: {
+      homeType: ['apartment', 'house', 'townhouse', 'other'],
+      heatTiming: ['afternoon', 'allDay'],
       coolingMethod: ['fans', 'ventilation'],
       openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
     },
   },
-
-  // Insulation Solutions
   {
-    id: 'weatherstripping',
-    title: 'Seal Gaps with Weatherstripping',
-    description: 'Prevent cool air from escaping through gaps around doors and windows.',
-    savings: 'Up to 10% on cooling and heating',
+    id: 'night-cooling',
+    title: 'Use Late Night Natural Cooling',
+    description:
+      'Take advantage of cooler temperatures between midnight and early morning by opening windows and using fans to draw in cool air.',
+    savings: 'Up to 8% on cooling costs',
     difficulty: 'Easy',
-    cost: '$',
+    cost: 'Free',
     applicableFor: {
       homeType: ['apartment', 'house', 'townhouse', 'other'],
-      coolingMethod: ['ac'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
-    },
-  },
-  {
-    id: 'attic-insulation',
-    title: 'Improve Attic Insulation',
-    description: 'Adding proper insulation to your attic creates a barrier against heat transfer.',
-    savings: 'Up to 20% on cooling and heating',
-    difficulty: 'Medium to Hard',
-    cost: '$$$',
-    applicableFor: {
-      homeType: ['house', 'townhouse'],
-      heatTiming: ['allDay', 'night'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
-    },
-  },
-
-  // Appliance and Usage Modifications
-  {
-    id: 'ac-maintenance',
-    title: 'Regular AC Maintenance',
-    description: 'Clean or replace filters monthly and schedule professional maintenance annually.',
-    savings: 'Up to 15% on cooling costs',
-    difficulty: 'Easy',
-    cost: '$',
-    applicableFor: {
-      coolingMethod: ['ac'],
+      heatTiming: ['night', 'allDay'],
+      coolingMethod: ['fans', 'ventilation'],
       openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral', 'notOpen'],
-    },
-  },
-  {
-    id: 'smart-thermostat',
-    title: 'Smart Thermostat with Learning Capabilities',
-    description:
-      'Learns your schedule and preferences to optimize heating and cooling automatically.',
-    savings: 'Up to 15% on heating and cooling',
-    difficulty: 'Easy',
-    cost: '$$',
-    applicableFor: {
-      coolingMethod: ['ac'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen'],
-    },
-  },
-  {
-    id: 'led-lighting',
-    title: 'Switch to LED Lighting',
-    description: 'LEDs generate less heat and use less energy than incandescent bulbs.',
-    savings: 'Up to 75% on lighting costs',
-    difficulty: 'Easy',
-    cost: '$',
-    applicableFor: {
-      homeType: ['apartment', 'house', 'townhouse', 'other'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
-    },
-  },
-  {
-    id: 'cooking-habits',
-    title: 'Adjust Cooking Habits',
-    description:
-      'Use microwave or outdoor grill instead of oven during hot days to reduce indoor heat.',
-    savings: 'Varies',
-    difficulty: 'Easy',
-    cost: 'Free',
-    applicableFor: {
-      residents: ['duo', 'family', 'large'],
-      heatTiming: ['afternoon', 'allDay'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
-    },
-  },
-  {
-    id: 'peak-hour-usage',
-    title: 'Shift Energy Use to Off-Peak Hours',
-    description: "Run major appliances during early morning or late evening when it's cooler.",
-    savings: 'Up to 10% on energy bills',
-    difficulty: 'Easy',
-    cost: 'Free',
-    applicableFor: {
-      residents: ['solo', 'duo', 'family', 'large'],
-      openToNewIdeas: ['veryOpen', 'somewhatOpen', 'neutral'],
-    },
-  },
-
-  // High Efficiency Solutions
-  {
-    id: 'energy-audit',
-    title: 'Professional Energy Audit',
-    description:
-      "Get a comprehensive analysis of your home's energy use with specific recommendations.",
-    savings: 'Potential for 30%+ based on findings',
-    difficulty: 'Easy (for you)',
-    cost: '$$',
-    applicableFor: {
-      homeType: ['house', 'townhouse'],
-      openToNewIdeas: ['veryOpen'],
-    },
-  },
-  {
-    id: 'energy-star-ac',
-    title: 'Upgrade to ENERGY STAR Air Conditioner',
-    description: 'Modern units use up to 50% less energy than models from 15 years ago.',
-    savings: 'Up to 50% on cooling costs',
-    difficulty: 'Medium',
-    cost: '$$$',
-    applicableFor: {
-      coolingMethod: ['ac', 'none'],
-      openToNewIdeas: ['veryOpen'],
-    },
-  },
-  {
-    id: 'evaporative-cooler',
-    title: 'Consider an Evaporative Cooler',
-    description: 'Uses up to 75% less electricity than air conditioning in dry climates.',
-    savings: 'Up to 75% compared to AC',
-    difficulty: 'Medium',
-    cost: '$$',
-    applicableFor: {
-      homeType: ['house', 'townhouse'],
-      heatTiming: ['afternoon', 'allDay'],
-      openToNewIdeas: ['veryOpen'],
     },
   },
 ]
@@ -658,18 +686,63 @@ const resetQuiz = () => {
   }
 }
 
+// Get target based on plan type
+const getPlanTarget = (plan) => {
+  const category = plan.id.split('-')[0]
+
+  switch (category) {
+    case 'led':
+      return 'Reduce lighting costs by 80%'
+    case 'smart':
+      return 'Optimize temperature control by 25%'
+    case 'window':
+      return 'Reduce indoor heat gain by 40%'
+    case 'roof':
+      return 'Lower cooling costs by 30%'
+    case 'reflective':
+      return 'Reduce surface temperature by 30°C'
+    case 'natural':
+      return 'Cut artificial lighting use by 25%'
+    case 'weatherstripping':
+      return 'Eliminate 90% of drafts around openings'
+    case 'insulation':
+      return 'Reduce heat transfer by 60%'
+    case 'indoor':
+      return 'Improve air quality and reduce temperature by 2-3°C'
+    case 'hang':
+      return 'Eliminate 100% of dryer energy usage'
+    case 'defrost':
+      return 'Improve refrigerator efficiency by 15%'
+    case 'day':
+      return 'Reduce indoor temperature by up to 5°C'
+    case 'night':
+      return 'Lower cooling costs by 20% overnight'
+    case 'timed':
+      return 'Eliminate standby power by 95%'
+    default:
+      return 'Reduce energy consumption significantly'
+  }
+}
+
 onMounted(() => {
+  // Initialize animations
   AOS.init({
     duration: 800,
     easing: 'ease-out',
     once: false,
   })
+
+  // Load tracked goals from localStorage
+  const savedGoals = localStorage.getItem('trackedGoals')
+  if (savedGoals) {
+    trackedGoals.value = JSON.parse(savedGoals)
+  }
 })
 </script>
 
 <style scoped>
 .my-plan-view {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 1rem;
 }
@@ -720,7 +793,7 @@ onMounted(() => {
 .options-list {
   display: flex;
   flex-direction: row;
-  gap: 1.5rem;
+  gap: 2rem;
   justify-content: space-between;
 }
 
@@ -841,6 +914,9 @@ onMounted(() => {
 
 .results-container {
   padding: 2rem 0;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
 }
 
 .results-header {
@@ -861,71 +937,88 @@ onMounted(() => {
   margin: 0 auto;
 }
 
-.plan-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2.5rem;
-  margin-bottom: 3rem;
-}
-
-.action-card {
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  transition: all 0.3s ease;
-  height: 100%;
+.goal-items {
   display: flex;
   flex-direction: column;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.action-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
-}
-
-.action-header {
-  background: linear-gradient(135deg, #4299e1, #3182ce);
-  padding: 1.5rem;
-  color: white;
-}
-
-.action-header h3 {
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 600;
-}
-
-.action-stats {
+.goal-item {
   display: flex;
-  flex-wrap: wrap;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  gap: 2rem;
+  width: 100%;
+  position: relative;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.goal-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.goal-status {
+  font-size: 1.8rem;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 0.5rem;
+}
+
+.goal-status i {
+  color: #1296d3;
+}
+
+.goal-content {
+  flex: 1;
+}
+
+.goal-content h3 {
+  margin: 0 0 1rem 0;
+  color: #1e6a93;
+  font-size: 1.5rem;
+}
+
+.goal-details {
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
-  margin-top: 1rem;
 }
 
-.savings {
-  font-size: 0.9rem;
-  background-color: rgba(72, 187, 120, 0.2);
-  color: #2f855a;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-}
-
-.difficulty,
-.cost {
-  font-size: 0.9rem;
-  background-color: rgba(160, 174, 192, 0.2);
-  color: #4a5568;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-}
-
-.action-description {
-  color: #4a5568;
-  padding: 1.75rem;
-  line-height: 1.6;
-  flex-grow: 1;
+.plan-description {
+  color: #2e333b;
+  line-height: 1.5;
   font-size: 1.1rem;
+  margin: 0;
+}
+
+.goal-meta {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.goal-impact,
+.goal-target {
+  color: #535e6e;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.goal-impact {
+  color: #0f6c18;
+  font-weight: 500;
 }
 
 .no-results {
@@ -952,15 +1045,59 @@ onMounted(() => {
   font-size: 1.1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  /* Remove transition effect */
+  /* transition: all 0.3s ease; */
 }
 
-.restart-button:hover {
+/* Remove restart button hover effect */
+/* .restart-button:hover {
   background-color: #e2e8f0;
   transform: translateY(-2px);
+} */
+
+.goal-action {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+}
+
+.track-button {
+  background: #1e6a93;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.track-button:hover {
+  background: #165a7d;
+}
+
+.untrack-button {
+  background: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.untrack-button:hover {
+  background: #c53030;
 }
 
 @media (max-width: 768px) {
@@ -969,22 +1106,58 @@ onMounted(() => {
     gap: 1.25rem;
   }
 
-  .action-stats {
+  .goal-item {
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
   }
 
-  .option-card {
-    min-height: 60px;
+  .goal-status {
+    justify-content: center;
   }
 
-  .question-text {
-    font-size: 1.4rem;
+  .goal-meta {
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
   .submit-button {
     padding: 1rem 2rem;
     font-size: 1.1rem;
+  }
+
+  .goal-items {
+    max-width: 95%;
+    padding: 0 1rem;
+    gap: 2rem;
+  }
+
+  .goal-item {
+    padding: 1.5rem;
+  }
+
+  .goal-action {
+    position: static;
+    margin-top: 1rem;
+    width: 100%;
+  }
+
+  .track-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1200px) {
+  .goal-items {
+    max-width: 1200px;
+  }
+
+  .results-container {
+    max-width: 1300px;
+  }
+
+  .my-plan-view {
+    max-width: 1400px;
   }
 }
 </style>
