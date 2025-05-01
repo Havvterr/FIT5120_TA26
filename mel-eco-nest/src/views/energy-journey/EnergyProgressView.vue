@@ -714,10 +714,10 @@ section {
   align-items: center;
   text-align: center;
   position: relative;
-  padding: 0 1.5%;
+  padding: 0;
+  margin: 0;
+  width: 100%;
   max-width: 100%;
-  margin-left: auto;
-  margin-right: auto;
   overflow: hidden;
 }
 
@@ -730,16 +730,17 @@ section {
   background-image: url('@/assets/ReportBack.png');
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   z-index: 1;
   opacity: 0.9;
 }
 
 .hero-content {
+  margin-top: 1rem;
   position: relative;
   z-index: 2;
   width: 100%;
   max-width: 1600px;
-  margin: 0 auto;
   padding: 0 20px;
   box-sizing: border-box;
   display: flex;
@@ -749,22 +750,26 @@ section {
 }
 
 .main-title {
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 2rem;
-  line-height: 1.2;
-  padding: 1.5rem;
+  margin-top: 3rem;
+  margin-bottom: 5rem;
+  line-height: 1.3;
+  padding: 2rem;
+  width: 90%;
   max-width: 1400px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   background-color: rgba(0, 0, 0, 0.6);
-  border-radius: 10px;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  transform: translateY(-50px);
 }
 
 .animated-icon {
   font-size: 5rem;
-  color: q#1b8f34;
-  margin-bottom: 2rem;
+  color: #1a712d;
+  margin-bottom:4rem;
   animation: pulse 2s infinite;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
@@ -773,17 +778,18 @@ section {
   max-width: 1000px;
   font-size: 1.5rem;
   line-height: 1.6;
-  margin-bottom: 3rem;
-  padding: 0 1.5%;
+  margin: 0 auto 3rem;
+  padding: 2rem;
   color: #ffffff;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
-  padding: 20px;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  width: 90%;
 }
 
 .scroll-indicator {
-  margin-top: 300px;
+  margin-top: 2rem;
   bottom: 20px;
   display: flex;
   flex-direction: column;
@@ -1628,7 +1634,9 @@ blockquote:after {
 /* Responsive Design */
 @media (max-width: 992px) {
   .main-title {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
+    padding: 1.5rem;
+    transform: translateY(-30px);
   }
 
   .section-title {
@@ -1686,11 +1694,13 @@ blockquote:after {
 
   .main-title {
     font-size: 2rem;
+    padding: 1rem;
+    transform: translateY(-20px);
   }
 
   .intro-text {
-    font-size: 1.1rem;
-    padding: 15px;
+    font-size: 1.2rem;
+    padding: 1.5rem;
   }
 
   .subsection-title {
@@ -1733,6 +1743,19 @@ blockquote:after {
 
   .hero-section {
     padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 1.8rem;
+    padding: 1rem;
+    transform: translateY(-10px);
+  }
+
+  .intro-text {
+    font-size: 1.1rem;
+    padding: 1rem;
   }
 }
 </style>
