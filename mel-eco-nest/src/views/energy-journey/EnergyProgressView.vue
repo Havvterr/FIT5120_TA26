@@ -2,20 +2,23 @@
   <div class="energy-efficiency-page">
     <!-- Hero Section - Fade-in Animation -->
     <section class="hero-section" data-aos="fade-up">
-      <h1 class="main-title" data-aos="fade-up" data-aos-delay="300">
-        Energy Efficiency: Powering the Path to Net Zero by 2050
-      </h1>
-      <div class="animated-icon" data-aos="zoom-in" data-aos-delay="600">
-        <i class="fas fa-bolt"></i>
-      </div>
-      <p class="intro-text" data-aos="fade-up" data-aos-delay="900">
-        Energy efficiency is not just a technological advancement, but a global transformation. By
-        improving energy utilization, we can reduce emissions while creating economic value, laying
-        a solid foundation for achieving net zero emissions by 2050.
-      </p>
-      <div class="scroll-indicator">
-        <span>Scroll down to learn more</span>
-        <i class="fas fa-chevron-down"></i>
+      <div class="hero-background"></div>
+      <div class="hero-content">
+        <h1 class="main-title" data-aos="fade-up" data-aos-delay="300">
+          Energy Efficiency: Powering the Path to Net Zero by 2050
+        </h1>
+        <div class="animated-icon" data-aos="zoom-in" data-aos-delay="600">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <p class="intro-text" data-aos="fade-up" data-aos-delay="900">
+          Energy efficiency is not just a technological advancement, but a global transformation. By
+          improving energy utilization, we can reduce emissions while creating economic value,
+          laying a solid foundation for achieving net zero emissions by 2050.
+        </p>
+        <div class="scroll-indicator">
+          <span>Scroll down to learn more</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
       </div>
     </section>
 
@@ -233,7 +236,7 @@
             </div>
             <div class="metric-comparison">
               <div class="current-value">
-                <div class="value">< 20%</div>
+                <div class="value">&lt; 20%</div>
                 <div class="label">Current</div>
               </div>
               <div class="vs">VS</div>
@@ -710,41 +713,60 @@ section {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background: #dcdcdc;
   position: relative;
   padding: 0 1.5%;
-  max-width: 1600px;
+  max-width: 100%;
   margin-left: auto;
   margin-right: auto;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('@/assets/ReportBack.png');
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+  opacity: 0.9;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .main-title {
   font-size: 3.5rem;
   font-weight: 700;
-  color: #034c26;
+  color: #ffffff;
   margin-bottom: 2rem;
   line-height: 1.2;
-  padding: 0 1.5%;
+  padding: 1.5rem;
   max-width: 1400px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
 }
 
 .animated-icon {
   font-size: 5rem;
-  color: #0a8a43;
+  color: q#1b8f34;
   margin-bottom: 2rem;
   animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .intro-text {
@@ -753,21 +775,31 @@ section {
   line-height: 1.6;
   margin-bottom: 3rem;
   padding: 0 1.5%;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  padding: 20px;
 }
 
 .scroll-indicator {
-  position: absolute;
-  bottom: 40px;
+  margin-top: 300px;
+  bottom: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #0a8a43;
+  color: #ffffff;
   animation: bounce 2s infinite;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 15px 40px;
+  border-radius: 20px;
 }
 
 .scroll-indicator span {
   margin-bottom: 8px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 @keyframes bounce {
@@ -1643,7 +1675,7 @@ blockquote:after {
   }
 
   .hero-section {
-    padding: 0 2%;
+    padding: 0;
   }
 }
 
@@ -1657,7 +1689,8 @@ blockquote:after {
   }
 
   .intro-text {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    padding: 15px;
   }
 
   .subsection-title {
@@ -1699,7 +1732,7 @@ blockquote:after {
   }
 
   .hero-section {
-    padding: 0 1.5%;
+    padding: 0;
   }
 }
 </style>
