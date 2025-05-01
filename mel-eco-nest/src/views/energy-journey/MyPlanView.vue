@@ -74,8 +74,13 @@
             data-aos="fade-up"
             data-aos-duration="800"
           >
-            <div class="goal-status">
-              <i class="fas fa-lightbulb"></i>
+            <div class="plan-image" :class="{ 'has-image': getPlanImage(plan.id) }">
+              <template v-if="getPlanImage(plan.id)">
+                <img :src="getPlanImage(plan.id)" :alt="plan.title" />
+              </template>
+              <template v-else>
+                <i class="fas fa-lightbulb"></i>
+              </template>
             </div>
             <div class="goal-content">
               <h3>{{ plan.title }}</h3>
@@ -111,6 +116,7 @@
 
       <div class="restart-container">
         <button class="restart-button" @click="resetQuiz">Start Over</button>
+        <router-link to="/energy-goals" class="tracker-button">View Goal Tracker</router-link>
       </div>
     </div>
   </div>
@@ -118,8 +124,28 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
+import { RouterLink } from 'vue-router'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+
+// Import all plan images
+import ledLightingImg from '@/assets/plan photos/led-lighting.jpg'
+import dayNightVentilationImg from '@/assets/plan photos/day-night-ventilation.png'
+import defrostFridgeImg from '@/assets/plan photos/defrost-fridge.png'
+import hangDryingImg from '@/assets/plan photos/hang-drying.png'
+import indoorPlantsImg from '@/assets/plan photos/indoor-plants.png'
+import insulationImg from '@/assets/plan photos/insulation.png'
+import naturalLightingImg from '@/assets/plan photos/natural-lighting.png'
+import nightCoolingImg from '@/assets/plan photos/night-cooling.png'
+import reflectivePaintImg from '@/assets/plan photos/reflective-paint.png'
+import roofGardenImg from '@/assets/plan photos/roof-garden.png'
+import smartPowerStripsImg from '@/assets/plan photos/smart-power-strips.png'
+import smartThermostatImg from '@/assets/plan photos/smart-thermostat.jpg'
+import timedOutletsImg from '@/assets/plan photos/timed-outlets.png'
+import weatherstrippingImg from '@/assets/plan photos/weatherstripping.png'
+import windowAwningsImg from '@/assets/plan photos/window-awnings.png'
+import windowCurtainsImg from '@/assets/plan photos/window-curtains.png'
+import windowFilmImg from '@/assets/plan photos/window-film.png'
 
 // Base data
 const showResults = ref(false)
@@ -138,6 +164,48 @@ const LEGACY_KEY = 'trackedGoals'
 
 // Tracked goals data
 const trackedGoals = ref([])
+
+// Get plan image based on plan ID
+const getPlanImage = (planId) => {
+  switch (planId) {
+    case 'led-lighting':
+      return ledLightingImg
+    case 'day-night-ventilation':
+      return dayNightVentilationImg
+    case 'defrost-fridge':
+      return defrostFridgeImg
+    case 'hang-drying':
+      return hangDryingImg
+    case 'indoor-plants':
+      return indoorPlantsImg
+    case 'insulation':
+      return insulationImg
+    case 'natural-lighting':
+      return naturalLightingImg
+    case 'night-cooling':
+      return nightCoolingImg
+    case 'reflective-paint':
+      return reflectivePaintImg
+    case 'roof-garden':
+      return roofGardenImg
+    case 'smart-power-strips':
+      return smartPowerStripsImg
+    case 'smart-thermostat':
+      return smartThermostatImg
+    case 'timed-outlets':
+      return timedOutletsImg
+    case 'weatherstripping':
+      return weatherstrippingImg
+    case 'window-awnings':
+      return windowAwningsImg
+    case 'window-curtains':
+      return windowCurtainsImg
+    case 'window-film':
+      return windowFilmImg
+    default:
+      return null
+  }
+}
 
 // Check if a plan is already being tracked
 const isTracked = (planId) => {
@@ -991,18 +1059,50 @@ onMounted(() => {
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  gap: 2rem;
+  padding: 0;
   width: 100%;
   position: relative;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
+  overflow: hidden;
 }
 
 .goal-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.plan-image {
+  width: 140px;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+  font-size: 2.5rem;
+}
+
+.plan-image.has-image {
+  background: none;
+}
+
+.plan-image i {
+  opacity: 0.8;
+}
+
+.plan-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.goal-content {
+  flex: 1;
+  padding: 2rem;
 }
 
 .goal-status {
@@ -1014,10 +1114,6 @@ onMounted(() => {
 
 .goal-status i {
   color: #1296d3;
-}
-
-.goal-content {
-  flex: 1;
 }
 
 .goal-content h3 {
@@ -1071,6 +1167,7 @@ onMounted(() => {
 .restart-container {
   display: flex;
   justify-content: center;
+  gap: 1rem;
   margin-top: 2.5rem;
 }
 
@@ -1093,6 +1190,31 @@ onMounted(() => {
 
 .restart-button:hover {
   background-color: #14642e;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(3, 76, 38, 0.3);
+}
+
+.tracker-button {
+  background-color: #dd7541;
+  color: #ffffff;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    all 0.5s ease,
+    background-color 0.5s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.tracker-button:hover {
+  background-color: #2b6c4e;
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(3, 76, 38, 0.3);
@@ -1148,7 +1270,17 @@ onMounted(() => {
 
   .goal-item {
     flex-direction: column;
-    gap: 1rem;
+    gap: 0;
+    padding: 0;
+  }
+
+  .plan-image {
+    width: 100%;
+    height: 160px;
+  }
+
+  .goal-content {
+    padding: 1.5rem;
   }
 
   .goal-status {
@@ -1169,10 +1301,6 @@ onMounted(() => {
     max-width: 95%;
     padding: 0 1rem;
     gap: 2rem;
-  }
-
-  .goal-item {
-    padding: 1.5rem;
   }
 
   .goal-action {

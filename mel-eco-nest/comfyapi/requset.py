@@ -7,13 +7,13 @@ import argparse
 import sys
 import shutil
 
-# 设置控制台编码
+
 if sys.platform == 'win32':
     import codecs
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
     sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
 
-# 解析命令行参数
+
 parser = argparse.ArgumentParser(description='Generate balcony image using ComfyUI')
 parser.add_argument('--prompt', type=str, required=True, help='The prompt for image generation')
 parser.add_argument('--image', type=str, required=True, help='Path to the uploaded image')
@@ -26,7 +26,7 @@ COMFYUI_API = "http://192.168.1.119:8188/" # local network address
 # COMFYUI_API = "http://58.178.177.133:8188/"  # This is the remote address.
 
 
-# 使用传入的工作流配置
+
 flow = json.loads(args.workflow)
 image_file_path = args.image
 upload_image_name = os.path.basename(image_file_path)
