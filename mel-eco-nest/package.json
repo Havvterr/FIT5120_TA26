@@ -16,11 +16,13 @@
     "start:all": "bash start.sh"
   },
   "dependencies": {
+    "@lottiefiles/lottie-player": "^2.0.12",
     "aos": "^2.3.4",
     "axios": "^1.8.4",
     "chart.js": "^4.4.9",
     "leaflet": "^1.9.4",
     "leaflet.heat": "^0.2.0",
+    "lottie-web": "^5.12.2",
     "pinia": "^3.0.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"

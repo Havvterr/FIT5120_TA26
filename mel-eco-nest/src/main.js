@@ -3,6 +3,7 @@ import './assets/styles/pages.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import '@lottiefiles/lottie-player'
 
 import App from './App.vue'
 import router from './router'
