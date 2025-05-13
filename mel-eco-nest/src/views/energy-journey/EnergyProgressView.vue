@@ -2,20 +2,23 @@
   <div class="energy-efficiency-page">
     <!-- Hero Section - Fade-in Animation -->
     <section class="hero-section" data-aos="fade-up">
-      <h1 class="main-title" data-aos="fade-up" data-aos-delay="300">
-        Energy Efficiency: Powering the Path to Net Zero by 2050
-      </h1>
-      <div class="animated-icon" data-aos="zoom-in" data-aos-delay="600">
-        <i class="fas fa-bolt"></i>
-      </div>
-      <p class="intro-text" data-aos="fade-up" data-aos-delay="900">
-        Energy efficiency is not just a technological advancement, but a global transformation. By
-        improving energy utilization, we can reduce emissions while creating economic value, laying
-        a solid foundation for achieving net zero emissions by 2050.
-      </p>
-      <div class="scroll-indicator">
-        <span>Scroll down to learn more</span>
-        <i class="fas fa-chevron-down"></i>
+      <div class="hero-background"></div>
+      <div class="hero-content">
+        <h1 class="main-title" data-aos="fade-up" data-aos-delay="300">
+          Energy Efficiency: Powering the Path to Net Zero by 2050
+        </h1>
+        <div class="animated-icon" data-aos="zoom-in" data-aos-delay="600">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <p class="intro-text" data-aos="fade-up" data-aos-delay="900">
+          Energy efficiency is not just a technological advancement, but a global transformation. By
+          improving energy utilization, we can reduce emissions while creating economic value,
+          laying a solid foundation for achieving net zero emissions by 2050.
+        </p>
+        <div class="scroll-indicator">
+          <span>Scroll down to learn more</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
       </div>
     </section>
 
@@ -233,7 +236,7 @@
             </div>
             <div class="metric-comparison">
               <div class="current-value">
-                <div class="value">< 20%</div>
+                <div class="value">&lt; 20%</div>
                 <div class="label">Current</div>
               </div>
               <div class="vs">VS</div>
@@ -620,75 +623,6 @@
         </div>
       </div>
 
-      <div class="action-grid">
-        <h3 class="subsection-title" data-aos="fade-up">
-          <i class="fas fa-tasks"></i>
-          Sector Deep Dive
-        </h3>
-
-        <div class="action-cards">
-          <div class="action-card" data-aos="zoom-in" data-aos-delay="200">
-            <div class="action-icon">
-              <i class="fas fa-industry"></i>
-            </div>
-            <h4>Industrial Sector</h4>
-            <ul>
-              <li>High-efficiency motors and drives deployment</li>
-              <li>Process optimization and waste heat recovery</li>
-              <li>Smart energy management systems</li>
-            </ul>
-            <div class="action-potential">
-              Contribution to Sector Emissions Reduction: <span>25-30%</span>
-            </div>
-          </div>
-
-          <div class="action-card" data-aos="zoom-in" data-aos-delay="400">
-            <div class="action-icon">
-              <i class="fas fa-building"></i>
-            </div>
-            <h4>Buildings</h4>
-            <ul>
-              <li>Zero-carbon building design principles</li>
-              <li>Heat pump deployment for heating and cooling</li>
-              <li>Deep renovations of existing structures</li>
-            </ul>
-            <div class="action-potential">
-              Contribution to Sector Emissions Reduction: <span>30-40%</span>
-            </div>
-          </div>
-
-          <div class="action-card" data-aos="zoom-in" data-aos-delay="600">
-            <div class="action-icon">
-              <i class="fas fa-car-side"></i>
-            </div>
-            <h4>Transportation</h4>
-            <ul>
-              <li>Electric vehicle adoption acceleration</li>
-              <li>Public transportation system development</li>
-              <li>Behavioral changes (shared mobility solutions)</li>
-            </ul>
-            <div class="action-potential">
-              Contribution to Sector Emissions Reduction: <span>15-20%</span>
-            </div>
-          </div>
-
-          <div class="action-card" data-aos="zoom-in" data-aos-delay="800">
-            <div class="action-icon">
-              <i class="fas fa-users"></i>
-            </div>
-            <h4>Behavioral Change</h4>
-            <ul>
-              <li>Transportation choices and patterns</li>
-              <li>Demand-side response in consumption</li>
-              <li>Energy-saving awareness enhancement</li>
-            </ul>
-            <div class="action-potential">
-              Contribution to Total Emissions Reduction: <span>4-6%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="cta-container" data-aos="fade-up">
         <h3>Unlocking the Potential: What Must Change Now?</h3>
         <p>
@@ -696,7 +630,7 @@
           lowest-cost means of reducing emissions and is indispensable at every stage of the path to
           net zero.
         </p>
-        <button class="cta-button">Create My Efficiency Plan</button>
+        <router-link to="/energy-plan" class="cta-button">Create My Efficiency Plan</router-link>
       </div>
     </section>
   </div>
@@ -705,6 +639,7 @@
 <script setup>
 // Component logic
 import { onMounted } from 'vue'
+import { RouterLink } from 'vue-router'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
@@ -733,6 +668,8 @@ section {
   max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
+  background-color: #dcdcdc;
+  border-radius: 10px;
 }
 
 .section-title {
@@ -776,64 +713,99 @@ section {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background: linear-gradient(135deg, #f2f9f1, #e0f7e0);
   position: relative;
-  padding: 0 1.5%;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('@/assets/ReportBack.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+  opacity: 0.9;
+}
+
+.hero-content {
+  margin-top: 1rem;
+  position: relative;
+  z-index: 2;
+  width: 100%;
   max-width: 1600px;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .main-title {
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: 700;
-  color: #034c26;
-  margin-bottom: 2rem;
-  line-height: 1.2;
-  padding: 0 1.5%;
+  color: #ffffff;
+  margin-top: 3rem;
+  margin-bottom: 5rem;
+  line-height: 1.3;
+  padding: 2rem;
+  width: 90%;
   max-width: 1400px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  transform: translateY(-50px);
 }
 
 .animated-icon {
   font-size: 5rem;
-  color: #0a8a43;
-  margin-bottom: 2rem;
+  color: #1a712d;
+  margin-bottom:4rem;
   animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .intro-text {
   max-width: 1000px;
   font-size: 1.5rem;
   line-height: 1.6;
-  margin-bottom: 3rem;
-  padding: 0 1.5%;
+  margin: 0 auto 3rem;
+  padding: 2rem;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  width: 90%;
 }
 
 .scroll-indicator {
-  position: absolute;
-  bottom: 40px;
+  margin-top: 2rem;
+  bottom: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #0a8a43;
+  color: #ffffff;
   animation: bounce 2s infinite;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 15px 40px;
+  border-radius: 20px;
 }
 
 .scroll-indicator span {
   margin-bottom: 8px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 @keyframes bounce {
@@ -854,7 +826,7 @@ section {
 
 /* Why Efficiency Section Styles */
 .why-efficiency {
-  background-color: #fff;
+  background-color: #dcdcdc;
 }
 
 .challenge-grid {
@@ -981,7 +953,7 @@ blockquote:after {
 
 /* Current Situation Section Styles */
 .current-situation {
-  background-color: #f7f9fc;
+  background-color: #dcdcdc;
 }
 
 .warning-banner {
@@ -1046,7 +1018,7 @@ blockquote:after {
 }
 
 .situation-icon {
-  background-color: #e0f7e0;
+  background-color: #dcdcdc;
   color: #0a8a43;
   padding: 1rem;
   border-radius: 10px;
@@ -1270,7 +1242,7 @@ blockquote:after {
 }
 
 .legend-item:hover {
-  background-color: #e9ecef;
+  background-color: #dcdcdc;
 }
 
 .color-box {
@@ -1349,7 +1321,7 @@ blockquote:after {
 }
 
 .action-card {
-  background: linear-gradient(135deg, #f5f9ff, #e0f7e0);
+  background: white;
   border-radius: 10px;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -1412,7 +1384,7 @@ blockquote:after {
   margin: 0 auto;
   text-align: center;
   padding: 3rem 2%;
-  background-color: #f2f9f1;
+  background-color: white;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
@@ -1441,6 +1413,8 @@ blockquote:after {
   border-radius: 20px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .cta-button:hover {
@@ -1660,7 +1634,9 @@ blockquote:after {
 /* Responsive Design */
 @media (max-width: 992px) {
   .main-title {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
+    padding: 1.5rem;
+    transform: translateY(-30px);
   }
 
   .section-title {
@@ -1707,7 +1683,7 @@ blockquote:after {
   }
 
   .hero-section {
-    padding: 0 2%;
+    padding: 0;
   }
 }
 
@@ -1718,10 +1694,13 @@ blockquote:after {
 
   .main-title {
     font-size: 2rem;
+    padding: 1rem;
+    transform: translateY(-20px);
   }
 
   .intro-text {
-    font-size: 1rem;
+    font-size: 1.2rem;
+    padding: 1.5rem;
   }
 
   .subsection-title {
@@ -1763,7 +1742,20 @@ blockquote:after {
   }
 
   .hero-section {
-    padding: 0 1.5%;
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 1.8rem;
+    padding: 1rem;
+    transform: translateY(-10px);
+  }
+
+  .intro-text {
+    font-size: 1.1rem;
+    padding: 1rem;
   }
 }
 </style>
