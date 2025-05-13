@@ -168,7 +168,7 @@ textarea.form-control {
 .submit-button {
   width: 100%;
   padding: 1rem;
-  background-color: #014421;
+  background-color: #396690;
   color: white;
   border: none;
   border-radius: 6px;
@@ -179,7 +179,7 @@ textarea.form-control {
 }
 
 .submit-button:hover {
-  background-color: #013318;
+  background-color: #014421;
   transform: translateY(-2px);
 }
 
