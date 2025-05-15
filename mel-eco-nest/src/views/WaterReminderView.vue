@@ -1,9 +1,9 @@
 <template>
   <div class="water-reminder">
-    <h1>设置浇水提醒</h1>
+    <h1>Set Watering Reminder</h1>
     <div class="reminder-form">
       <div class="form-group">
-        <label for="plantName">植物名称</label>
+        <label for="plantName">Plant Name</label>
         <input
           type="text"
           id="plantName"
@@ -14,41 +14,41 @@
       </div>
 
       <div class="form-group">
-        <label for="frequency">浇水频率</label>
+        <label for="frequency">Watering Frequency</label>
         <select id="frequency" v-model="reminder.frequency" class="form-control">
-          <option value="daily">每天</option>
-          <option value="weekly">每周</option>
-          <option value="biweekly">每两周</option>
-          <option value="monthly">每月</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="biweekly">Biweekly</option>
+          <option value="monthly">Monthly</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="startDate">开始日期</label>
+        <label for="startDate">Start Date</label>
         <input type="date" id="startDate" v-model="reminder.startDate" class="form-control" />
       </div>
 
       <div class="form-group">
-        <label for="timeOfDay">浇水时间</label>
+        <label for="timeOfDay">Watering Time</label>
         <select id="timeOfDay" v-model="reminder.timeOfDay" class="form-control">
-          <option value="09:00">早上九点 (09:00)</option>
-          <option value="12:00">中午十二点 (12:00)</option>
-          <option value="15:00">下午三点 (15:00)</option>
-          <option value="18:00">下午六点 (18:00)</option>
+          <option value="09:00">09:00 AM</option>
+          <option value="12:00">12:00 PM</option>
+          <option value="15:00">3:00 PM</option>
+          <option value="18:00">6:00 PM</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="notes">备注信息</label>
+        <label for="notes">Notes</label>
         <textarea
           id="notes"
           v-model="reminder.notes"
-          placeholder="添加浇水的具体说明"
+          placeholder="Add specific instructions for watering"
           class="form-control"
         ></textarea>
       </div>
 
-      <button class="submit-button" @click="createReminder">创建提醒</button>
+      <button class="submit-button" @click="createReminder">Create Reminder</button>
     </div>
   </div>
 </template>

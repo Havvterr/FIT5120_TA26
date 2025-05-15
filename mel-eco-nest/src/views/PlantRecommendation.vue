@@ -230,7 +230,7 @@ const getRecommendations = async () => {
           class="create-plan-button"
           @click="createPlan"
         >
-          创建种植计划 (已选择 {{ selectedPlants.length }} 个植物)
+          Create planting plan ({{ selectedPlants.length }} plants selected)
         </button>
       </div>
       <p v-else class="no-results">
