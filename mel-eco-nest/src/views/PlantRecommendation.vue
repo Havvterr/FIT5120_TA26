@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { plantService } from '../services/plantService'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const sunlight = ref('')
 const waterNeeds = ref('')
 const maintenanceLevel = ref('')
@@ -9,6 +11,7 @@ const showRecommendations = ref(false)
 const recommendations = ref([])
 const loading = ref(false)
 const error = ref(null)
+const selectedPlants = ref([])
 
 const resetForm = () => {
   sunlight.value = ''
@@ -17,7 +20,30 @@ const resetForm = () => {
   showRecommendations.value = false
   recommendations.value = []
   error.value = null
+  selectedPlants.value = []
 }
+
+const togglePlantSelection = (plantName) => {
+  const idx = selectedPlants.value.indexOf(plantName)
+  if (idx > -1) {
+    selectedPlants.value.splice(idx, 1)
+  } else if (selectedPlants.value.length < 3) {
+    selectedPlants.value.push(plantName)
+  }
+}
+
+const isPlantSelected = (plantName) => selectedPlants.value.includes(plantName)
+
+const createPlan = () => {
+  console.log('Creating plan for plants:', selectedPlants.value)
+  router.push({
+    name: 'waterReminder',
+    query: { plants: selectedPlants.value.join(',') }
+  }).catch(err => {
+    console.error('Navigation failed:', err)
+  })
+}
+
 const sunlightOptions = [
   {
     value: 'Full Sun',
@@ -174,6 +200,14 @@ const getRecommendations = async () => {
       <h2>Your Plant Recommendations</h2>
       <div v-if="recommendations.length > 0" class="recommendation-list">
         <div class="plant-card" v-for="plant in recommendations" :key="plant.name">
+          <div class="plant-selection">
+            <input
+              type="checkbox"
+              :checked="isPlantSelected(plant.name)"
+              :disabled="!isPlantSelected(plant.name) && selectedPlants.length >= 3"
+              @change="togglePlantSelection(plant.name)"
+            />
+          </div>
           <div class="plant-image" v-if="plant.image_url">
             <img :src="plant.image_url" :alt="plant.name" @error="handleImageError" />
           </div>
@@ -190,6 +224,14 @@ const getRecommendations = async () => {
             <div class="match-score"></div>
           </div>
         </div>
+      </div>
+      <div v-if="selectedPlants.length > 0" class="create-plan-section">
+        <button
+          class="create-plan-button"
+          @click="createPlan"
+        >
+          创建种植计划 (已选择 {{ selectedPlants.length }} 个植物)
+        </button>
       </div>
       <p v-else class="no-results">
         Sorry, no plants match your criteria. Try adjusting your preferences.
@@ -425,5 +467,36 @@ label {
   line-height: 1.6;
   font-size: 1.1rem;
   margin: 1.5rem 0;
+}
+
+.plant-selection {
+  margin-bottom: 1rem;
+}
+
+.plant-selection input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.create-plan-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.create-plan-button {
+  background-color: #33a06f;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.create-plan-button:hover {
+  background-color: #2a855d;
+  transform: translateY(-2px);
 }
 </style>

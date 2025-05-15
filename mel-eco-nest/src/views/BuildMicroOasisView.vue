@@ -42,24 +42,6 @@
               <div class="content">
                 <div class="inner">
                   <header class="major">
-                    <h3>Set Water Reminder</h3>
-                  </header>
-                  <p>Schedule watering reminders for your plants</p>
-                  <ul class="actions">
-                    <li>
-                      <router-link to="/actions/water-reminder" class="button primary"
-                        >Set Reminder</router-link
-                      >
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </section>
-
-            <section>
-              <div class="content">
-                <div class="inner">
-                  <header class="major">
                     <h3>Planting Guide</h3>
                   </header>
                   <p>Learn how to plant and care for your greenery</p>
