@@ -1,96 +1,107 @@
 <template>
-  <div class="planting-guide" @click="handlePageClick">
-    <div class="page-header">
-      <h1>Planting Guide</h1>
-      <p class="subtitle">Find detailed planting instructions for your favorite plants</p>
-    </div>
+  <div class="planting-guide">
+    <SideNavigation />
+    <div class="planting-guide" @click="handlePageClick">
+      <div class="page-header">
+        <h1>Planting Guide</h1>
+        <p class="subtitle">Find detailed planting instructions for your favorite plants</p>
+      </div>
 
-    <div class="search-container">
-      <div class="search-wrapper">
-        <div class="search-box">
-          <input
-            type="text"
-            v-model="searchQuery"
-            @input="handleSearch"
-            @click.stop="handleInputClick"
-            placeholder="Enter plant name..."
-            class="search-input"
-          />
-          <div v-if="showSuggestions && filteredPlants.length > 0" class="suggestions" @click.stop>
+      <div class="search-container">
+        <div class="search-wrapper">
+          <div class="search-box">
+            <input
+              type="text"
+              v-model="searchQuery"
+              @input="handleSearch"
+              @click.stop="handleInputClick"
+              placeholder="Enter plant name..."
+              class="search-input"
+            />
             <div
-              v-for="plant in filteredPlants"
-              :key="plant.plant_id"
-              @click="selectPlant(plant)"
-              class="suggestion-item"
-              :style="{ color: '#034c26', fontWeight: '500' }"
+              v-if="showSuggestions && filteredPlants.length > 0"
+              class="suggestions"
+              @click.stop
             >
-              {{ plant.name }}
+              <div
+                v-for="plant in filteredPlants"
+                :key="plant.plant_id"
+                @click="selectPlant(plant)"
+                class="suggestion-item"
+                :style="{ color: '#034c26', fontWeight: '500' }"
+              >
+                {{ plant.name }}
+              </div>
+            </div>
+          </div>
+          <button
+            @click="confirmSearch"
+            class="confirm-button"
+            :disabled="!searchQuery || isLoading"
+          >
+            <span v-if="isLoading">Loading...</span>
+            <span v-else>Confirm</span>
+          </button>
+        </div>
+      </div>
+
+      <div v-if="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <div v-if="selectedPlant" class="plant-details">
+        <div class="plant-header">
+          <h2>{{ selectedPlant.name }}</h2>
+          <span class="species">{{ selectedPlant.species }}</span>
+        </div>
+
+        <div class="plant-content">
+          <div class="plant-image">
+            <img :src="selectedPlant.image_url" :alt="selectedPlant.name" />
+          </div>
+
+          <div class="plant-info">
+            <div class="info-section">
+              <h3>Planting Guide</h3>
+              <p>{{ selectedPlant.guide }}</p>
+            </div>
+
+            <div class="info-grid">
+              <div class="info-item">
+                <h4>Maintenance Level</h4>
+                <p>{{ selectedPlant.maintenance_level }}</p>
+              </div>
+              <div class="info-item">
+                <h4>Size</h4>
+                <p>{{ selectedPlant.size }}</p>
+              </div>
+              <div class="info-item">
+                <h4>Soil Type</h4>
+                <p>{{ selectedPlant.soil_type }}</p>
+              </div>
+              <div class="info-item">
+                <h4>Sunlight Needs</h4>
+                <p>{{ selectedPlant.sunlight_needs }}</p>
+              </div>
+              <div class="info-item">
+                <h4>Temperature Range</h4>
+                <p>{{ selectedPlant.temperature_range }}</p>
+              </div>
+              <div class="info-item">
+                <h4>Water Needs</h4>
+                <p>{{ selectedPlant.water_needs }}</p>
+              </div>
             </div>
           </div>
         </div>
-        <button @click="confirmSearch" class="confirm-button" :disabled="!searchQuery || isLoading">
-          <span v-if="isLoading">Loading...</span>
-          <span v-else>Confirm</span>
-        </button>
-      </div>
-    </div>
-
-    <div v-if="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </div>
-
-    <div v-if="selectedPlant" class="plant-details">
-      <div class="plant-header">
-        <h2>{{ selectedPlant.name }}</h2>
-        <span class="species">{{ selectedPlant.species }}</span>
       </div>
 
-      <div class="plant-content">
-        <div class="plant-image">
-          <img :src="selectedPlant.image_url" :alt="selectedPlant.name" />
+      <div v-else class="welcome-section">
+        <div class="welcome-content">
+          <i class="fas fa-seedling welcome-icon"></i>
+          <h2>Welcome to the Planting Guide</h2>
+          <p>Search for a plant to get detailed planting instructions and care tips.</p>
         </div>
-
-        <div class="plant-info">
-          <div class="info-section">
-            <h3>Planting Guide</h3>
-            <p>{{ selectedPlant.guide }}</p>
-          </div>
-
-          <div class="info-grid">
-            <div class="info-item">
-              <h4>Maintenance Level</h4>
-              <p>{{ selectedPlant.maintenance_level }}</p>
-            </div>
-            <div class="info-item">
-              <h4>Size</h4>
-              <p>{{ selectedPlant.size }}</p>
-            </div>
-            <div class="info-item">
-              <h4>Soil Type</h4>
-              <p>{{ selectedPlant.soil_type }}</p>
-            </div>
-            <div class="info-item">
-              <h4>Sunlight Needs</h4>
-              <p>{{ selectedPlant.sunlight_needs }}</p>
-            </div>
-            <div class="info-item">
-              <h4>Temperature Range</h4>
-              <p>{{ selectedPlant.temperature_range }}</p>
-            </div>
-            <div class="info-item">
-              <h4>Water Needs</h4>
-              <p>{{ selectedPlant.water_needs }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div v-else class="welcome-section">
-      <div class="welcome-content">
-        <i class="fas fa-seedling welcome-icon"></i>
-        <h2>Welcome to the Planting Guide</h2>
-        <p>Search for a plant to get detailed planting instructions and care tips.</p>
       </div>
     </div>
   </div>
@@ -100,9 +111,13 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router'
+import SideNavigation from '../components/SideNavigation.vue'
 
 export default {
   name: 'PlantingGuideView',
+  components: {
+    SideNavigation,
+  },
   setup() {
     const route = useRoute()
     const searchQuery = ref('')
@@ -118,7 +133,7 @@ export default {
       try {
         const response = await axios.get('http://localhost:3000/plants')
         plants.value = response.data
-        
+
         // 如果URL中有plant参数，自动搜索该植物
         const plantFromUrl = route.query.plant
         if (plantFromUrl) {
@@ -219,6 +234,7 @@ export default {
 
 <style scoped>
 .planting-guide {
+  position: relative;
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;

@@ -169,15 +169,7 @@ onMounted(async () => {
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
   overflow: hidden;
-}
-
-.spotlights > section:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .spotlights .content {
@@ -203,20 +195,20 @@ onMounted(async () => {
 /* Buttons */
 .button {
   display: inline-block;
-  background-color: #034c26;
+  background-color: #1c9e86;
   color: #ffffff;
   padding: 0.8rem 1.5rem;
-  border-radius: 4px;
+  border-radius: 18px;
   text-decoration: none;
   transition: background-color 0.3s ease;
 }
 
 .button.primary {
-  background-color: #034c26;
+  background-color: #2a99b7;
 }
 
 .button:hover {
-  background-color: #14642e;
+  background-color: #034c26;
 }
 
 .actions {

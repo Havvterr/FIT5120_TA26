@@ -496,7 +496,7 @@ import b1 from '@/assets/b1.jpg'
 }
 
 #two .heat-section {
-  background-color: rgba(0, 0, 0, 0.34);
+  background-color: rgba(0, 0, 0, 0.35);
   border-radius: 8px;
   padding: 1.5rem 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);

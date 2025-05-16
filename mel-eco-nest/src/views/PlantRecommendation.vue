@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { plantService } from '../services/plantService'
 import { useRouter } from 'vue-router'
+import SideNavigation from '../components/SideNavigation.vue'
 
 const router = useRouter()
 const sunlight = ref('')
@@ -21,7 +22,7 @@ const saveState = () => {
     maintenanceLevel: maintenanceLevel.value,
     showRecommendations: showRecommendations.value,
     recommendations: recommendations.value,
-    selectedPlants: selectedPlants.value
+    selectedPlants: selectedPlants.value,
   }
   localStorage.setItem('plantRecommendationState', JSON.stringify(state))
 }
@@ -69,12 +70,14 @@ const isPlantSelected = (plantName) => selectedPlants.value.includes(plantName)
 
 const createPlan = () => {
   console.log('Creating plan for plants:', selectedPlants.value)
-  router.push({
-    name: 'waterReminder',
-    query: { plants: selectedPlants.value.join(',') }
-  }).catch(err => {
-    console.error('Navigation failed:', err)
-  })
+  router
+    .push({
+      name: 'waterReminder',
+      query: { plants: selectedPlants.value.join(',') },
+    })
+    .catch((err) => {
+      console.error('Navigation failed:', err)
+    })
 }
 
 const sunlightOptions = [
@@ -137,9 +140,9 @@ const getRecommendations = async () => {
     }
 
     recommendations.value = await plantService.getRecommendations(userPreferences)
-    recommendations.value = recommendations.value.map(plant => ({
+    recommendations.value = recommendations.value.map((plant) => ({
       ...plant,
-      showGuide: false
+      showGuide: false,
     }))
     showRecommendations.value = true
     // 保存状态
@@ -160,6 +163,7 @@ onMounted(() => {
 
 <template>
   <div class="plant-recommendation">
+    <SideNavigation />
     <div class="welcome-section">
       <h1>Find Your Perfect Plant</h1>
       <p class="welcome-text">
@@ -264,19 +268,21 @@ onMounted(() => {
                   class="guide-btn"
                   @mouseenter="plant.showGuide = true"
                   @mouseleave="plant.showGuide = false"
-                  @click="router.push({
-                    name: 'planting-guide',
-                    query: {
-                      plant: plant.name,
-                      soil: plant.soil_type,
-                      temperature: plant.temperature_range,
-                      water: plant.water_needs,
-                      sunlight: plant.sunlight_needs,
-                      description: plant.description,
-                      species: plant.species,
-                      image: plant.image_url
-                    }
-                  })"
+                  @click="
+                    router.push({
+                      name: 'planting-guide',
+                      query: {
+                        plant: plant.name,
+                        soil: plant.soil_type,
+                        temperature: plant.temperature_range,
+                        water: plant.water_needs,
+                        sunlight: plant.sunlight_needs,
+                        description: plant.description,
+                        species: plant.species,
+                        image: plant.image_url,
+                      },
+                    })
+                  "
                 >
                   Planting Guide
                 </button>
@@ -294,11 +300,11 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <div v-if="recommendations.length > 0 && selectedPlants.length > 0" class="create-plan-section">
-        <button
-          class="create-plan-button"
-          @click="createPlan"
-        >
+      <div
+        v-if="recommendations.length > 0 && selectedPlants.length > 0"
+        class="create-plan-section"
+      >
+        <button class="create-plan-button" @click="createPlan">
           Create planting plan ({{ selectedPlants.length }} plants selected)
         </button>
       </div>
@@ -321,6 +327,7 @@ export default {
 
 <style scoped>
 .plant-recommendation {
+  position: relative;
   max-width: 1170px;
   margin: 0 auto;
   padding: 2rem;

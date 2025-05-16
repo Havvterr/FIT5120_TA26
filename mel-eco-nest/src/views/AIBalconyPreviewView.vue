@@ -1,5 +1,6 @@
 <template>
   <div class="ai-balcony-preview">
+    <SideNavigation />
     <h1 class="title">Your AI Designer</h1>
     <div id="vanta-background"></div>
 
@@ -145,6 +146,7 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import { plantService } from '../services/plantService'
 import { aiDesignService } from '../services/aiDesignService'
+import SideNavigation from '../components/SideNavigation.vue'
 
 const compressImage = async (file, maxLongSide = 960, maxFileSize = 1024 * 1024) => {
   // If file is already smaller than maximum size, return directly
@@ -449,7 +451,7 @@ onUnmounted(() => {
 @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Indie+Flower&display=swap');
 
 .ai-balcony-preview {
-  position: fixed;
+  position: relative;
   top: 80px;
   left: 0;
   width: 100%;

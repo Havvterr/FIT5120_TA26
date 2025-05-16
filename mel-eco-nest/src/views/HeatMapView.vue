@@ -45,11 +45,11 @@
             <span class="color-box" style="background-color: #009900"></span>
             <span>40-60%</span>
           </div>
-            <div class="legend-item">
+          <div class="legend-item">
             <span class="color-box" style="background-color: #66cc00"></span>
             <span>20-40%</span>
-            </div>
-            <div class="legend-item">
+          </div>
+          <div class="legend-item">
             <span class="color-box" style="background-color: #ccff99"></span>
             <span>0-20%</span>
           </div>
@@ -59,19 +59,19 @@
           <div class="legend-item">
             <span class="color-box" style="background-color: #b10026"></span>
             <span>Very High (8+)</span>
-            </div>
-            <div class="legend-item">
+          </div>
+          <div class="legend-item">
             <span class="color-box" style="background-color: #e31a1c"></span>
             <span>High (6-8)</span>
-            </div>
-            <div class="legend-item">
+          </div>
+          <div class="legend-item">
             <span class="color-box" style="background-color: #fc4e2a"></span>
             <span>Moderate (4-6)</span>
-            </div>
-            <div class="legend-item">
+          </div>
+          <div class="legend-item">
             <span class="color-box" style="background-color: #fd8d3c"></span>
             <span>Low (2-4)</span>
-            </div>
+          </div>
           <div class="legend-item">
             <span class="color-box" style="background-color: #fed976"></span>
             <span>Very Low (0-2)</span>
@@ -112,7 +112,7 @@
         <div class="data-card">
           <h3>Heat Island Area</h3>
           <div class="data-value">37 km²</div>
-          <p>Coverage area of Melbourne's main heat island effect</p>
+          <p>The coverage area of Melbourne's main heat island effect</p>
         </div>
 
         <div class="data-card">
@@ -121,55 +121,97 @@
           <p>Annual temperature increase of Melbourne's heat island effect</p>
         </div>
       </div>
-
-      <div class="temperature-chart">
-        <h3>Temperature Comparison of Melbourne Areas (Summer Average)</h3>
-        <div class="chart-container">
-          <div class="chart-bar" style="height: 90%">
-            <span class="bar-label">CBD</span>
-            <span class="temperature">32.5°C</span>
-          </div>
-          <div class="chart-bar" style="height: 80%">
-            <span class="bar-label">Inner City</span>
-            <span class="temperature">30.2°C</span>
-          </div>
-          <div class="chart-bar" style="height: 70%">
-            <span class="bar-label">Middle Suburbs</span>
-            <span class="temperature">28.7°C</span>
-          </div>
-          <div class="chart-bar" style="height: 60%">
-            <span class="bar-label">Outer Suburbs</span>
-            <span class="temperature">27.1°C</span>
-          </div>
-          <div class="chart-bar" style="height: 50%">
-            <span class="bar-label">Rural Areas</span>
-            <span class="temperature">25.8°C</span>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <div class="factors-section">
-      <h2>Factors Affecting Heat Island Effect</h2>
-      <div class="factors-grid">
-        <div class="factor-card">
-          <h3>Building Density</h3>
-          <p>High-density building areas accumulate more heat and dissipate it more slowly</p>
+    <!-- Mitigation Strategies Section -->
+    <section class="mitigation-section">
+      <h2>Urban Heat Mitigation Strategies</h2>
+      <div class="mitigation-list">
+        <div class="mitigation-item row-left">
+          <img class="mitigation-img" src="@/assets/r1.jpg" alt="Enhance Urban Green Spaces" />
+          <div class="mitigation-text">
+            <h3>Enhance Urban Green Spaces</h3>
+            <p>
+              Adding 30% more urban greenery can reduce temperatures by 2-4°C through natural
+              shading and cooling.
+            </p>
+            <ul>
+              <li>Plant more trees in communities and streets</li>
+              <li>Develop urban parks and green spaces</li>
+            </ul>
+          </div>
         </div>
-        <div class="factor-card">
-          <h3>Green Coverage</h3>
-          <p>Trees and vegetation can reduce surrounding temperatures through transpiration</p>
+        <div class="mitigation-item row-right">
+          <div class="mitigation-text">
+            <h3>Use Reflective Building Materials</h3>
+            <p>Light-colored, reflective materials can lower surface temperatures by up to 40°C.</p>
+            <ul>
+              <li>Install light-colored or reflective roofing materials</li>
+              <li>Use special coatings to increase building reflectivity</li>
+            </ul>
+          </div>
+          <img class="mitigation-img" src="@/assets/r1.jpg" alt="Reflective Building Materials" />
         </div>
-        <div class="factor-card">
-          <h3>Surface Materials</h3>
-          <p>Materials like asphalt and concrete absorb and store large amounts of heat</p>
+        <div class="mitigation-item row-left">
+          <img class="mitigation-img" src="@/assets/r1.jpg" alt="Promote Green Roofs and Walls" />
+          <div class="mitigation-text">
+            <h3>Promote Green Roofs and Walls</h3>
+            <p>
+              Building-integrated vegetation provides natural insulation and cooling while adding
+              green space.
+            </p>
+            <ul>
+              <li>Install green roof systems on flat-roofed buildings</li>
+              <li>Construct vertical gardens and green walls</li>
+            </ul>
+          </div>
         </div>
-        <div class="factor-card">
-          <h3>Human Activities</h3>
-          <p>Transportation, industry, and air conditioning generate additional heat</p>
+        <div class="mitigation-item row-right">
+          <div class="mitigation-text">
+            <h3>Minimize Transport Pollution</h3>
+            <p>
+              Decreasing vehicle traffic helps minimize heat waste from engines and exhaust systems.
+            </p>
+            <ul>
+              <li>Use public transportation</li>
+              <li>Promote cycling and walking</li>
+            </ul>
+          </div>
+          <img class="mitigation-img" src="@/assets/r1.jpg" alt="Minimize Transport Pollution" />
+        </div>
+        <div class="mitigation-item row-left">
+          <img
+            class="mitigation-img"
+            src="@/assets/r1.jpg"
+            alt="Support Community Green Initiatives"
+          />
+          <div class="mitigation-text">
+            <h3>Support Community Green Initiatives</h3>
+            <p>
+              Collective environmental projects amplify individual efforts for broader neighborhood
+              impact.
+            </p>
+            <ul>
+              <li>Encourage your body corporate to explore green roof funding</li>
+              <li>Join local environmental or sustainability groups</li>
+            </ul>
+          </div>
+        </div>
+        <div class="mitigation-item row-right">
+          <div class="mitigation-text">
+            <h3>Use Energy-Efficient Cooling Habits</h3>
+            <p>
+              Smarter appliance use reduces energy consumption and associated urban heat production.
+            </p>
+            <ul>
+              <li>Use fans combined with AC to circulate air more effectively</li>
+              <li>Set air conditioners to 25-26°C with energy-saving mode</li>
+            </ul>
+          </div>
+          <img class="mitigation-img" src="@/assets/r1.jpg" alt="Energy-Efficient Cooling Habits" />
         </div>
       </div>
-    </div>
+    </section>
   </div>
 </template>
 
@@ -452,7 +494,7 @@ onUnmounted(() => {
 
 <style scoped>
 .heat-map-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -705,7 +747,7 @@ onUnmounted(() => {
   min-width: 250px;
   background-color: var(--color-background-soft);
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 3.5rem 1.2rem;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -890,6 +932,80 @@ onUnmounted(() => {
 
   .temperature {
     font-size: 0.9rem;
+  }
+}
+
+.mitigation-section {
+  margin: 4rem 0 2rem 0;
+  padding: 2rem 0;
+  background: #f8fafc;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+.mitigation-section h2 {
+  text-align: center;
+  color: #1a2a3a;
+  margin-bottom: 2.5rem;
+  font-size: 2rem;
+}
+.mitigation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+.mitigation-item {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  justify-content: center;
+}
+.row-left {
+  flex-direction: row;
+}
+.row-right {
+  flex-direction: row-reverse;
+}
+.mitigation-img {
+  width: 220px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #e0e7ef;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.mitigation-text {
+  max-width: 520px;
+}
+.mitigation-text h3 {
+  color: #14642e;
+  margin-bottom: 0.7rem;
+  font-size: 1.25rem;
+}
+.mitigation-text p {
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+.mitigation-text ul {
+  padding-left: 1.2rem;
+  margin: 0;
+}
+.mitigation-text li {
+  color: #4a5568;
+  margin-bottom: 0.3rem;
+  font-size: 1rem;
+}
+@media (max-width: 900px) {
+  .mitigation-item {
+    flex-direction: column !important;
+    gap: 1.2rem;
+    align-items: flex-start;
+  }
+  .mitigation-img {
+    width: 100%;
+    height: 180px;
+  }
+  .mitigation-text {
+    max-width: 100%;
   }
 }
 </style>
