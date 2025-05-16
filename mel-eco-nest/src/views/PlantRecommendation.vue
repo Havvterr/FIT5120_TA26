@@ -220,7 +220,7 @@ const getRecommendations = async () => {
                 :disabled="!isPlantSelected(plant.name) && selectedPlants.length >= 3"
                 @click="togglePlantSelection(plant.name)"
               >
-                {{ isPlantSelected(plant.name) ? 'Selected' : 'I wanna plant this' }}
+                {{ isPlantSelected(plant.name) ? 'Selected' : 'Plant This' }}
               </button>
             </div>
           </div>
