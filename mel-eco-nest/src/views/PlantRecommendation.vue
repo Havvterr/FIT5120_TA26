@@ -13,6 +13,38 @@ const loading = ref(false)
 const error = ref(null)
 const selectedPlants = ref([])
 
+// 保存状态到 localStorage
+const saveState = () => {
+  const state = {
+    sunlight: sunlight.value,
+    waterNeeds: waterNeeds.value,
+    maintenanceLevel: maintenanceLevel.value,
+    showRecommendations: showRecommendations.value,
+    recommendations: recommendations.value,
+    selectedPlants: selectedPlants.value
+  }
+  localStorage.setItem('plantRecommendationState', JSON.stringify(state))
+}
+
+// 从 localStorage 恢复状态
+const restoreState = () => {
+  const savedState = localStorage.getItem('plantRecommendationState')
+  if (savedState) {
+    const state = JSON.parse(savedState)
+    sunlight.value = state.sunlight
+    waterNeeds.value = state.waterNeeds
+    maintenanceLevel.value = state.maintenanceLevel
+    showRecommendations.value = state.showRecommendations
+    recommendations.value = state.recommendations
+    selectedPlants.value = state.selectedPlants
+  }
+}
+
+// 清除保存的状态
+const clearState = () => {
+  localStorage.removeItem('plantRecommendationState')
+}
+
 const resetForm = () => {
   sunlight.value = ''
   waterNeeds.value = ''
@@ -21,6 +53,7 @@ const resetForm = () => {
   recommendations.value = []
   error.value = null
   selectedPlants.value = []
+  clearState()
 }
 
 const togglePlantSelection = (plantName) => {
@@ -104,12 +137,13 @@ const getRecommendations = async () => {
     }
 
     recommendations.value = await plantService.getRecommendations(userPreferences)
-    // 为每个植物添加showGuide属性
     recommendations.value = recommendations.value.map(plant => ({
       ...plant,
       showGuide: false
     }))
     showRecommendations.value = true
+    // 保存状态
+    saveState()
   } catch (e) {
     error.value = 'Failed to get plant recommendations. Please try again later.'
     console.error(e)
@@ -117,6 +151,11 @@ const getRecommendations = async () => {
     loading.value = false
   }
 }
+
+// 在组件挂载时恢复状态
+onMounted(() => {
+  restoreState()
+})
 </script>
 
 <template>
@@ -225,6 +264,19 @@ const getRecommendations = async () => {
                   class="guide-btn"
                   @mouseenter="plant.showGuide = true"
                   @mouseleave="plant.showGuide = false"
+                  @click="router.push({
+                    name: 'planting-guide',
+                    query: {
+                      plant: plant.name,
+                      soil: plant.soil_type,
+                      temperature: plant.temperature_range,
+                      water: plant.water_needs,
+                      sunlight: plant.sunlight_needs,
+                      description: plant.description,
+                      species: plant.species,
+                      image: plant.image_url
+                    }
+                  })"
                 >
                   Planting Guide
                 </button>

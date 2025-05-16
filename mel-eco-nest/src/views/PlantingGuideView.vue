@@ -99,10 +99,12 @@
 <script>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useRoute } from 'vue-router'
 
 export default {
   name: 'PlantingGuideView',
   setup() {
+    const route = useRoute()
     const searchQuery = ref('')
     const plants = ref([])
     const filteredPlants = ref([])
@@ -114,9 +116,15 @@ export default {
     // Fetch all plants from the database
     const fetchPlants = async () => {
       try {
-        // const response = await axios.get('/api/plants')
         const response = await axios.get('http://localhost:3000/plants')
         plants.value = response.data
+        
+        // 如果URL中有plant参数，自动搜索该植物
+        const plantFromUrl = route.query.plant
+        if (plantFromUrl) {
+          searchQuery.value = plantFromUrl
+          await confirmSearch()
+        }
       } catch (error) {
         console.error('Error fetching plants:', error)
         errorMessage.value = 'Failed to load plant data. Please try again later.'
