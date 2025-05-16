@@ -200,14 +200,6 @@ const getRecommendations = async () => {
       <h2>Your Plant Recommendations</h2>
       <div v-if="recommendations.length > 0" class="recommendation-list">
         <div class="plant-card" v-for="plant in recommendations" :key="plant.name">
-          <div class="plant-selection">
-            <input
-              type="checkbox"
-              :checked="isPlantSelected(plant.name)"
-              :disabled="!isPlantSelected(plant.name) && selectedPlants.length >= 3"
-              @change="togglePlantSelection(plant.name)"
-            />
-          </div>
           <div class="plant-image" v-if="plant.image_url">
             <img :src="plant.image_url" :alt="plant.name" @error="handleImageError" />
           </div>
@@ -222,10 +214,19 @@ const getRecommendations = async () => {
             </div>
             <p class="plant-description">{{ plant.description }}</p>
             <div class="match-score"></div>
+            <div class="plant-selection">
+              <button
+                :class="['plant-select-btn', { selected: isPlantSelected(plant.name) }]"
+                :disabled="!isPlantSelected(plant.name) && selectedPlants.length >= 3"
+                @click="togglePlantSelection(plant.name)"
+              >
+                {{ isPlantSelected(plant.name) ? 'Selected' : 'I wanna plant this' }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div v-if="selectedPlants.length > 0" class="create-plan-section">
+      <div v-if="recommendations.length > 0 && selectedPlants.length > 0" class="create-plan-section">
         <button
           class="create-plan-button"
           @click="createPlan"
@@ -233,7 +234,7 @@ const getRecommendations = async () => {
           Create planting plan ({{ selectedPlants.length }} plants selected)
         </button>
       </div>
-      <p v-else class="no-results">
+      <p v-else-if="recommendations.length === 0" class="no-results">
         Sorry, no plants match your criteria. Try adjusting your preferences.
       </p>
     </div>
@@ -473,10 +474,25 @@ label {
   margin-bottom: 1rem;
 }
 
-.plant-selection input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+.plant-selection button {
+  background-color: #33a06f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+  margin-bottom: 0.5rem;
+}
+
+.plant-selection button.selected {
+  background-color: #034c26;
+}
+
+.plant-selection button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 .create-plan-section {
