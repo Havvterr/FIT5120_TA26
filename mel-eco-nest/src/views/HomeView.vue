@@ -456,7 +456,7 @@ import b1 from '@/assets/b1.jpg'
 
 #two {
   background-color: var(--color-background-soft);
-  background-image: url('@/assets/h2.jpg');
+  background-image: url('@/assets/h2.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

@@ -462,11 +462,11 @@ onUnmounted(() => {
 
 .title {
   position: absolute;
-  top: 8%;
+  top: 12%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-family: 'Comic Neue', cursive;
+  font-family: 'Source Sans Pro', Helvetica, sans-serif;
   font-size: 4rem;
   font-weight: bold;
   text-align: center;
