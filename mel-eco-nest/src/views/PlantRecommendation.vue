@@ -104,6 +104,11 @@ const getRecommendations = async () => {
     }
 
     recommendations.value = await plantService.getRecommendations(userPreferences)
+    // 为每个植物添加showGuide属性
+    recommendations.value = recommendations.value.map(plant => ({
+      ...plant,
+      showGuide: false
+    }))
     showRecommendations.value = true
   } catch (e) {
     error.value = 'Failed to get plant recommendations. Please try again later.'
@@ -206,14 +211,7 @@ const getRecommendations = async () => {
           <div class="plant-info">
             <h3>{{ plant.name }}</h3>
             <p class="plant-species">{{ plant.species }}</p>
-            <div class="plant-details">
-              <p><span class="detail-label">Sunlight:</span> {{ plant.sunlight_needs }}</p>
-              <p><span class="detail-label">Water Needs:</span> {{ plant.water_needs }}</p>
-              <p><span class="detail-label">Temperature:</span> {{ plant.temperature_range }}</p>
-              <p><span class="detail-label">Maintenance:</span> {{ plant.maintenance_level }}</p>
-            </div>
             <p class="plant-description">{{ plant.description }}</p>
-            <div class="match-score"></div>
             <div class="plant-selection">
               <button
                 :class="['plant-select-btn', { selected: isPlantSelected(plant.name) }]"
@@ -222,6 +220,24 @@ const getRecommendations = async () => {
               >
                 {{ isPlantSelected(plant.name) ? 'Selected' : 'Plant This' }}
               </button>
+              <div class="tooltip-container">
+                <button
+                  class="guide-btn"
+                  @mouseenter="plant.showGuide = true"
+                  @mouseleave="plant.showGuide = false"
+                >
+                  Planting Guide
+                </button>
+                <div class="tooltip" v-if="plant.showGuide">
+                  <h4>Plant Care Info</h4>
+                  <div class="plant-care-info">
+                    <p><strong>Soil:</strong> {{ plant.soil_type }}</p>
+                    <p><strong>Temperature:</strong> {{ plant.temperature_range }}</p>
+                    <p><strong>Water:</strong> {{ plant.water_needs }}</p>
+                    <p><strong>Sunlight:</strong> {{ plant.sunlight_needs }}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -395,9 +411,9 @@ label {
 
 .plant-card {
   background-color: #fff;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
@@ -410,11 +426,11 @@ label {
 
 .plant-image {
   width: 100%;
-  padding-top: 70%;
+  padding-top: 60%;
   position: relative;
   overflow: hidden;
-  border-radius: 10px;
-  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
 }
 
 .plant-image img {
@@ -436,14 +452,14 @@ label {
 .plant-info h3 {
   color: #1a2a3a;
   margin-top: 0;
-  margin-bottom: 0.8rem;
-  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
 }
 
 .plant-species {
   color: #33a06f;
-  font-size: 1.2rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
   font-style: italic;
 }
 
@@ -465,13 +481,15 @@ label {
 
 .plant-description {
   color: #444;
-  line-height: 1.6;
-  font-size: 1.1rem;
-  margin: 1.5rem 0;
+  line-height: 1.5;
+  font-size: 1rem;
+  margin: 1rem 0;
 }
 
 .plant-selection {
   margin-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
 }
 
 .plant-selection button {
@@ -479,11 +497,78 @@ label {
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 0.5rem 1.2rem;
+  padding: 0.8rem 1.5rem;
   cursor: pointer;
   font-size: 1rem;
-  transition: background 0.2s;
-  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plant-selection .guide-btn {
+  background-color: #4a90e2;
+  flex: none;
+}
+
+.plant-selection .guide-btn:hover {
+  background-color: #357abd;
+}
+
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 250px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+}
+
+.tooltip-container:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-3px);
+}
+
+.tooltip h4 {
+  margin: 0 0 0.8rem 0;
+  color: #33a06f;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.plant-care-info {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.plant-care-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #4a4a4a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plant-care-info strong {
+  color: #33a06f;
+  font-weight: 500;
+  margin-right: 0.5rem;
 }
 
 .plant-selection button.selected {
