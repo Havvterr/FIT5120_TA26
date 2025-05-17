@@ -5,6 +5,7 @@ This is a project based on Vue 3 and Vite. Below are the development environment
 ## Development Environment Setup
 
 ### 1. Install Node.js
+
 1. Visit [Node.js official website](https://nodejs.org/) to download and install the latest LTS version
 2. After installation, open command line tool to verify the installation:
    ```sh
@@ -13,13 +14,16 @@ This is a project based on Vue 3 and Vite. Below are the development environment
    ```
 
 ### 2. IDE Setup
+
 Recommended to use [VSCode](https://code.visualstudio.com/) as the development tool, and install the following plugins:
+
 - [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (please disable Vetur)
 - [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin)
 
 ## Quick Start Guide
 
 ### 1. Start Backend Server
+
 ```sh
 cd mel-eco-nest
 cd server
@@ -28,7 +32,9 @@ node server.js
 ```
 
 ### 2. Start Frontend Development Server
+
 Open a new terminal, then:
+
 ```sh
 cd mel-eco-nest
 npm install
@@ -38,7 +44,9 @@ npm run dev
 ## Detailed Project Setup
 
 ### 1. Environment Configuration
+
 1. Frontend Configuration
+
    - Create a new `.env` file in the project root directory
    - Update the environment variables in `.env` according to your needs
 
@@ -56,19 +64,25 @@ npm run dev
    - Ask Ruifeng(rlia0025@student.monash.edu) for the database connection information
 
 ### 2. Production Build
+
 Build for production:
+
 ```sh
 npm run build
 ```
 
 ### 3. Unit Tests
+
 Run unit tests:
+
 ```sh
 npm run test:unit
 ```
 
 ### 4. Code Linting
+
 Run ESLint check:
+
 ```sh
 npm run lint
 ```
@@ -76,6 +90,7 @@ npm run lint
 ## Deployment Guide
 
 ### 1. Frontend Deployment
+
 1. Build the frontend for production:
    ```sh
    npm run build
@@ -83,6 +98,7 @@ npm run lint
 2. The built files will be in the `dist` directory.
 
 ### 2. Backend Deployment
+
 1. Ensure Node.js is installed on your server.
 2. Copy the `server` directory to your deployment server.
 3. Install dependencies:
@@ -96,6 +112,7 @@ npm run lint
    ```
 
 ### 3. Nginx Configuration
+
 Here's a sample Nginx configuration for deploying the application:
 
 ```nginx
@@ -135,4 +152,51 @@ server {
 
 For more configuration information, please refer to [Vite Configuration Reference](https://vitejs.dev/config/).
 
+# Database Configuration for Efficient Appliances
 
+## Setup Instructions
+
+1. **Create a MySQL Database**:
+
+   ```sql
+   CREATE DATABASE mel_eco_nest;
+   ```
+
+2. **Configure Environment Variables**:
+   Create a file named `.env` in the server directory with the following content:
+
+   ```
+   # Database Configuration
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_USER=your_mysql_username
+   DB_PASSWORD=your_mysql_password
+   DB_DATABASE=mel_eco_nest
+
+   # API Keys
+   OPENWEATHERMAP_API_KEY=your_api_key_here
+
+   # Server Configuration
+   PORT=3000
+   NODE_ENV=development
+   ```
+
+3. **Install Dependencies**:
+
+   ```bash
+   cd server
+   npm install
+   ```
+
+4. **Start the Server**:
+   ```bash
+   node server.js
+   ```
+
+The server will automatically create the necessary `appliance` table and populate it with sample data when started for the first time.
+
+## Troubleshooting
+
+- If you encounter database connection issues, ensure MySQL is running and accessible
+- Verify credentials in the `.env` file are correct
+- Check console for specific error messages

@@ -10,6 +10,7 @@ import EnergyProgressView from '../views/energy-journey/EnergyProgressView.vue'
 import MyPlanView from '../views/energy-journey/MyPlanView.vue'
 import GoalTrackerView from '../views/energy-journey/GoalTrackerView.vue'
 import BuildMicroOasisView from '../views/BuildMicroOasisView.vue'
+import EfficientAppliancesView from '../views/EfficientAppliancesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -75,6 +76,11 @@ const router = createRouter({
           path: 'energy-progress',
           name: 'energyProgress',
           component: EnergyProgressView,
+        },
+        {
+          path: 'efficient-appliances',
+          name: 'efficientAppliances',
+          component: EfficientAppliancesView,
         },
       ],
     },

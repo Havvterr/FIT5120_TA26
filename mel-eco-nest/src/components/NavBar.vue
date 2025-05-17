@@ -64,6 +64,9 @@
               <router-link class="dropdown-item" to="/explore/energy-progress"
                 >Energy Progress</router-link
               >
+              <router-link class="dropdown-item" to="/explore/efficient-appliances"
+                >Efficient Appliances</router-link
+              >
             </div>
           </li>
         </ul>
