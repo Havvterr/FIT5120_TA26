@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-// const API_URL = import.meta.env.VITE_API_URL || '/api'
+const API_URL = import.meta.env.MODE === 'production' ? '/api' : 'http://localhost:3000'
 
 // Custom error class
 class AIDesignError extends Error {

@@ -116,9 +116,12 @@ export default {
     // Fetch all plants from the database
     const fetchPlants = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/plants')
+        const baseUrl = import.meta.env.MODE === 'development'
+          ? 'http://localhost:3000/plants'
+          : '/api/plants'
+        const response = await axios.get(baseUrl)
         plants.value = response.data
-        
+
         // 如果URL中有plant参数，自动搜索该植物
         const plantFromUrl = route.query.plant
         if (plantFromUrl) {
@@ -168,8 +171,11 @@ export default {
           selectedPlant.value = localPlant
         } else {
           // If not found locally, try to fetch from server
+          const baseUrl = import.meta.env.MODE === 'development'
+            ? 'http://localhost:3000/plants'
+            : '/api/plants'
           const response = await axios.get(
-            `http://localhost:3000/plants/${encodeURIComponent(searchQuery.value)}`,
+            `${baseUrl}/${encodeURIComponent(searchQuery.value)}`
           )
           selectedPlant.value = response.data
         }
