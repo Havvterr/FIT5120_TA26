@@ -61,7 +61,6 @@
             </a>
             <div class="dropdown-menu">
               <router-link class="dropdown-item" to="/explore/heat-map">Heat Map</router-link>
-              <router-link class="dropdown-item" to="/explore/mitigation">Mitigation</router-link>
               <router-link class="dropdown-item" to="/explore/energy-progress"
                 >Energy Progress</router-link
               >

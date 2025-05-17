@@ -282,8 +282,6 @@
                   Countries introduce subsidies for high-efficiency motors, initiating industrial
                   upgrades
                 </li>
-                <li>Accelerate heat pump market promotion to gradually replace gas boilers</li>
-                <li>Electric vehicle market expansion, infrastructure construction beginning</li>
               </ul>
               <div class="chart-container" data-aos="flip-left" data-aos-delay="300">
                 <div class="donut-chart" id="phase1-chart">
@@ -382,14 +380,6 @@
                   All new buildings meet zero-carbon ready standards, existing building renovations
                   begin
                 </li>
-                <li>Electric vehicles reach 60% of new car sales</li>
-                <li>
-                  Annual solar energy capacity additions reach 630 GW/year, wind energy 390 GW/year
-                </li>
-                <li>
-                  Annual efficiency improvement rate reaches 4%, becoming the largest source of
-                  emission reduction
-                </li>
               </ul>
               <div class="chart-container" data-aos="flip-right" data-aos-delay="300">
                 <div class="pie-chart" id="phase2-chart">
@@ -474,14 +464,6 @@
                 <li>
                   Large-scale deep building renovations, improving insulation, ventilation, and
                   smart controls
-                </li>
-                <li>Industrial high-temperature processes widely electrified or using hydrogen</li>
-                <li>
-                  Energy-saving behaviors standardized: remote work, green travel, load adjustment
-                </li>
-                <li>
-                  Energy systems fully digitalized with smart efficiency management (AI, IoT,
-                  digital twins)
                 </li>
               </ul>
               <div class="chart-container" data-aos="flip-left" data-aos-delay="300">
@@ -589,11 +571,6 @@
                   chemicals, aviation)
                 </li>
                 <li>Behavioral changes contributing 4-6% annual emission reductions</li>
-                <li>Energy efficiency becoming a primary energy source alongside renewables</li>
-                <li>
-                  Global energy system achieving net zero emissions, with efficiency contributing
-                  nearly half of total reductions
-                </li>
               </ul>
               <div class="chart-container stacked-chart" data-aos="flip-right" data-aos-delay="300">
                 <div class="chart-title">Emission Reduction Contributions</div>
@@ -630,7 +607,9 @@
           lowest-cost means of reducing emissions and is indispensable at every stage of the path to
           net zero.
         </p>
-        <router-link to="/energy-plan" class="cta-button">Create My Efficiency Plan</router-link>
+        <router-link to="/actions/my-plan" class="cta-button"
+          >Create My Efficiency Plan</router-link
+        >
       </div>
     </section>
   </div>
@@ -769,7 +748,7 @@ section {
 .animated-icon {
   font-size: 5rem;
   color: #1a712d;
-  margin-bottom:4rem;
+  margin-bottom: 4rem;
   animation: pulse 2s infinite;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }

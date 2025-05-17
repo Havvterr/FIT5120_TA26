@@ -127,88 +127,123 @@
     <section class="mitigation-section">
       <h2>Urban Heat Mitigation Strategies</h2>
       <div class="mitigation-list">
-        <div class="mitigation-item row-left">
-          <img class="mitigation-img" src="@/assets/r1.jpg" alt="Enhance Urban Green Spaces" />
-          <div class="mitigation-text">
-            <h3>Enhance Urban Green Spaces</h3>
-            <p>
-              Adding 30% more urban greenery can reduce temperatures by 2-4°C through natural
-              shading and cooling.
-            </p>
-            <ul>
-              <li>Plant more trees in communities and streets</li>
-              <li>Develop urban parks and green spaces</li>
-            </ul>
+        <!-- Card 1: Image on LEFT -->
+        <div class="mitigation-item">
+          <div class="mitigation-content">
+            <div class="image-container left-image">
+              <img src="@/assets/m1.jpg" alt="Enhance Urban Green Spaces" />
+            </div>
+            <div class="text-container left-text">
+              <h3>Enhance Urban Green Spaces</h3>
+              <p>
+                Adding 30% more urban greenery can reduce temperatures by 2-4°C through natural
+                shading and cooling.
+              </p>
+              <ul>
+                <li>Plant more trees in communities and streets</li>
+                <li>Develop urban parks and green spaces</li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="mitigation-item row-right">
-          <div class="mitigation-text">
-            <h3>Use Reflective Building Materials</h3>
-            <p>Light-colored, reflective materials can lower surface temperatures by up to 40°C.</p>
-            <ul>
-              <li>Install light-colored or reflective roofing materials</li>
-              <li>Use special coatings to increase building reflectivity</li>
-            </ul>
-          </div>
-          <img class="mitigation-img" src="@/assets/r1.jpg" alt="Reflective Building Materials" />
-        </div>
-        <div class="mitigation-item row-left">
-          <img class="mitigation-img" src="@/assets/r1.jpg" alt="Promote Green Roofs and Walls" />
-          <div class="mitigation-text">
-            <h3>Promote Green Roofs and Walls</h3>
-            <p>
-              Building-integrated vegetation provides natural insulation and cooling while adding
-              green space.
-            </p>
-            <ul>
-              <li>Install green roof systems on flat-roofed buildings</li>
-              <li>Construct vertical gardens and green walls</li>
-            </ul>
+
+        <!-- Card 2: Image on RIGHT -->
+        <div class="mitigation-item">
+          <div class="mitigation-content">
+            <div class="text-container right-text">
+              <h3>Use Reflective Building Materials</h3>
+              <p>
+                Light-colored, reflective materials can lower surface temperatures by up to 40°C.
+              </p>
+              <ul>
+                <li>Install light-colored or reflective roofing materials</li>
+                <li>Use special coatings to increase building reflectivity</li>
+              </ul>
+            </div>
+            <div class="image-container right-image">
+              <img src="@/assets/m2.jpg" alt="Reflective Building Materials" />
+            </div>
           </div>
         </div>
-        <div class="mitigation-item row-right">
-          <div class="mitigation-text">
-            <h3>Minimize Transport Pollution</h3>
-            <p>
-              Decreasing vehicle traffic helps minimize heat waste from engines and exhaust systems.
-            </p>
-            <ul>
-              <li>Use public transportation</li>
-              <li>Promote cycling and walking</li>
-            </ul>
-          </div>
-          <img class="mitigation-img" src="@/assets/r1.jpg" alt="Minimize Transport Pollution" />
-        </div>
-        <div class="mitigation-item row-left">
-          <img
-            class="mitigation-img"
-            src="@/assets/r1.jpg"
-            alt="Support Community Green Initiatives"
-          />
-          <div class="mitigation-text">
-            <h3>Support Community Green Initiatives</h3>
-            <p>
-              Collective environmental projects amplify individual efforts for broader neighborhood
-              impact.
-            </p>
-            <ul>
-              <li>Encourage your body corporate to explore green roof funding</li>
-              <li>Join local environmental or sustainability groups</li>
-            </ul>
+
+        <!-- Card 3: Image on LEFT -->
+        <div class="mitigation-item">
+          <div class="mitigation-content">
+            <div class="image-container left-image">
+              <img src="@/assets/m3.jpg" alt="Promote Green Roofs and Walls" />
+            </div>
+            <div class="text-container left-text">
+              <h3>Promote Green Roofs and Walls</h3>
+              <p>
+                Building-integrated vegetation provides natural insulation and cooling while adding
+                green space.
+              </p>
+              <ul>
+                <li>Install green roof systems on flat-roofed buildings</li>
+                <li>Construct vertical gardens and green walls</li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="mitigation-item row-right">
-          <div class="mitigation-text">
-            <h3>Use Energy-Efficient Cooling Habits</h3>
-            <p>
-              Smarter appliance use reduces energy consumption and associated urban heat production.
-            </p>
-            <ul>
-              <li>Use fans combined with AC to circulate air more effectively</li>
-              <li>Set air conditioners to 25-26°C with energy-saving mode</li>
-            </ul>
+
+        <!-- Card 4: Image on RIGHT -->
+        <div class="mitigation-item">
+          <div class="mitigation-content">
+            <div class="text-container right-text">
+              <h3>Minimize Transport Pollution</h3>
+              <p>
+                Decreasing vehicle traffic helps minimize heat waste from engines and exhaust
+                systems.
+              </p>
+              <ul>
+                <li>Use public transportation</li>
+                <li>Promote cycling and walking</li>
+              </ul>
+            </div>
+            <div class="image-container right-image">
+              <img src="@/assets/m4.jpg" alt="Minimize Transport Pollution" />
+            </div>
           </div>
-          <img class="mitigation-img" src="@/assets/r1.jpg" alt="Energy-Efficient Cooling Habits" />
+        </div>
+
+        <!-- Card 5: Image on LEFT -->
+        <div class="mitigation-item">
+          <div class="mitigation-content">
+            <div class="image-container left-image">
+              <img src="@/assets/m5.jpg" alt="Support Community Green Initiatives" />
+            </div>
+            <div class="text-container left-text">
+              <h3>Support Community Green Initiatives</h3>
+              <p>
+                Collective environmental projects amplify individual efforts for broader
+                neighborhood impact.
+              </p>
+              <ul>
+                <li>Encourage your body corporate to explore green roof funding</li>
+                <li>Join local environmental or sustainability groups</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: Image on RIGHT -->
+        <div class="mitigation-item">
+          <div class="mitigation-content">
+            <div class="text-container right-text">
+              <h3>Use Energy-Efficient Cooling Habits</h3>
+              <p>
+                Smarter appliance use reduces energy consumption and associated urban heat
+                production.
+              </p>
+              <ul>
+                <li>Use fans combined with AC to circulate air more effectively</li>
+                <li>Set air conditioners to 25-26°C with energy-saving mode</li>
+              </ul>
+            </div>
+            <div class="image-container right-image">
+              <img src="@/assets/m6.jpg" alt="Energy-Efficient Cooling Habits" />
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -938,74 +973,131 @@ onUnmounted(() => {
 .mitigation-section {
   margin: 4rem 0 2rem 0;
   padding: 2rem 0;
-  background: #f8fafc;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
 }
+
 .mitigation-section h2 {
   text-align: center;
   color: #1a2a3a;
-  margin-bottom: 2.5rem;
-  font-size: 2rem;
+  margin-bottom: 3rem;
+  font-size: 2.5rem;
 }
+
 .mitigation-list {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 4rem;
 }
+
 .mitigation-item {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 0;
+  overflow: hidden;
+}
+
+.mitigation-content {
   display: flex;
+  width: 100%;
   align-items: center;
-  gap: 2.5rem;
+}
+
+/* Layout for cards with left side images */
+.mitigation-item:nth-child(odd) .mitigation-content {
+  justify-content: space-between; /* Places image on left, text on right */
+}
+
+.image-container {
+  flex: 0 0 300px;
+  height: auto;
+  overflow: hidden;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.text-container {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
 }
-.row-left {
-  flex-direction: row;
+
+/* Left side image text styles */
+.left-text {
+  padding-left: 0.4rem; /* Increased left padding to move text more to the right */
+  padding-right: 2rem; /* Balanced right padding */
+  max-width: 70%; /* Limit width to make text more compact */
 }
-.row-right {
-  flex-direction: row-reverse;
+
+/* Right side image text styles */
+.right-text {
+  padding-left: 3rem; /* Increased left padding */
+  padding-right: 0.5rem; /* Reduced right padding to move text closer to image */
 }
-.mitigation-img {
-  width: 220px;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 12px;
-  background: #e0e7ef;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-.mitigation-text {
-  max-width: 520px;
-}
-.mitigation-text h3 {
+
+.text-container h3 {
   color: #14642e;
-  margin-bottom: 0.7rem;
-  font-size: 1.25rem;
+  margin-bottom: 1.1rem;
+  font-size: 2rem;
 }
-.mitigation-text p {
+
+.text-container p {
   color: #2d3748;
   margin-bottom: 0.5rem;
+  font-size: 1.2rem;
 }
-.mitigation-text ul {
+
+.text-container ul {
   padding-left: 1.2rem;
   margin: 0;
 }
-.mitigation-text li {
+
+.text-container li {
   color: #4a5568;
   margin-bottom: 0.3rem;
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
+
+.mitigation-item:nth-child(even) .text-container {
+  padding-left: 3rem; /* Increased left padding for even items */
+}
+
 @media (max-width: 900px) {
-  .mitigation-item {
-    flex-direction: column !important;
-    gap: 1.2rem;
-    align-items: flex-start;
+  .mitigation-content {
+    flex-direction: column;
   }
-  .mitigation-img {
+
+  .image-container {
+    flex: 0 0 auto;
     width: 100%;
     height: 180px;
   }
-  .mitigation-text {
-    max-width: 100%;
+
+  .text-container {
+    padding: 1.5rem;
+  }
+
+  /* Force images to appear at the top on mobile */
+  .mitigation-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mitigation-content .image-container {
+    order: 1;
+  }
+
+  .mitigation-content .text-container {
+    order: 2;
   }
 }
 </style>

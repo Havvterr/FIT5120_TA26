@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import HeatMapView from '../views/HeatMapView.vue'
-import MitigationView from '../views/MitigationView.vue'
 import PlantRecommendation from '../views/PlantRecommendation.vue'
 import WaterReminderView from '../views/WaterReminderView.vue'
 import PlantingGuideView from '../views/PlantingGuideView.vue'
@@ -71,11 +70,6 @@ const router = createRouter({
           path: 'heat-map',
           name: 'heatMap',
           component: HeatMapView,
-        },
-        {
-          path: 'mitigation',
-          name: 'mitigation',
-          component: MitigationView,
         },
         {
           path: 'energy-progress',
