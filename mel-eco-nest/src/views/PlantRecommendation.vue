@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { plantService } from '../services/plantService'
 import { useRouter } from 'vue-router'
-import SideNavigation from '../components/SideNavigation.vue'
+import createIcon from '../assets/create.svg'
 
 const router = useRouter()
 const sunlight = ref('')
@@ -13,6 +13,7 @@ const recommendations = ref([])
 const loading = ref(false)
 const error = ref(null)
 const selectedPlants = ref([])
+const showReminderTooltip = ref(false)
 
 // 保存状态到 localStorage
 const saveState = () => {
@@ -261,7 +262,7 @@ onMounted(() => {
                 :disabled="!isPlantSelected(plant.name) && selectedPlants.length >= 3"
                 @click="togglePlantSelection(plant.name)"
               >
-                {{ isPlantSelected(plant.name) ? 'Selected' : 'Plant This' }}
+                {{ isPlantSelected(plant.name) ? 'Selected' : 'Add to Reminder' }}
               </button>
               <div class="tooltip-container">
                 <button
@@ -300,18 +301,23 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <div
-        v-if="recommendations.length > 0 && selectedPlants.length > 0"
-        class="create-plan-section"
-      >
-        <button class="create-plan-button" @click="createPlan">
-          Create planting plan ({{ selectedPlants.length }} plants selected)
-        </button>
-      </div>
       <p v-else-if="recommendations.length === 0" class="no-results">
         Sorry, no plants match your criteria. Try adjusting your preferences.
       </p>
     </div>
+  </div>
+  <!-- 右下角固定圆形按钮，选中植物时显示 -->
+  <div v-if="selectedPlants.length > 0" style="position: fixed; right: 40px; bottom: 40px; z-index: 10000;">
+    <button
+      class="create-plan-button fixed-create-plan-button"
+      @click="createPlan"
+      @mouseenter="showReminderTooltip = true"
+      @mouseleave="showReminderTooltip = false"
+      title="Create Planting Plan"
+    >
+      <img :src="createIcon" alt="create" style="width:32px;height:32px;display:block;margin:auto;" />
+    </button>
+    <div v-if="showReminderTooltip" class="reminder-tooltip">Set Reminder</div>
   </div>
 </template>
 
@@ -639,11 +645,6 @@ label {
   cursor: not-allowed;
 }
 
-.create-plan-section {
-  margin-top: 2rem;
-  text-align: center;
-}
-
 .create-plan-button {
   background-color: #33a06f;
   color: white;
@@ -658,5 +659,50 @@ label {
 .create-plan-button:hover {
   background-color: #2a855d;
   transform: translateY(-2px);
+}
+
+.fixed-create-plan-button {
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+  z-index: 9999;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #33a06f;
+  color: #fff;
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translatey(0px);
+  }
+  50% {
+    transform: translatey(-10px);
+  }
+}
+
+.reminder-tooltip {
+  position: absolute;
+  right: 80px;
+  bottom: 16px;
+  background: #333;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 1rem;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 10001;
+  pointer-events: none;
 }
 </style>

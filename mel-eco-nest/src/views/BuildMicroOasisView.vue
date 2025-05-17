@@ -83,15 +83,13 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import lottie from 'lottie-web'
+import animationData from '../assets/Animation - 1746528140567.json'
 
 const animationContainer = ref(null)
 const animation = ref(null)
 
-onMounted(async () => {
+onMounted(() => {
   try {
-    const response = await fetch('/src/assets/Animation - 1746528140567.json')
-    const animationData = await response.json()
-
     animation.value = lottie.loadAnimation({
       container: animationContainer.value,
       renderer: 'svg',
