@@ -529,7 +529,7 @@ onUnmounted(() => {
 
 <style scoped>
 .heat-map-container {
-  max-width: 1400px;
+  max-width: 1180px;
   margin: 0 auto;
   padding: 2rem;
 }

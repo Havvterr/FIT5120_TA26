@@ -6,7 +6,9 @@ import r2 from '@/assets/r2.jpg'
 import r3 from '@/assets/r3.jpg'
 import r4 from '@/assets/r4.jpg'
 import r5 from '@/assets/r5.jpg'
-import b1 from '@/assets/b1.jpg'
+// b1 is used in CSS background-image for section#four
+import h6 from '@/assets/h6.jpg'
+import h7 from '@/assets/h7.jpg'
 </script>
 
 <template>
@@ -152,7 +154,7 @@ import b1 from '@/assets/b1.jpg'
           </div>
         </div>
         <div class="row gtr-150" style="margin-top: 3rem">
-          <div class="col-4 col-12-medium offset-2">
+          <div class="col-4 col-12-medium">
             <div class="feature-card">
               <span class="image fit"><img :src="r4" alt="Heat Map" /></span>
               <h3>Melbourne Heat Map</h3>
@@ -170,6 +172,32 @@ import b1 from '@/assets/b1.jpg'
               <ul class="actions special">
                 <li>
                   <RouterLink to="/explore/energy-progress" class="button">Explore</RouterLink>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-4 col-12-medium">
+            <div class="feature-card">
+              <span class="image fit"><img :src="h6" alt="Efficient Appliances" /></span>
+              <h3>Efficient Appliances</h3>
+              <p>Learn about energy-efficient home appliances</p>
+              <ul class="actions special">
+                <li>
+                  <RouterLink to="/explore/efficient-appliances" class="button">Explore</RouterLink>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="row gtr-150" style="margin-top: 3rem">
+          <div class="col-4 col-12-medium offset-4">
+            <div class="feature-card">
+              <span class="image fit"><img :src="h7" alt="Heat Guide" /></span>
+              <h3>Heat Guide</h3>
+              <p>Stay safe during extreme heat conditions</p>
+              <ul class="actions special">
+                <li>
+                  <RouterLink to="/explore/heat-guide" class="button">Explore</RouterLink>
                 </li>
               </ul>
             </div>
@@ -261,10 +289,7 @@ import b1 from '@/assets/b1.jpg'
   padding: 0.5em 1.2em;
   border-radius: 0.4em;
   display: inline-block;
-
 }
-
-
 
 /* Ensure images display correctly */
 .image.fit img {

@@ -67,6 +67,7 @@
               <router-link class="dropdown-item" to="/explore/efficient-appliances"
                 >Efficient Appliances</router-link
               >
+              <router-link class="dropdown-item" to="/explore/heat-guide">Heat Guide</router-link>
             </div>
           </li>
         </ul>

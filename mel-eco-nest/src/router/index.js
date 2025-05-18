@@ -82,6 +82,11 @@ const router = createRouter({
           name: 'efficientAppliances',
           component: EfficientAppliancesView,
         },
+        {
+          path: 'heat-guide',
+          name: 'heat-guide',
+          component: () => import('@/views/explore/HeatGuideView.vue'),
+        },
       ],
     },
   ],
