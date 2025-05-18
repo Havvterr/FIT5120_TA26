@@ -453,7 +453,7 @@ app.post('/api/generate-balcony', upload.single('image'), async (req, res) => {
         // Prompt now uses single plant
         const plantName = prompt.trim()
         // Enhanced prompt, emphasizing preserving original image characteristics
-        const enhancedPrompt = `Subtly integrate ${plantName} into the existing balcony, ensuring the plant is placed correctly, such as in a pot, and has a natural and harmonious effect in the photo while preserving 95% of the original image's composition, lighting, colors, and style. Do not alter any existing furniture, railings, walls, floor, or background. Only add ${plantName} in appropriate containers or positions. Maintain exact perspective, shadows, and time of day. The final result should resemble the original photo, with ${plantName} additions that are realistic and respect the original aesthetic.`
+        const enhancedPrompt = `Subtly integrate ${plantName} into the existing balcony, ensuring the plant is placed correctly, such as in a pot, and has a natural and harmonious effect in the photo while preserving 95% of the original image's composition, lighting, colors, and style. Do not alter any existing furniture, railings, walls, floor, or views. Only add ${plantName} in appropriate containers or positions. Maintain exact perspective, shadows, and time of day. The final result should resemble the original photo, with ${plantName} additions that are realistic and respect the original aesthetic.`
         node.inputs.text = enhancedPrompt
         console.log(
           `[${getTimestamp()}] Enhanced prompt with plant '${plantName}': ${enhancedPrompt}`,

@@ -43,6 +43,7 @@ export const aiDesignService = {
             'Cache-Control': 'no-cache',
           },
           responseType: 'blob', // Ensure receiving binary data
+          timeout: 90000, // 设置超时时间为90秒
         },
       )
 
