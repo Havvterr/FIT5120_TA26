@@ -412,7 +412,7 @@ onMounted(async () => {
 
   vantaEffect.value = window.VANTA.NET({
     el: '#vanta-background',
-    mouseControls: true,
+    mouseControls: false,
     touchControls: true,
     gyroControls: false,
     minHeight: 200.0,
