@@ -259,7 +259,7 @@ export default {
         // 根据环境确定API基础URL
         const baseUrl = import.meta.env.MODE === 'production'
           ? '/api/appliances'  // 生产环境使用相对路径
-          : 'http://localhost:3000/api/appliances' // 开发环境使用本地服务器
+          : 'http://localhost:3000/appliances' // 开发环境使用本地服务器
 
 
         const response = await axios.get(baseUrl)

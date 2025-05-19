@@ -7,7 +7,7 @@ import r3 from '@/assets/r3.jpg'
 import r4 from '@/assets/r4.jpg'
 import r5 from '@/assets/r5.jpg'
 // b1 is used in CSS background-image for section#four
-import h6 from '@/assets/h6.jpg'
+// import h6 from '@/assets/h6.jpg'
 import h7 from '@/assets/h7.jpg'
 </script>
 
@@ -104,6 +104,9 @@ import h7 from '@/assets/h7.jpg'
                   Melbourne is expected to add 600,000 dwellings by 2030. Without strategic
                   intervention, new developments will amplify UHI. Projections suggest UHI could
                   raise local temperatures by an additional 1°C per decade on top of global warming.
+                  With Meleconest, even a balcony can cool your room by 2°C—no extra AC, just smarter
+                   planting.Just one apartment, one year—and you’ve saved as much CO₂ as
+                  skipping a flight from Melbourne to Sydney.
                 </p>
               </div>
             </div>
@@ -178,18 +181,19 @@ import h7 from '@/assets/h7.jpg'
           </div>
           <div class="col-4 col-12-medium">
             <div class="feature-card">
-              <span class="image fit"><img :src="h6" alt="Efficient Appliances" /></span>
-              <h3>Efficient Appliances</h3>
-              <p>Learn about energy-efficient home appliances</p>
+              <span class="image fit"><img :src="h7" alt="Heat Guide" /></span>
+              <h3>Heat Guide</h3>
+              <p>Stay safe during extreme heat conditions</p>
               <ul class="actions special">
                 <li>
-                  <RouterLink to="/explore/efficient-appliances" class="button">Explore</RouterLink>
+                  <RouterLink to="/explore/heat-guide" class="button">Explore</RouterLink>
                 </li>
               </ul>
             </div>
           </div>
         </div>
-        <div class="row gtr-150" style="margin-top: 3rem">
+        <!-- 删除这一整段 -->
+        <!-- <div class="row gtr-150" style="margin-top: 3rem">
           <div class="col-4 col-12-medium offset-4">
             <div class="feature-card">
               <span class="image fit"><img :src="h7" alt="Heat Guide" /></span>
@@ -202,7 +206,7 @@ import h7 from '@/assets/h7.jpg'
               </ul>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </section>
 
