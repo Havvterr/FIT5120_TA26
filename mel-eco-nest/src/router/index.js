@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import LoginView from '../views/LoginView.vue'
 import HeatMapView from '../views/HeatMapView.vue'
 import PlantRecommendation from '../views/PlantRecommendation.vue'
 import WaterReminderView from '../views/WaterReminderView.vue'
@@ -24,6 +25,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/actions',
