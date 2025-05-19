@@ -323,8 +323,8 @@ app.get('/api/plants/basic', (req, res) => {
 })
 
 // API endpoint for getting all appliances
-app.get('/api/appliances', (req, res) => {
-  console.log(`[${getTimestamp()}] GET /api/appliances - Fetching all appliances`)
+app.get('/appliances', (req, res) => {
+  console.log(`[${getTimestamp()}] GET /appliances - Fetching all appliances`)
   const query = 'SELECT * FROM appliance'
 
   connection.query(query, (error, results) => {
@@ -341,7 +341,7 @@ app.get('/api/appliances', (req, res) => {
 })
 
 // API endpoint for getting appliances by category
-app.get('/api/appliances/category/:category', (req, res) => {
+app.get('/appliances/category/:category', (req, res) => {
   const category = req.params.category
   console.log(
     `[${getTimestamp()}] GET /api/appliances/category/${category} - Fetching appliances by category`,
@@ -614,7 +614,7 @@ const seedApplianceData = () => {
 
   connection.query(insertQuery, [values], (error, results) => {
     if (error) {
-      console.error(`[${getTimestamp()}][Database] Error seeding appliance data:`, error.stack)
+      console.error(`[${getTimestamp()}] Error seeding appliance data:`, error.stack)
       return
     }
     console.log(`[${getTimestamp()}] Successfully seeded ${results.affectedRows} appliance records`)
