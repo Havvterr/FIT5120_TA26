@@ -23,7 +23,7 @@ const error = ref(false)
 const router = useRouter()
 
 const checkPassword = () => {
-  if (password.value === '19052025') {
+  if (password.value === 'T@26econesT') {
     localStorage.setItem('isAuthenticated', 'true')
     router.push('/')
   } else {
