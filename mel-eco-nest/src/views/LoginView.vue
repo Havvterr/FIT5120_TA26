@@ -1,17 +1,15 @@
 <template>
   <div class="login-container">
     <div class="login-box">
-      <h1>MelEcoNest</h1>
-      <div class="password-form">
-        <input
-          type="password"
-          v-model="password"
-          placeholder="Enter access password"
-          @keyup.enter="verifyPassword"
-        >
-        <button @click="verifyPassword">Enter</button>
-      </div>
-      <p class="error-message" v-if="error">{{ error }}</p>
+      <h2>Please enter password</h2>
+      <input
+        type="password"
+        v-model="password"
+        @keyup.enter="checkPassword"
+        placeholder="Please enter password"
+      />
+      <button @click="checkPassword">Confirm</button>
+      <p v-if="error" class="error">worng password</p>
     </div>
   </div>
 </template>
@@ -20,86 +18,61 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const router = useRouter()
 const password = ref('')
-const error = ref('')
+const error = ref(false)
+const router = useRouter()
 
-// The password is set to 'meleco2024' here, but in a real application, a more secure method should be used
-const CORRECT_PASSWORD = 'T@26econesT'
-
-const verifyPassword = () => {
-  if (password.value === CORRECT_PASSWORD) {
+const checkPassword = () => {
+  if (password.value === 'T@26econesT') {
     localStorage.setItem('isAuthenticated', 'true')
     router.push('/')
   } else {
-    error.value = 'Incorrect password, please try again'
-    password.value = ''
+    error.value = true
   }
 }
 </script>
 
 <style scoped>
 .login-container {
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #1a712d 0%, #034c26 100%);
+  height: 100vh;
+  background-color: #f5f5f5;
 }
 
 .login-box {
-  background: rgba(255, 255, 255, 0.9);
+  background: white;
   padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 90%;
-  max-width: 400px;
-}
-
-.login-box h1 {
-  color: #034c26;
-  margin-bottom: 2rem;
-  font-size: 2rem;
-}
-
-.password-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
 input {
-  padding: 1rem;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.3s;
-}
-
-input:focus {
-  border-color: #1a712d;
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  margin: 1rem 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
 button {
-  padding: 1rem;
-  background-color: #1a712d;
+  background: #4CAF50;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #034c26;
+  background: #45a049;
 }
 
-.error-message {
-  color: #dc3545;
+.error {
+  color: red;
   margin-top: 1rem;
-  font-size: 0.9rem;
 }
 </style>

@@ -86,12 +86,7 @@
               <h3>{{ plan.title }}</h3>
               <div class="goal-details">
                 <p class="plan-description">{{ plan.description }}</p>
-                <div class="goal-meta">
-                  <span class="goal-impact"><i class="fas fa-leaf"></i> {{ plan.savings }}</span>
-                  <span class="goal-target"
-                    ><i class="fas fa-bullseye"></i> Target: {{ getPlanTarget(plan) }}</span
-                  >
-                </div>
+                <div class="goal-meta"></div>
               </div>
             </div>
             <div class="goal-action">
@@ -116,7 +111,9 @@
 
       <div class="restart-container">
         <button class="restart-button" @click="resetQuiz">Start Over</button>
-        <router-link to="/energy-goals" class="tracker-button">View Goal Tracker</router-link>
+        <router-link to="/actions/goal-tracker" class="tracker-button"
+          >View Goal Tracker</router-link
+        >
       </div>
     </div>
   </div>

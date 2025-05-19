@@ -1,6 +1,6 @@
 <template>
   <div class="water-reminder">
-    <h1>Set Water Reminder</h1>
+    <h1>Set Watering Reminder</h1>
     <div class="reminder-form">
       <div class="form-group">
         <label for="plantName">Plant Name</label>
@@ -8,8 +8,8 @@
           type="text"
           id="plantName"
           v-model="reminder.plantName"
-          placeholder="Enter your plant name"
           class="form-control"
+          readonly
         />
       </div>
 
@@ -18,7 +18,7 @@
         <select id="frequency" v-model="reminder.frequency" class="form-control">
           <option value="daily">Daily</option>
           <option value="weekly">Weekly</option>
-          <option value="biweekly">Every 2 Weeks</option>
+          <option value="biweekly">Biweekly</option>
           <option value="monthly">Monthly</option>
         </select>
       </div>
@@ -29,21 +29,21 @@
       </div>
 
       <div class="form-group">
-        <label for="timeOfDay">Time of Day</label>
+        <label for="timeOfDay">Watering Time</label>
         <select id="timeOfDay" v-model="reminder.timeOfDay" class="form-control">
-          <option value="morning">Morning (6:00 AM)</option>
-          <option value="midday">Midday (12:00 PM)</option>
-          <option value="evening">Evening (6:00 PM)</option>
-          <option value="night">Night (8:00 PM)</option>
+          <option value="09:00">09:00 AM</option>
+          <option value="12:00">12:00 PM</option>
+          <option value="15:00">3:00 PM</option>
+          <option value="18:00">6:00 PM</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="notes">Additional Notes</label>
+        <label for="notes">Notes</label>
         <textarea
           id="notes"
           v-model="reminder.notes"
-          placeholder="Add any specific instructions for watering"
+          placeholder="Add specific instructions for watering"
           class="form-control"
         ></textarea>
       </div>
@@ -55,40 +55,42 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+const plantNames = ref([])
 
 const reminder = ref({
   plantName: '',
-  frequency: 'weekly',
+  frequency: 'daily', // 默认每天浇水
   startDate: new Date().toISOString().split('T')[0],
-  timeOfDay: 'morning',
+  timeOfDay: '09:00', // 默认早上9点
   notes: '',
 })
 
 onMounted(() => {
-  // Set default start date to today
+  // 设置默认开始日期为今天
   const today = new Date()
   const year = today.getFullYear()
   const month = String(today.getMonth() + 1).padStart(2, '0')
   const day = String(today.getDate()).padStart(2, '0')
   reminder.value.startDate = `${year}-${month}-${day}`
+
+  // 从路由参数获取植物名称
+  if (route.query.plants) {
+    plantNames.value = route.query.plants.split(',')
+    reminder.value.plantName = plantNames.value.join(', ')
+  }
 })
 
 const createReminder = () => {
-  // Parse the start date
   const [year, month, day] = reminder.value.startDate.split('-').map(Number)
+  const [hours, minutes] = reminder.value.timeOfDay.split(':').map(Number)
 
-  // Set the time based on the selected time of day
-  let hours = 6 // Default to morning
-  if (reminder.value.timeOfDay === 'midday') hours = 12
-  else if (reminder.value.timeOfDay === 'evening') hours = 18
-  else if (reminder.value.timeOfDay === 'night') hours = 20
-
-  // Create dates in local timezone
-  const startDate = new Date(year, month - 1, day, hours, 0, 0)
+  const startDate = new Date(year, month - 1, day, hours, minutes, 0)
   const endDate = new Date(startDate)
   endDate.setHours(endDate.getHours() + 1)
 
-  // Format dates for Google Calendar API (YYYYMMDDTHHmmssZ format)
   const formatDate = (date) => {
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -102,7 +104,7 @@ const createReminder = () => {
   const event = {
     text: `Water ${reminder.value.plantName}`,
     dates: `${formatDate(startDate)}/${formatDate(endDate)}`,
-    details: `Time to water your ${reminder.value.plantName}!\n\nFrequency: ${reminder.value.frequency}\n${reminder.value.notes ? `Notes: ${reminder.value.notes}` : ''}`,
+    details: `Time to water your plants:\n${plantNames.value.join('\n')}\n\nFrequency: ${reminder.value.frequency}\n${reminder.value.notes ? `Notes: ${reminder.value.notes}` : ''}`,
     location: 'Your Garden',
     sf: true,
     output: 'xml',
@@ -191,5 +193,10 @@ textarea.form-control {
   .reminder-form {
     padding: 1.5rem;
   }
+}
+
+.form-control[readonly] {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
 }
 </style>

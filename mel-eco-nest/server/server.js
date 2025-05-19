@@ -322,6 +322,305 @@ app.get('/api/plants/basic', (req, res) => {
   })
 })
 
+// API endpoint for getting all appliances
+app.get('/appliances', (req, res) => {
+  console.log(`[${getTimestamp()}] GET /appliances - Fetching all appliances`)
+  const query = 'SELECT * FROM appliance'
+
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error(`[${getTimestamp()}][Database] Error executing appliances query:`, error.stack)
+      res.status(500).json({ error: 'Database query failed' })
+      return
+    }
+    console.log(
+      `[${getTimestamp()}] Successfully retrieved ${results.length} appliances from database`,
+    )
+    res.json(results)
+  })
+})
+
+// API endpoint for getting appliances by category
+app.get('/appliances/category/:category', (req, res) => {
+  const category = req.params.category
+  console.log(
+    `[${getTimestamp()}] GET /api/appliances/category/${category} - Fetching appliances by category`,
+  )
+
+  const query = 'SELECT * FROM appliance WHERE category = ?'
+
+  connection.query(query, [category], (error, results) => {
+    if (error) {
+      console.error(
+        `[${getTimestamp()}][Database] Error executing appliances by category query:`,
+        error.stack,
+      )
+      res.status(500).json({ error: 'Database query failed' })
+      return
+    }
+    console.log(
+      `[${getTimestamp()}] Successfully retrieved ${results.length} appliances for category: ${category}`,
+    )
+    res.json(results)
+  })
+})
+
+// Create appliance table if not exists
+const createApplianceTable = () => {
+  const query = `
+    CREATE TABLE IF NOT EXISTS appliance (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      model VARCHAR(255) NOT NULL,
+      category VARCHAR(50) NOT NULL,
+      energy_rating VARCHAR(10) NOT NULL,
+      price DECIMAL(10, 2),
+      description TEXT,
+      image_url VARCHAR(255),
+      energy_savings VARCHAR(100),
+      features TEXT
+    )
+  `
+
+  connection.query(query, (error) => {
+    if (error) {
+      console.error(`[${getTimestamp()}][Database] Error creating appliance table:`, error.stack)
+      return
+    }
+    console.log(`[${getTimestamp()}] Appliance table created successfully or already exists`)
+
+    // Check if the table is empty and seed data if it is
+    connection.query('SELECT COUNT(*) as count FROM appliance', (error, results) => {
+      if (error) {
+        console.error(`[${getTimestamp()}][Database] Error counting appliances:`, error.stack)
+        return
+      }
+
+      if (results[0].count === 0) {
+        seedApplianceData()
+      }
+    })
+  })
+}
+
+// Seed initial appliance data
+const seedApplianceData = () => {
+  console.log(`[${getTimestamp()}] Seeding appliance data...`)
+
+  const appliances = [
+    {
+      name: 'Energy-Efficient Refrigerator',
+      model: 'EcoFridge X1',
+      category: 'Refrigerator',
+      energy_rating: '5 Star',
+      price: 899.99,
+      description:
+        'Energy-efficient smart refrigerator with the latest inverter compressor technology, reducing energy consumption while improving cooling efficiency.',
+      image_url: '/img/appliances/fridge1.jpg',
+      energy_savings: 'Saves approximately 200 kWh per year',
+      features: 'Smart temperature control,Inverter compressor,Ion odor removal,Frost-free design',
+    },
+    {
+      name: 'Energy-Saving Washing Machine',
+      model: 'EcoWash 3000',
+      category: 'Washing Machine',
+      energy_rating: '4 Star',
+      price: 699.99,
+      description:
+        'Washing machine with heat pump drying technology, significantly reducing energy consumption during the drying process.',
+      image_url: '/img/appliances/washer1.jpg',
+      energy_savings: 'Saves 40% energy compared to conventional washing machines',
+      features:
+        'Heat pump drying,Smart weight detection,Auto water level adjustment,Smart detergent dispenser',
+    },
+    {
+      name: 'Smart Air Conditioner',
+      model: 'CoolSmart Pro',
+      category: 'Air Conditioner',
+      energy_rating: '5 Star',
+      price: 1299.99,
+      description:
+        'Inverter air conditioner optimized with AI algorithms that automatically adjusts cooling effect based on room temperature and user habits.',
+      image_url: '/img/appliances/ac1.jpg',
+      energy_savings: 'Saves 30% electricity consumption annually',
+      features: 'AI temperature control,Remote control,Inverter energy saving,Self-cleaning',
+    },
+    {
+      name: 'Energy-Efficient Water Heater',
+      model: 'HeatWise 500',
+      category: 'Water Heater',
+      energy_rating: '4 Star',
+      price: 549.99,
+      description:
+        'Water heater using heat pump technology, over 3 times more efficient than traditional electric water heaters.',
+      image_url: '/img/appliances/heater1.jpg',
+      energy_savings: 'Saves 65% energy compared to traditional water heaters',
+      features: 'Heat pump technology,Smart preheating,Timer settings,Touch screen control',
+    },
+    {
+      name: 'Energy-Saving Oven',
+      model: 'EcoBake Pro',
+      category: 'Kitchen Appliance',
+      energy_rating: '4 Star',
+      price: 349.99,
+      description:
+        'Uses quick preheat and precise temperature control technology to reduce unnecessary energy waste.',
+      image_url: '/img/appliances/oven1.jpg',
+      energy_savings: 'Saves 25% energy compared to regular ovens',
+      features: 'Quick preheat,Multi-function modes,Precise temperature control,Internal lighting',
+    },
+    {
+      name: 'Smart Refrigerator',
+      model: 'SmartChill 8000',
+      category: 'Refrigerator',
+      energy_rating: '5 Star',
+      price: 1499.99,
+      description:
+        'Smart refrigerator with touch screen and food management system, optimizing freshness while reducing energy consumption.',
+      image_url: '/img/appliances/fridge2.jpg',
+      energy_savings: 'Annual electricity savings of about 350 kWh',
+      features:
+        'Touch screen control,Food management system,Inverter compressor,Multiple temperature zones',
+    },
+    {
+      name: 'Economical Dishwasher',
+      model: 'EcoDish 2000',
+      category: 'Kitchen Appliance',
+      energy_rating: '4 Star',
+      price: 599.99,
+      description:
+        'Uses smart water control and heat recovery technology to significantly reduce water and electricity consumption.',
+      image_url: '/img/appliances/dishwasher1.jpg',
+      energy_savings: 'Saves 80% water compared to hand washing per use',
+      features: 'Smart water control,Heat recovery,Quiet operation,Half-load washing',
+    },
+    {
+      name: 'Energy-Efficient TV',
+      model: 'EcoView 4K',
+      category: 'Television',
+      energy_rating: '5 Star',
+      price: 899.99,
+      description:
+        'Uses the latest LED backlight technology to provide high image quality while significantly reducing energy consumption.',
+      image_url: '/img/appliances/tv1.jpg',
+      energy_savings: 'Saves 40% energy compared to traditional LCD TVs',
+      features: '4K resolution,Smart dimming,Auto energy-saving mode,Eco-friendly materials',
+    },
+    {
+      name: 'Inverter Rice Cooker',
+      model: 'RiceMaster Eco',
+      category: 'Kitchen Appliance',
+      energy_rating: '4 Star',
+      price: 199.99,
+      description:
+        'Uses precise inverter control technology to automatically adjust heat level based on rice quantity and type, saving energy.',
+      image_url: '/img/appliances/cooker1.jpg',
+      energy_savings: 'Saves 30% energy compared to traditional rice cookers',
+      features: 'Inverter control,Multiple cooking modes,Energy-saving keep warm,Inner pot heating',
+    },
+    {
+      name: 'Solar Water Heater',
+      model: 'SolarHeat 300',
+      category: 'Water Heater',
+      energy_rating: '5 Star',
+      price: 1299.99,
+      description:
+        'Uses solar energy to provide hot water, equipped with electric auxiliary heating system to ensure usability on cloudy days.',
+      image_url: '/img/appliances/heater2.jpg',
+      energy_savings: 'Reduces electricity consumption by 90% on sunny days',
+      features: 'Solar heat collection,Electric auxiliary heating,Smart control,Anti-freeze design',
+    },
+    {
+      name: 'Dual Inverter Air Conditioner',
+      model: 'EcoCool Premium',
+      category: 'Air Conditioner',
+      energy_rating: '5 Star',
+      price: 1599.99,
+      description:
+        'Uses dual inverter technology to intelligently adjust compressor and fan speed to achieve optimal energy efficiency ratio.',
+      image_url: '/img/appliances/ac2.jpg',
+      energy_savings: 'Annual electricity savings of about 500 kWh',
+      features: 'Dual inverter,Indoor air purification,Smart WiFi control,Low noise design',
+    },
+    {
+      name: 'Wall-Mounted Heat Pump',
+      model: 'WallHeat Eco',
+      category: 'Water Heater',
+      energy_rating: '5 Star',
+      price: 799.99,
+      description:
+        'Compact wall-mounted heat pump water heater suitable for small apartments with significant energy savings.',
+      image_url: '/img/appliances/heater3.jpg',
+      energy_savings: 'Saves 70% energy compared to electric water heaters',
+      features:
+        'Wall-mounted design,Heat pump technology,Compact size with high efficiency,Quiet operation',
+    },
+    {
+      name: 'Smart Window Air Conditioner',
+      model: 'WindowCool Smart',
+      category: 'Air Conditioner',
+      energy_rating: '4 Star',
+      price: 499.99,
+      description:
+        'High-efficiency window air conditioner with WiFi control functionality, suitable for homes without central air conditioning.',
+      image_url: '/img/appliances/ac3.jpg',
+      energy_savings: 'Saves 35% energy compared to old window units',
+      features: 'WiFi control,Timer function,Sleep mode,Quiet design',
+    },
+    {
+      name: 'Photovoltaic Microwave',
+      model: 'SolarWave Pro',
+      category: 'Kitchen Appliance',
+      energy_rating: '5 Star',
+      price: 349.99,
+      description:
+        'Microwave that can connect to home photovoltaic systems, prioritizing solar power to reduce grid electricity consumption.',
+      image_url: '/img/appliances/microwave1.jpg',
+      energy_savings: 'Saves 100% grid electricity when using photovoltaic power',
+      features: 'Solar priority,Smart heating,Multi-function cooking,Energy-saving mode',
+    },
+    {
+      name: 'Energy-Efficient Fan',
+      model: 'BreezeEco Tower',
+      category: 'Television',
+      energy_rating: '5 Star',
+      price: 129.99,
+      description:
+        'Tower fan with high-efficiency DC motor providing strong airflow while maintaining low energy consumption.',
+      image_url: '/img/appliances/fan1.jpg',
+      energy_savings: 'Saves 60% energy compared to traditional fans',
+      features: 'DC motor,9-speed settings,Natural breeze mode,Silent design',
+    },
+  ]
+
+  // Insert data with prepared statement
+  const insertQuery = `
+    INSERT INTO appliance
+    (name, model, category, energy_rating, price, description, image_url, energy_savings, features)
+    VALUES ?
+  `
+
+  const values = appliances.map((appliance) => [
+    appliance.name,
+    appliance.model,
+    appliance.category,
+    appliance.energy_rating,
+    appliance.price,
+    appliance.description,
+    appliance.image_url,
+    appliance.energy_savings,
+    appliance.features,
+  ])
+
+  connection.query(insertQuery, [values], (error, results) => {
+    if (error) {
+      console.error(`[${getTimestamp()}] Error seeding appliance data:`, error.stack)
+      return
+    }
+    console.log(`[${getTimestamp()}] Successfully seeded ${results.affectedRows} appliance records`)
+  })
+}
+
 app.get('/api/ai-design/result/:promptId', async (req, res) => {
   try {
     const { promptId } = req.params
@@ -568,6 +867,9 @@ app.post('/api/generate-balcony', upload.single('image'), async (req, res) => {
 // In server startup, create necessary directories
 createDirectories()
   .then(() => {
+    // Create appliance table
+    createApplianceTable()
+
     // Start server
     const PORT = process.env.PORT || 3000
     app.listen(PORT, () => {

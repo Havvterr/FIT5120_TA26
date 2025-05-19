@@ -15,10 +15,6 @@
           improving energy utilization, we can reduce emissions while creating economic value,
           laying a solid foundation for achieving net zero emissions by 2050.
         </p>
-        <div class="scroll-indicator">
-          <span>Scroll down to learn more</span>
-          <i class="fas fa-chevron-down"></i>
-        </div>
       </div>
     </section>
 
@@ -282,8 +278,6 @@
                   Countries introduce subsidies for high-efficiency motors, initiating industrial
                   upgrades
                 </li>
-                <li>Accelerate heat pump market promotion to gradually replace gas boilers</li>
-                <li>Electric vehicle market expansion, infrastructure construction beginning</li>
               </ul>
               <div class="chart-container" data-aos="flip-left" data-aos-delay="300">
                 <div class="donut-chart" id="phase1-chart">
@@ -382,14 +376,6 @@
                   All new buildings meet zero-carbon ready standards, existing building renovations
                   begin
                 </li>
-                <li>Electric vehicles reach 60% of new car sales</li>
-                <li>
-                  Annual solar energy capacity additions reach 630 GW/year, wind energy 390 GW/year
-                </li>
-                <li>
-                  Annual efficiency improvement rate reaches 4%, becoming the largest source of
-                  emission reduction
-                </li>
               </ul>
               <div class="chart-container" data-aos="flip-right" data-aos-delay="300">
                 <div class="pie-chart" id="phase2-chart">
@@ -474,14 +460,6 @@
                 <li>
                   Large-scale deep building renovations, improving insulation, ventilation, and
                   smart controls
-                </li>
-                <li>Industrial high-temperature processes widely electrified or using hydrogen</li>
-                <li>
-                  Energy-saving behaviors standardized: remote work, green travel, load adjustment
-                </li>
-                <li>
-                  Energy systems fully digitalized with smart efficiency management (AI, IoT,
-                  digital twins)
                 </li>
               </ul>
               <div class="chart-container" data-aos="flip-left" data-aos-delay="300">
@@ -589,11 +567,6 @@
                   chemicals, aviation)
                 </li>
                 <li>Behavioral changes contributing 4-6% annual emission reductions</li>
-                <li>Energy efficiency becoming a primary energy source alongside renewables</li>
-                <li>
-                  Global energy system achieving net zero emissions, with efficiency contributing
-                  nearly half of total reductions
-                </li>
               </ul>
               <div class="chart-container stacked-chart" data-aos="flip-right" data-aos-delay="300">
                 <div class="chart-title">Emission Reduction Contributions</div>
@@ -630,7 +603,9 @@
           lowest-cost means of reducing emissions and is indispensable at every stage of the path to
           net zero.
         </p>
-        <router-link to="/energy-plan" class="cta-button">Create My Efficiency Plan</router-link>
+        <router-link to="/actions/my-plan" class="cta-button"
+          >Create My Efficiency Plan</router-link
+        >
       </div>
     </section>
   </div>
@@ -707,14 +682,14 @@ section {
 
 /* Hero Section Styles */
 .hero-section {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   position: relative;
-  padding: 0;
+  padding: 3vh 0;
   margin: 0;
   width: 100%;
   max-width: 100%;
@@ -741,7 +716,7 @@ section {
   z-index: 2;
   width: 100%;
   max-width: 1600px;
-  padding: 0 20px;
+  padding: 2vh 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -753,23 +728,23 @@ section {
   font-size: 3rem;
   font-weight: 700;
   color: #ffffff;
-  margin-top: 3rem;
-  margin-bottom: 5rem;
+  margin-top: 2vh;
+  margin-bottom: 3vh;
   line-height: 1.3;
-  padding: 2rem;
+  padding: 2vh 2rem;
   width: 90%;
   max-width: 1400px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 15px;
   backdrop-filter: blur(5px);
-  transform: translateY(-50px);
+  transform: none;
 }
 
 .animated-icon {
   font-size: 5rem;
   color: #1a712d;
-  margin-bottom:4rem;
+  margin-bottom: 3vh;
   animation: pulse 2s infinite;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
@@ -778,8 +753,8 @@ section {
   max-width: 1000px;
   font-size: 1.5rem;
   line-height: 1.6;
-  margin: 0 auto 3rem;
-  padding: 2rem;
+  margin: 0 auto 3vh;
+  padding: 2vh 2rem;
   color: #ffffff;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   background-color: rgba(0, 0, 0, 0.5);
@@ -789,7 +764,7 @@ section {
 }
 
 .scroll-indicator {
-  margin-top: 2rem;
+  margin-top: 2vh;
   bottom: 20px;
   display: flex;
   flex-direction: column;
@@ -1636,7 +1611,7 @@ blockquote:after {
   .main-title {
     font-size: 2.8rem;
     padding: 1.5rem;
-    transform: translateY(-30px);
+    transform: none;
   }
 
   .section-title {
@@ -1695,7 +1670,7 @@ blockquote:after {
   .main-title {
     font-size: 2rem;
     padding: 1rem;
-    transform: translateY(-20px);
+    transform: none;
   }
 
   .intro-text {
@@ -1746,11 +1721,69 @@ blockquote:after {
   }
 }
 
+@media (max-height: 700px) {
+  .hero-section {
+    padding: 2vh 0;
+    min-height: 100vh;
+  }
+
+  .hero-content {
+    padding: 1vh 20px;
+  }
+
+  .main-title {
+    font-size: 2rem;
+    padding: 1vh 1.5rem;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+  }
+
+  .intro-text {
+    font-size: 1.2rem;
+    padding: 1vh 1.5rem;
+    margin-bottom: 1vh;
+  }
+
+  .animated-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1vh;
+  }
+
+  .scroll-indicator {
+    margin-top: 1vh;
+    padding: 10px 30px;
+  }
+}
+
+@media (max-height: 500px) {
+  .hero-section {
+    padding: 1vh 0;
+  }
+
+  .main-title {
+    font-size: 1.8rem;
+    padding: 0.5vh 1rem;
+    margin-top: 0.5vh;
+    margin-bottom: 0.5vh;
+  }
+
+  .intro-text {
+    font-size: 1rem;
+    padding: 0.5vh 1rem;
+    margin-bottom: 0.5vh;
+  }
+
+  .animated-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5vh;
+  }
+}
+
 @media (max-width: 480px) {
   .main-title {
     font-size: 1.8rem;
     padding: 1rem;
-    transform: translateY(-10px);
+    transform: none;
   }
 
   .intro-text {

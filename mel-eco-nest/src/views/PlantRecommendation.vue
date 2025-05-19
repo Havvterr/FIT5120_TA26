@@ -1,7 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { plantService } from '../services/plantService'
+import { useRouter } from 'vue-router'
+import createIcon from '../assets/create.svg'
 
+const router = useRouter()
 const sunlight = ref('')
 const waterNeeds = ref('')
 const maintenanceLevel = ref('')
@@ -9,6 +12,40 @@ const showRecommendations = ref(false)
 const recommendations = ref([])
 const loading = ref(false)
 const error = ref(null)
+const selectedPlants = ref([])
+const showReminderTooltip = ref(false)
+
+// 保存状态到 localStorage
+const saveState = () => {
+  const state = {
+    sunlight: sunlight.value,
+    waterNeeds: waterNeeds.value,
+    maintenanceLevel: maintenanceLevel.value,
+    showRecommendations: showRecommendations.value,
+    recommendations: recommendations.value,
+    selectedPlants: selectedPlants.value,
+  }
+  localStorage.setItem('plantRecommendationState', JSON.stringify(state))
+}
+
+// 从 localStorage 恢复状态
+const restoreState = () => {
+  const savedState = localStorage.getItem('plantRecommendationState')
+  if (savedState) {
+    const state = JSON.parse(savedState)
+    sunlight.value = state.sunlight
+    waterNeeds.value = state.waterNeeds
+    maintenanceLevel.value = state.maintenanceLevel
+    showRecommendations.value = state.showRecommendations
+    recommendations.value = state.recommendations
+    selectedPlants.value = state.selectedPlants
+  }
+}
+
+// 清除保存的状态
+const clearState = () => {
+  localStorage.removeItem('plantRecommendationState')
+}
 
 const resetForm = () => {
   sunlight.value = ''
@@ -17,7 +54,33 @@ const resetForm = () => {
   showRecommendations.value = false
   recommendations.value = []
   error.value = null
+  selectedPlants.value = []
+  clearState()
 }
+
+const togglePlantSelection = (plantName) => {
+  const idx = selectedPlants.value.indexOf(plantName)
+  if (idx > -1) {
+    selectedPlants.value.splice(idx, 1)
+  } else if (selectedPlants.value.length < 3) {
+    selectedPlants.value.push(plantName)
+  }
+}
+
+const isPlantSelected = (plantName) => selectedPlants.value.includes(plantName)
+
+const createPlan = () => {
+  console.log('Creating plan for plants:', selectedPlants.value)
+  router
+    .push({
+      name: 'waterReminder',
+      query: { plants: selectedPlants.value.join(',') },
+    })
+    .catch((err) => {
+      console.error('Navigation failed:', err)
+    })
+}
+
 const sunlightOptions = [
   {
     value: 'Full Sun',
@@ -78,7 +141,13 @@ const getRecommendations = async () => {
     }
 
     recommendations.value = await plantService.getRecommendations(userPreferences)
+    recommendations.value = recommendations.value.map((plant) => ({
+      ...plant,
+      showGuide: false,
+    }))
     showRecommendations.value = true
+    // 保存状态
+    saveState()
   } catch (e) {
     error.value = 'Failed to get plant recommendations. Please try again later.'
     console.error(e)
@@ -86,10 +155,16 @@ const getRecommendations = async () => {
     loading.value = false
   }
 }
+
+// 在组件挂载时恢复状态
+onMounted(() => {
+  restoreState()
+})
 </script>
 
 <template>
   <div class="plant-recommendation">
+    <SideNavigation />
     <div class="welcome-section">
       <h1>Find Your Perfect Plant</h1>
       <p class="welcome-text">
@@ -180,21 +255,69 @@ const getRecommendations = async () => {
           <div class="plant-info">
             <h3>{{ plant.name }}</h3>
             <p class="plant-species">{{ plant.species }}</p>
-            <div class="plant-details">
-              <p><span class="detail-label">Sunlight:</span> {{ plant.sunlight_needs }}</p>
-              <p><span class="detail-label">Water Needs:</span> {{ plant.water_needs }}</p>
-              <p><span class="detail-label">Temperature:</span> {{ plant.temperature_range }}</p>
-              <p><span class="detail-label">Maintenance:</span> {{ plant.maintenance_level }}</p>
-            </div>
             <p class="plant-description">{{ plant.description }}</p>
-            <div class="match-score"></div>
+            <div class="plant-selection">
+              <button
+                :class="['plant-select-btn', { selected: isPlantSelected(plant.name) }]"
+                :disabled="!isPlantSelected(plant.name) && selectedPlants.length >= 3"
+                @click="togglePlantSelection(plant.name)"
+              >
+                {{ isPlantSelected(plant.name) ? 'Selected' : 'Add to Reminder' }}
+              </button>
+              <div class="tooltip-container">
+                <button
+                  class="guide-btn"
+                  @mouseenter="plant.showGuide = true"
+                  @mouseleave="plant.showGuide = false"
+                  @click="
+                    router.push({
+                      name: 'planting-guide',
+                      query: {
+                        plant: plant.name,
+                        soil: plant.soil_type,
+                        temperature: plant.temperature_range,
+                        water: plant.water_needs,
+                        sunlight: plant.sunlight_needs,
+                        description: plant.description,
+                        species: plant.species,
+                        image: plant.image_url,
+                      },
+                    })
+                  "
+                >
+                  Planting Guide
+                </button>
+                <div class="tooltip" v-if="plant.showGuide">
+                  <h4>Plant Care Info</h4>
+                  <div class="plant-care-info">
+                    <p><strong>Soil:</strong> {{ plant.soil_type }}</p>
+                    <p><strong>Temperature:</strong> {{ plant.temperature_range }}</p>
+                    <p><strong>Water:</strong> {{ plant.water_needs }}</p>
+                    <p><strong>Sunlight:</strong> {{ plant.sunlight_needs }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <p v-else class="no-results">
+      <p v-else-if="recommendations.length === 0" class="no-results">
         Sorry, no plants match your criteria. Try adjusting your preferences.
       </p>
     </div>
+  </div>
+  <!-- 右下角固定圆形按钮，选中植物时显示 -->
+  <div v-if="selectedPlants.length > 0" style="position: fixed; right: 40px; bottom: 40px; z-index: 10000;">
+    <button
+      class="create-plan-button fixed-create-plan-button"
+      @click="createPlan"
+      @mouseenter="showReminderTooltip = true"
+      @mouseleave="showReminderTooltip = false"
+      title="Create Planting Plan"
+    >
+      <img :src="createIcon" alt="create" style="width:32px;height:32px;display:block;margin:auto;" />
+    </button>
+    <div v-if="showReminderTooltip" class="reminder-tooltip">Set Reminder</div>
   </div>
 </template>
 
@@ -210,6 +333,7 @@ export default {
 
 <style scoped>
 .plant-recommendation {
+  position: relative;
   max-width: 1170px;
   margin: 0 auto;
   padding: 2rem;
@@ -352,9 +476,9 @@ label {
 
 .plant-card {
   background-color: #fff;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
@@ -367,11 +491,11 @@ label {
 
 .plant-image {
   width: 100%;
-  padding-top: 70%;
+  padding-top: 60%;
   position: relative;
   overflow: hidden;
-  border-radius: 10px;
-  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
 }
 
 .plant-image img {
@@ -393,14 +517,14 @@ label {
 .plant-info h3 {
   color: #1a2a3a;
   margin-top: 0;
-  margin-bottom: 0.8rem;
-  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
 }
 
 .plant-species {
   color: #33a06f;
-  font-size: 1.2rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
   font-style: italic;
 }
 
@@ -422,8 +546,163 @@ label {
 
 .plant-description {
   color: #444;
-  line-height: 1.6;
-  font-size: 1.1rem;
-  margin: 1.5rem 0;
+  line-height: 1.5;
+  font-size: 1rem;
+  margin: 1rem 0;
+}
+
+.plant-selection {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.plant-selection button {
+  background-color: #33a06f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plant-selection .guide-btn {
+  background-color: #4a90e2;
+  flex: none;
+}
+
+.plant-selection .guide-btn:hover {
+  background-color: #357abd;
+}
+
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 250px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+}
+
+.tooltip-container:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-3px);
+}
+
+.tooltip h4 {
+  margin: 0 0 0.8rem 0;
+  color: #33a06f;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.plant-care-info {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.plant-care-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #4a4a4a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plant-care-info strong {
+  color: #33a06f;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.plant-selection button.selected {
+  background-color: #034c26;
+}
+
+.plant-selection button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.create-plan-button {
+  background-color: #33a06f;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.create-plan-button:hover {
+  background-color: #2a855d;
+  transform: translateY(-2px);
+}
+
+.fixed-create-plan-button {
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+  z-index: 9999;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #33a06f;
+  color: #fff;
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translatey(0px);
+  }
+  50% {
+    transform: translatey(-10px);
+  }
+}
+
+.reminder-tooltip {
+  position: absolute;
+  right: 80px;
+  bottom: 16px;
+  background: #333;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 1rem;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 10001;
+  pointer-events: none;
 }
 </style>

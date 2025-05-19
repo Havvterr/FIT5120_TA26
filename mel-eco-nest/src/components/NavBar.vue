@@ -23,14 +23,6 @@
           <li class="nav-item">
             <RouterLink to="/" class="nav-link" active-class="active">Home</RouterLink>
           </li>
-          <li class="nav-item">
-            <RouterLink to="/heat-map" class="nav-link" active-class="active">Heat Map</RouterLink>
-          </li>
-          <li class="nav-item">
-            <RouterLink to="/mitigation" class="nav-link" active-class="active"
-              >Mitigation</RouterLink
-            >
-          </li>
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
@@ -39,25 +31,20 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Build Your Micro-Oasis
+              Actions
             </a>
             <ul class="dropdown-menu">
               <li>
-                <RouterLink to="/plant-recommendation" class="dropdown-item"
-                  >Plant Recommendation</RouterLink
+                <RouterLink to="/actions/build-micro-oasis" class="dropdown-item"
+                  >Build Micro Oasis</RouterLink
                 >
               </li>
               <li>
-                <RouterLink to="/water-reminder" class="dropdown-item"
-                  >Set Water Reminder</RouterLink
-                >
+                <RouterLink to="/actions/my-plan" class="dropdown-item">My Plan</RouterLink>
               </li>
               <li>
-                <RouterLink to="/planting-guide" class="dropdown-item">Planting Guide</RouterLink>
-              </li>
-              <li>
-                <RouterLink to="/ai-balcony-preview" class="dropdown-item"
-                  >AI Balcony Preview ✨</RouterLink
+                <RouterLink to="/actions/goal-tracker" class="dropdown-item"
+                  >Goal Tracker</RouterLink
                 >
               </li>
             </ul>
@@ -70,19 +57,21 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Energy Journey
+              Explore
             </a>
-            <ul class="dropdown-menu">
-              <li>
-                <RouterLink to="/energy-progress" class="dropdown-item">Energy Progress</RouterLink>
-              </li>
-              <li>
-                <RouterLink to="/energy-plan" class="dropdown-item">My Plan</RouterLink>
-              </li>
-              <li>
-                <RouterLink to="/energy-goals" class="dropdown-item">Goal Tracker</RouterLink>
-              </li>
-            </ul>
+            <div class="dropdown-menu">
+              <router-link class="dropdown-item" to="/explore/heat-map">Heat Map</router-link>
+              <router-link class="dropdown-item" to="/explore/energy-progress"
+                >Energy Progress</router-link
+              >
+              <router-link class="dropdown-item" to="/explore/efficient-appliances"
+                >Efficient Appliances</router-link
+              >
+              <router-link class="dropdown-item" to="/explore/heat-guide">Heat Guide</router-link>
+              <router-link class="dropdown-item" to="/explore/heatwave-survival-quiz"
+                >Heatwave Survival Quiz</router-link
+              >
+            </div>
           </li>
         </ul>
       </div>
@@ -142,7 +131,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 0.2rem;
-  padding-right: 2rem;
+  padding-right: 4rem;
 }
 
 .navbar-scrolled {
@@ -285,5 +274,9 @@ onUnmounted(() => {
 .navbar-scrolled .dropdown-menu {
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
+}
+
+.nav-item:last-child {
+  margin-right: 2rem;
 }
 </style>

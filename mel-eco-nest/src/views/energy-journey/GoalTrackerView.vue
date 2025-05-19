@@ -73,12 +73,6 @@
                     <i :class="goal.isCompleted ? 'fas fa-calendar-check' : 'fas fa-calendar'"></i>
                     {{ goal.isCompleted ? 'Achieved: ' : 'Added: ' }} {{ goal.date }}
                   </span>
-                  <span v-if="!goal.isCustom && goal.savings" class="goal-impact">
-                    <i class="fas fa-leaf"></i> {{ goal.savings }}
-                  </span>
-                  <span v-if="!goal.isCustom && getPlanTarget(goal)" class="goal-target">
-                    <i class="fas fa-bullseye"></i> Target: {{ getPlanTarget(goal) }}
-                  </span>
                 </div>
                 <div class="goal-actions">
                   <button
