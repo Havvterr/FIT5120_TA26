@@ -9,7 +9,7 @@
         placeholder="Please enter password"
       />
       <button @click="checkPassword">Confirm</button>
-      <p v-if="error" class="error">worng password</p>
+      <p v-if="error" class="error">wrong password</p>
     </div>
   </div>
 </template>
@@ -17,6 +17,13 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+
+defineOptions({
+  name: 'LoginView',
+  meta: {
+    hideNavbar: true,
+  },
+})
 
 const password = ref('')
 const error = ref(false)
@@ -59,7 +66,7 @@ input {
 }
 
 button {
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
