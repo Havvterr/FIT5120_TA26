@@ -21,11 +21,17 @@ import h7 from '@/assets/h7.jpg'
           style="font-size: 4rem; color: #034c26; margin-bottom: 2rem; margin-top: -1rem"
         ></i>
         <h1>Welcome to <strong>Mel Eco Nest</strong></h1>
-        <p>Build greener cities—starting from your balcony.
-          One apartment, One year, Same CO₂ reduction as a flight from Melbourne to Sydney.
-
-          Join us in shaping a cooler, more sustainable future—together.</p>
+        <p>
+          Build greener cities—starting from your balcony. One apartment, One year, Same CO₂
+          reduction as a flight from Melbourne to Sydney. Join us in shaping a cooler, more
+          sustainable future—together.
+        </p>
         <ul class="actions special">
+          <li>
+            <RouterLink to="/actions/ai-balcony-preview" class="button primary"
+              >Try AI Balcony Preview</RouterLink
+            >
+          </li>
           <li>
             <div class="scroll-indicator">
               <a href="#one" class="scroll-down-arrow">
@@ -80,10 +86,9 @@ import h7 from '@/assets/h7.jpg'
                   <h2>Melbourne is heating up—and fast</h2>
                 </header>
                 <p>
-                  Paved streets, fewer trees, and climate change
-                  are turning our city into an urban oven. During
-                  heatwaves, Urban Heat Island becomes deadly. It's
-                  not just discomfort—it's a public health risk.
+                  Paved streets, fewer trees, and climate change are turning our city into an urban
+                  oven. During heatwaves, Urban Heat Island becomes deadly. It's not just
+                  discomfort—it's a public health risk.
                 </p>
               </div>
 
@@ -92,9 +97,8 @@ import h7 from '@/assets/h7.jpg'
                   <h2>Not all suburbs feel the heat the same</h2>
                 </header>
                 <p>
-                  City centres stay warm overnight, while outer suburbs sizzle
-                  by day. Why? Trees, buildings, rainfall—every detail matters.
-                  UHI doesn’t play fair.
+                  City centres stay warm overnight, while outer suburbs sizzle by day. Why? Trees,
+                  buildings, rainfall—every detail matters. UHI doesn't play fair.
                 </p>
               </div>
 
@@ -106,8 +110,8 @@ import h7 from '@/assets/h7.jpg'
                   Melbourne is expected to add 600,000 dwellings by 2030. Without strategic
                   intervention, new developments will amplify UHI. Projections suggest UHI could
                   raise local temperatures by an additional 1°C per decade on top of global warming.
-                  With Meleconest, your tiny balcony garden can lower indoor temps by 2°C — no aircon
-                  needed. Just clever planting.
+                  With Meleconest, your tiny balcony garden can lower indoor temps by 2°C — no
+                  aircon needed. Just clever planting.
                 </p>
               </div>
             </div>
@@ -306,7 +310,7 @@ import h7 from '@/assets/h7.jpg'
 
 /* Ensure button styles are correct */
 .button {
-  background-color: #4acaa8;
+  background-color: #ffffff;
   color: white;
   padding: 0.6rem 1.8rem;
   border-radius: 25px;
@@ -851,7 +855,7 @@ import h7 from '@/assets/h7.jpg'
 
 /* Four */
 #four .button.primary {
-  background-color: #4095bc;
+  background-color: #ffffff;
 }
 
 #four .button.primary:hover {
@@ -878,5 +882,91 @@ import h7 from '@/assets/h7.jpg'
 #three .row.gtr-150 {
   margin-left: -1rem;
   margin-right: -1rem;
+}
+
+/* Add styles for the new button */
+#header .actions.special {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+#header .actions.special li {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#header .button.primary {
+  background-color: transparent;
+  color: white;
+  padding: 0.8rem 2.5rem;
+  border: 2px solid white;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 200px;
+  width: auto;
+}
+
+#header .button.primary:hover {
+  background-color: transparent;
+  border-color: #4acaa8;
+  color: #4acaa8;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+@media screen and (max-width: 768px) {
+  #header .button.primary {
+    font-size: 1rem;
+    padding: 0.7rem 2rem;
+    min-width: 180px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #header .button.primary {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.8rem;
+    min-width: 160px;
+  }
+}
+
+#header .actions.special li a.button.primary,
+#header .actions.special li .button.primary {
+  background-color: transparent !important;
+  color: white !important;
+  padding: 0.8rem 2.5rem;
+  border: 2px solid white;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 200px;
+  width: auto;
+}
+
+#header .actions.special li a.button.primary:hover,
+#header .actions.special li .button.primary:hover {
+  background-color: transparent !important;
+  border-color: #4acaa8 !important;
+  color: #4acaa8 !important;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 </style>
