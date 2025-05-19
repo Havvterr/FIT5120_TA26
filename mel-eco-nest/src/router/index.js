@@ -87,6 +87,11 @@ const router = createRouter({
           name: 'heat-guide',
           component: () => import('@/views/explore/HeatGuideView.vue'),
         },
+        {
+          path: 'heatwave-survival-quiz',
+          name: 'heatwave-survival-quiz',
+          component: () => import('@/views/explore/HeatwaveSurvivalQuiz.vue'),
+        },
       ],
     },
   ],

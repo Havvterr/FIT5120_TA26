@@ -391,6 +391,18 @@
         </div>
       </div>
     </div>
+
+    <!-- Knowledge Check Button Section -->
+    <section class="knowledge-check-section" data-aos="fade-up">
+      <div class="knowledge-check-container">
+        <h2>Ready to test your knowledge?</h2>
+        <p>Take a simple quiz to assess your understanding of heatwave protection</p>
+        <router-link to="/explore/heatwave-survival-quiz" class="quiz-button">
+          <i class="fas fa-graduation-cap"></i>
+          Start Quiz
+        </router-link>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -1097,5 +1109,72 @@ onUnmounted(() => {
 /* Animation for body when modal is open */
 :global(body.modal-open) {
   overflow: hidden;
+}
+
+/* Knowledge Check Section Styles */
+.knowledge-check-section {
+  background-color: #f8f9fa;
+  padding: 60px 0;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.knowledge-check-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.knowledge-check-container h2 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.knowledge-check-container p {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.quiz-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 30px;
+  background-color: #0d6efd;
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2);
+}
+
+.quiz-button:hover {
+  background-color: #0b5ed7;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.3);
+}
+
+.quiz-button i {
+  margin-right: 10px;
+  font-size: 1.4rem;
+}
+
+@media (max-width: 576px) {
+  .knowledge-check-container h2 {
+    font-size: 1.6rem;
+  }
+  
+  .knowledge-check-container p {
+    font-size: 1rem;
+  }
+  
+  .quiz-button {
+    padding: 12px 25px;
+    font-size: 1.1rem;
+  }
 }
 </style>

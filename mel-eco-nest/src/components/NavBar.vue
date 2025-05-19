@@ -68,6 +68,9 @@
                 >Efficient Appliances</router-link
               >
               <router-link class="dropdown-item" to="/explore/heat-guide">Heat Guide</router-link>
+              <router-link class="dropdown-item" to="/explore/heatwave-survival-quiz"
+                >Heatwave Survival Quiz</router-link
+              >
             </div>
           </li>
         </ul>
