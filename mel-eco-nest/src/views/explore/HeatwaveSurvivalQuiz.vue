@@ -6,10 +6,10 @@
     </div>
 
     <div v-if="selectedScenario === null" class="scenario-selection">
-      <h2>选择场景</h2>
+      <h2>Choose a Scenario</h2>
       <div class="scenario-buttons">
-        <button 
-          v-for="(scenario, index) in scenarioList" 
+        <button
+          v-for="(scenario, index) in scenarioList"
           :key="index"
           @click="selectScenario(index)"
           class="scenario-button"
@@ -22,7 +22,7 @@
     <div class="scenario-container" v-else-if="!quizCompleted">
       <div class="progress-bar">
         <div class="progress" :style="{ width: progressPercentage + '%' }"></div>
-        <span class="progress-text">题目 {{ currentScenario + 1 }} / {{ currentScenarioList.length }}</span>
+        <span class="progress-text">Question {{ currentScenario + 1 }} / {{ currentScenarioList.length }}</span>
       </div>
 
       <div class="scenario-content">
@@ -55,24 +55,24 @@
             <p>{{ currentQuestion.options[selectedOption].feedback }}</p>
           </div>
           <button class="next-button" @click="nextScenario">
-            {{ currentScenario === currentScenarioList.length - 1 ? '完成答题' : '下一题' }}
+{{ currentScenario === currentScenarioList.length - 1 ? 'Complete' : 'Next' }}
           </button>
         </div>
       </div>
     </div>
 
     <div v-else class="completion-container">
-      <h2>答题完成！</h2>
-      <p>你已完成所有题目。得分：{{ score }}/{{ currentScenarioList.length }}</p>
+      <h2>Quiz Completed!</h2>
+      <p>You have completed all questions. Score: {{ score }}/{{ currentScenarioList.length }}</p>
       <div class="completion-actions">
         <router-link to="/explore/heat-guide" class="return-button">
-          返回指南
+          Return to Guide
         </router-link>
         <button @click="restartQuiz" class="restart-button">
-          再试一次
+          Try Again
         </button>
         <button @click="returnToQuiz" class="return-quiz-button">
-          返回 Heatwave Survival Quiz
+          Return to Scenarios
         </button>
       </div>
     </div>
@@ -84,625 +84,625 @@ import { ref, computed } from 'vue'
 
 const scenarioList = [
   {
-    title: "🌞 独居老人热浪生存指南",
+    title: "🌞 Heatwave Survival Guide for Elderly",
     scenarios: [
       {
-        title: "中午室内闷热时的应对",
-        background: "现在是夏季中午，你是一位76岁的独居老人，室内感觉闷热。",
+        title: "Dealing with Indoor Heat at Noon",
+        background: "It's noon in summer, you are a 76-year-old living alone, and the indoor environment feels stuffy.",
         options: [
           {
-            text: "打开所有窗户通风",
+            text: "Open all windows for ventilation",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 中午开窗会让热空气进入室内，反而会提高室内温度。"
+            feedback: " Opening windows at noon lets hot air in, which will increase indoor temperature."
           },
           {
-            text: "关闭窗户，拉上窗帘，打开风扇",
+            text: "Close windows, draw curtains, turn on fan",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！这样可以有效阻挡辐射热并促进空气流通。"
+            feedback: " Correct! This effectively blocks radiant heat and promotes air circulation."
           },
           {
-            text: "将空调温度调到16°C",
+            text: "Set air conditioner to 16°C",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 温度设置过低可能导致身体不适，建议保持在24-26°C。"
+            feedback: " Setting temperature too low may cause discomfort, recommended to maintain 24-26°C."
           }
         ]
       },
       {
-        title: "水分补充时机",
-        background: "上午11点，你虽然不觉得口渴，但一直在出汗。",
+        title: "Timing of Water Intake",
+        background: "At 11 AM, you're sweating but don't feel thirsty.",
         options: [
           {
-            text: "等到口渴再喝水",
+            text: "Wait until thirsty to drink water",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 老年人对口渴的感知可能减弱，等到口渴才喝水已经太晚了。"
+            feedback: " Elderly may have reduced thirst perception, waiting until thirsty is too late."
           },
           {
-            text: "主动补充水分",
+            text: "Proactively drink water",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！定期补充水分比等到口渴更安全。"
+            feedback: " Correct! Regular hydration is safer than waiting until thirsty."
           },
           {
-            text: "吃咸的食物代替喝水",
+            text: "Eat salty food instead of drinking water",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 咸食会增加身体对水分的需求，不能替代直接补充水分。"
+            feedback: " Salty foods increase body's water needs and cannot replace direct water intake."
           }
         ]
       },
       {
-        title: "室内温度监测",
-        background: "在出门前，你想确认家里的温度是否安全。",
+        title: "Indoor Temperature Monitoring",
+        background: "Before going out, you want to check if your home's temperature is safe.",
         options: [
           {
-            text: "用手触摸墙壁或地板感受温度",
+            text: "Feel temperature by touching walls or floor",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 主观感受不够准确，无法准确判断室内温度。"
+            feedback: " Subjective feeling is not accurate enough to judge indoor temperature."
           },
           {
-            text: "使用温湿度计测量",
+            text: "Use a thermometer and hygrometer",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！使用专业设备可以准确监测室内温湿度。"
+            feedback: " Correct! Professional equipment accurately monitors indoor temperature and humidity."
           },
           {
-            text: "通过观察室外阳光和天空判断",
+            text: "Judge by observing outdoor sunlight and sky",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 室外天气状况不能准确反映室内温度。"
+            feedback: " Outdoor weather conditions cannot accurately reflect indoor temperature."
           }
         ]
       },
       {
-        title: "中暑症状识别",
-        background: "在炎热的下午，你感到头晕，皮肤干燥发烫。",
+        title: "Heat Stress Symptom Recognition",
+        background: "On a hot afternoon, you feel dizzy and your skin is dry and hot.",
         options: [
           {
-            text: "可能是感冒了",
+            text: "Might be a cold",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 这些症状更可能是中暑的早期征兆。"
+            feedback: " These symptoms are more likely early signs of heat stress."
           },
           {
-            text: "这是中暑的警告信号",
+            text: "These are warning signs of heat stress",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！头晕和皮肤干燥发烫是中暑的早期症状，需要立即采取降温措施。"
+            feedback: " Correct! Dizziness and hot, dry skin are early symptoms of heat stress, requiring immediate cooling measures."
           },
           {
-            text: "只是消化不良，观察一下",
+            text: "Just indigestion, observe for a while",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 这些症状与消化无关，需要立即关注。"
+            feedback: " These symptoms are unrelated to digestion and need immediate attention."
           }
         ]
       },
       {
-        title: "紧急情况处理",
-        background: "你独自在家，开始感到意识模糊。",
+        title: "Emergency Situation Management",
+        background: "You're alone at home and start feeling confused.",
         options: [
           {
-            text: "用湿毛巾敷着躺下休息",
+            text: "Lie down with a wet towel",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 意识模糊是严重症状，需要立即就医。"
+            feedback: " Confusion is a serious symptom requiring immediate medical attention."
           },
           {
-            text: "立即拨打急救电话并开始降温",
+            text: "Call emergency services and start cooling down",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！意识模糊是严重中暑症状，需要立即就医。"
+            feedback: " Correct! Confusion is a severe heat stress symptom requiring immediate medical attention."
           },
           {
-            text: "喝冰水等待好转",
+            text: "Drink ice water and wait for improvement",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 冰水可能刺激肠胃，且意识模糊时不宜自行处理。"
+            feedback: " Ice water may irritate the stomach, and self-treatment is not advisable when confused."
           }
         ]
       }
     ]
   },
   {
-    title: "👨‍👩‍👧 家庭儿童热浪防护",
+    title: "👨‍👩‍👧 Family Child Heatwave Protection",
     scenarios: [
       {
-        title: "儿童户外活动安排",
-        background: "你正在照顾9岁的孩子，现在是热浪期间。孩子想出去踢足球。",
+        title: "Children's Outdoor Activity Planning",
+        background: "You are taking care of a 9-year-old child during a heatwave. The child wants to play soccer outside.",
         options: [
           {
-            text: "给他一瓶水就让他出去",
+            text: "Give them a bottle of water and let them go",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 即使有水，在高温下运动也可能导致中暑。"
+            feedback: " Even with water, exercising in high temperatures can lead to heat stroke."
           },
           {
-            text: "建议等到傍晚再出去",
+            text: "Suggest waiting until evening",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！傍晚温度较低，更适合户外活动。"
+            feedback: " Correct! Evening temperatures are lower and more suitable for outdoor activities."
           },
           {
-            text: "允许他去，但要求30分钟后回来",
+            text: "Allow them to go but return in 30 minutes",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 30分钟在高温下仍然存在风险，最好选择更凉爽的时间段。"
+            feedback: " 30 minutes in high heat still poses risks, better to choose a cooler time period."
           }
         ]
       },
       {
-        title: "室内温度管理",
-        background: "室内温度达到32°C，需要采取措施。",
+        title: "Indoor Temperature Management",
+        background: "Indoor temperature has reached 32°C, action needs to be taken.",
         options: [
           {
-            text: "打开窗户通风",
+            text: "Open windows for ventilation",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 当室外温度更高时，开窗会让热空气进入。"
+            feedback: " When outdoor temperature is higher, opening windows lets hot air in."
           },
           {
-            text: "关闭窗户并拉上窗帘",
+            text: "Close windows and draw curtains",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！这样可以阻挡热空气进入和阳光直射。"
+            feedback: " Correct! This blocks hot air and direct sunlight."
           },
           {
-            text: "只依靠自然风",
+            text: "Rely only on natural breeze",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 在热浪期间，自然风可能也是热的，需要采取更积极的降温措施。"
+            feedback: " During heatwaves, natural breeze can be hot too, more active cooling measures are needed."
           }
         ]
       },
       {
-        title: "儿童睡眠环境",
-        background: "在没有空调的公寓里，孩子盖着厚被子午睡。",
+        title: "Child's Sleep Environment",
+        background: "In an apartment without air conditioning, the child is napping with a thick blanket.",
         options: [
           {
-            text: "换成薄床单",
+            text: "Switch to a thin sheet",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！使用透气性好的薄床单更适合高温天气。"
+            feedback: " Correct! Using breathable thin sheets is more suitable for hot weather."
           },
           {
-            text: "保持现状",
+            text: "Maintain current situation",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 厚被子会增加体温，不利于散热。"
+            feedback: " Thick blankets increase body temperature and hinder heat dissipation."
           },
           {
-            text: "将风扇直接对着孩子吹",
+            text: "Point fan directly at the child",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 直接对着孩子吹风扇可能导致着凉或不适。"
+            feedback: " Directing fan at the child may cause discomfort or catching cold."
           }
         ]
       },
       {
-        title: "儿童热应激症状",
-        background: "孩子出现头痛、口干和烦躁的症状。",
+        title: "Child Heat Stress Symptoms",
+        background: "The child shows symptoms of headache, dry mouth, and irritability.",
         options: [
           {
-            text: "给他喝水，让他休息并降温",
+            text: "Give water, rest, and cool down",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！这些是脱水和热应激的早期症状，需要及时处理。"
+            feedback: " Correct! These are early symptoms of dehydration and heat stress, requiring immediate attention."
           },
           {
-            text: "让他喝果汁并观察",
+            text: "Give juice and observe",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 果汁含糖量高，不利于补充水分。"
+            feedback: " Juice has high sugar content and is not good for hydration."
           },
           {
-            text: "给他吃感冒药",
+            text: "Give cold medicine",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 这些症状与感冒无关，是热应激的表现。"
+            feedback: " These symptoms are not related to cold, they are signs of heat stress."
           }
         ]
       },
       {
-        title: "户外活动时间选择",
-        background: "你正在计划一次户外活动。",
+        title: "Outdoor Activity Time Selection",
+        background: "You are planning an outdoor activity.",
         options: [
           {
-            text: "中午12点左右",
+            text: "Around 12 noon",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 中午是一天中最热的时候，不适合户外活动。"
+            feedback: " Noon is the hottest time of day, unsuitable for outdoor activities."
           },
           {
-            text: "下午4点",
+            text: "4 PM",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 下午4点温度仍然较高。"
+            feedback: " Temperature is still high at 4 PM."
           },
           {
-            text: "早上7-9点之间",
+            text: "Between 7-9 AM",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！早晨温度最低，紫外线强度也较低。"
+            feedback: " Correct! Morning has the lowest temperature and UV intensity."
           }
         ]
       }
     ]
   },
   {
-    title: "👷 户外工作者热浪防护",
+    title: "👷 Outdoor Worker Heat Protection",
     scenarios: [
       {
-        title: "水分补充管理",
-        background: "你是一名道路施工工人，需要在高温下工作。",
+        title: "Water Intake Management",
+        background: "You are a road construction worker who needs to work in high temperatures.",
         options: [
           {
-            text: "只在口渴时喝水",
+            text: "Only drink water when thirsty",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 等到口渴才喝水已经太晚了，应该定期补充水分。"
+            feedback: " Waiting until thirsty is too late, you should regularly hydrate."
           },
           {
-            text: "每小时定期喝水",
+            text: "Drink water every hour",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！定时补充水分是预防中暑的关键。"
+            feedback: " Correct! Regular hydration is key to preventing heat stress."
           },
           {
-            text: "用能量饮料代替水",
+            text: "Replace water with energy drinks",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 能量饮料可能影响水分吸收，应该以清水为主。"
+            feedback: " Energy drinks may affect water absorption, plain water should be the main choice."
           }
         ]
       },
       {
-        title: "工作着装选择",
-        background: "你准备穿着浅色长袖、帽子和太阳镜工作。",
+        title: "Work Attire Selection",
+        background: "You plan to work wearing light-colored long sleeves, a hat, and sunglasses.",
         options: [
           {
-            text: "这样的着装合适",
+            text: "This attire is appropriate",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！这样的着装既能防晒又能保持通风。"
+            feedback: " Correct! This outfit provides sun protection while maintaining ventilation."
           },
           {
-            text: "太热了，应该脱掉上衣",
+            text: "Too hot, should remove shirt",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 暴露皮肤会增加晒伤和中暑风险。"
+            feedback: " Exposed skin increases risk of sunburn and heat stress."
           },
           {
-            text: "太阳镜是多余的",
+            text: "Sunglasses are unnecessary",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 太阳镜可以保护眼睛，是必要的防护装备。"
+            feedback: " Sunglasses protect your eyes and are essential safety equipment."
           }
         ]
       },
       {
-        title: "休息场所选择",
-        background: "你决定在停放的卡车里休息。",
+        title: "Rest Area Selection",
+        background: "You decide to rest in a parked truck.",
         options: [
           {
-            text: "这是安全的",
+            text: "This is safe",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 封闭的车辆内部温度可能超过50°C，非常危险。"
+            feedback: " Enclosed vehicle temperatures can exceed 50°C, extremely dangerous."
           },
           {
-            text: "不安全，车内温度可能致命",
+            text: "Unsafe, vehicle temperature can be lethal",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！应该选择阴凉通风的地方休息。"
+            feedback: " Correct! Choose a shaded, ventilated area for rest."
           },
           {
-            text: "开窗就安全",
+            text: "Safe if windows are open",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 即使开窗，车内温度仍然可能很高。"
+            feedback: " Even with open windows, vehicle temperature can still be dangerously high."
           }
         ]
       },
       {
-        title: "热应激症状处理",
-        background: "你开始感到头晕和恶心。",
+        title: "Heat Stress Symptom Management",
+        background: "You start feeling dizzy and nauseous.",
         options: [
           {
-            text: "继续工作",
+            text: "Continue working",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 继续工作可能加重症状，导致严重后果。"
+            feedback: " Continuing work may worsen symptoms, leading to serious consequences."
           },
           {
-            text: "立即休息，降温并补充水分",
+            text: "Rest immediately, cool down and hydrate",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！这些是中暑的早期症状，需要立即处理。"
+            feedback: " Correct! These are early heat stress symptoms requiring immediate attention."
           },
           {
-            text: "吃点东西感觉会好",
+            text: "Eat something to feel better",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 这些症状与饥饿无关，是热应激的表现。"
+            feedback: " These symptoms aren't related to hunger, they indicate heat stress."
           }
         ]
       },
       {
-        title: "同事中暑处理",
-        background: "一位同事晕倒，皮肤干燥发烫。",
+        title: "Colleague Heat Stress Response",
+        background: "A colleague collapses with hot, dry skin.",
         options: [
           {
-            text: "泼水并试图叫醒他",
+            text: "Splash water and try to wake them",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 这些措施不足以处理严重中暑。"
+            feedback: " These measures are insufficient for severe heat stress."
           },
           {
-            text: "拨打急救电话并开始表面降温",
+            text: "Call emergency services and start cooling",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！严重中暑需要立即就医和降温处理。"
+            feedback: " Correct! Severe heat stress requires immediate medical attention and cooling."
           },
           {
-            text: "快速给他喝水",
+            text: "Quickly give them water",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 意识不清时不宜强行喂水，可能造成窒息。"
+            feedback: " Don't force water when unconscious, risk of choking."
           }
         ]
       }
     ]
   },
   {
-    title: "🧑‍🏫 学校热浪安全指南",
+    title: "🧑‍🏫 School Heatwave Safety Guide",
     scenarios: [
       {
-        title: "体育课时间安排",
-        background: "你是一名学校教师，需要安排户外体育活动。",
+        title: "PE Class Scheduling",
+        background: "You are a school teacher who needs to arrange outdoor physical activities.",
         options: [
           {
-            text: "上午10点前",
+            text: "Before 10 AM",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！早晨温度较低，紫外线强度也较低。"
+            feedback: " Correct! Morning has lower temperature and UV intensity."
           },
           {
-            text: "中午12点",
+            text: "12 PM noon",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 中午是一天中最热的时候，不适合户外活动。"
+            feedback: " Noon is the hottest time of day, unsuitable for outdoor activities."
           },
           {
-            text: "下午3:30",
+            text: "3:30 PM",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 下午温度仍然较高，建议选择更早的时间。"
+            feedback: " Afternoon temperature is still high, earlier time is recommended."
           }
         ]
       },
       {
-        title: "学生着装建议",
-        background: "学生穿着标准校服，需要额外的防护建议。",
+        title: "Student Dress Code Advice",
+        background: "Students are wearing standard uniforms and need additional protection advice.",
         options: [
           {
-            text: "穿深色衣服防晒",
+            text: "Wear dark clothes for sun protection",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 深色衣服会吸收更多热量。"
+            feedback: " Dark clothes absorb more heat."
           },
           {
-            text: "戴帽子并穿浅色衣服",
+            text: "Wear hat and light-colored clothes",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！浅色衣服反射热量，帽子提供防晒保护。"
+            feedback: " Correct! Light-colored clothes reflect heat, and hats provide sun protection."
           },
           {
-            text: "多喝软饮料",
+            text: "Drink more soft drinks",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 软饮料含糖量高，不利于补充水分。"
+            feedback: " Soft drinks are high in sugar and not good for hydration."
           }
         ]
       },
       {
-        title: "学生热应激处理",
-        background: "学生出现头痛、脸红和心跳加快的症状。",
+        title: "Student Heat Stress Management",
+        background: "A student shows symptoms of headache, flushed face, and rapid heartbeat.",
         options: [
           {
-            text: "让他躺下休息，降温并通知校医",
+            text: "Have them lie down, cool down, and notify school nurse",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！这些是热应激的症状，需要专业医疗人员处理。"
+            feedback: " Correct! These are heat stress symptoms requiring professional medical attention."
           },
           {
-            text: "让他在教室休息",
+            text: "Let them rest in classroom",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 这些症状需要及时处理，不能简单休息。"
+            feedback: " These symptoms need immediate attention, not just rest."
           },
           {
-            text: "打电话让家长接走",
+            text: "Call parents to pick up",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 应该先进行初步处理，再决定是否需要送医。"
+            feedback: " Initial treatment should be given before deciding on medical care."
           }
         ]
       },
       {
-        title: "教室安全措施",
-        background: "在热浪期间确保教室安全。",
+        title: "Classroom Safety Measures",
+        background: "Ensuring classroom safety during heatwave.",
         options: [
           {
-            text: "鼓励定时补充水分",
+            text: "Encourage regular water intake",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！定时补充水分比等到口渴更有效。"
+            feedback: " Correct! Regular hydration is more effective than waiting until thirsty."
           },
           {
-            text: "分发冰淇淋",
+            text: "Distribute ice cream",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 冰淇淋不能替代水分补充，且可能影响食欲。"
+            feedback: " Ice cream cannot replace water and may affect appetite."
           },
           {
-            text: "保持正常教学节奏",
+            text: "Maintain normal teaching pace",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 热浪期间需要调整教学安排，关注学生状态。"
+            feedback: " Teaching schedule needs adjustment during heatwave, monitor student condition."
           }
         ]
       },
       {
-        title: "热浪期间学校调整",
-        background: "学校收到热浪预警，需要做出调整。",
+        title: "School Heatwave Adjustments",
+        background: "School receives heatwave warning and needs to make adjustments.",
         options: [
           {
-            text: "推迟放学时间",
+            text: "Delay school dismissal time",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 推迟放学可能让学生暴露在高温中更长时间。"
+            feedback: " Delaying dismissal may expose students to high temperatures longer."
           },
           {
-            text: "缩短户外课程时间",
+            text: "Reduce outdoor class duration",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！减少户外活动时间可以降低热相关疾病风险。"
+            feedback: " Correct! Reducing outdoor activity time lowers heat-related illness risk."
           },
           {
-            text: "不做任何改变",
+            text: "Make no changes",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 热浪期间需要采取预防措施保护学生安全。"
+            feedback: " Preventive measures are needed during heatwave to protect student safety."
           }
         ]
       }
     ]
   },
   {
-    title: "🧑‍⚕️ 居家护理热浪应急",
+    title: "🧑‍⚕️ Home Care Heatwave Emergency",
     scenarios: [
       {
-        title: "糖尿病患者症状识别",
-        background: "你是一名护理人员，正在照顾一位老年糖尿病患者。",
+        title: "Diabetic Patient Symptom Recognition",
+        background: "You are a caregiver looking after an elderly diabetic patient.",
         options: [
           {
-            text: "只是脱水",
+            text: "Just dehydration",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 这些症状可能表明更严重的热应激反应。"
+            feedback: " These symptoms may indicate more serious heat stress reaction."
           },
           {
-            text: "可能是中暑或热衰竭",
+            text: "Possible heatstroke or heat exhaustion",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！这些是严重热应激的征兆，需要立即采取降温措施。"
+            feedback: " Correct! These are signs of severe heat stress, requiring immediate cooling measures."
           },
           {
-            text: "情绪激动",
+            text: "Emotional agitation",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 这些症状与情绪无关，需要立即关注。"
+            feedback: " These symptoms are not related to emotions, need immediate attention."
           }
         ]
       },
       {
-        title: "紧急情况处理",
-        background: "发现患者出现热应激症状。",
+        title: "Emergency Situation Management",
+        background: "Patient shows heat stress symptoms.",
         options: [
           {
-            text: "打开窗户通风",
+            text: "Open windows for ventilation",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 仅通风不足以处理热应激。"
+            feedback: " Ventilation alone is insufficient for heat stress."
           },
           {
-            text: "开始降温并检查意识水平",
+            text: "Start cooling and check consciousness level",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！物理降温和意识状态检查是关键。"
+            feedback: " Correct! Physical cooling and consciousness check are crucial."
           },
           {
-            text: "让他休息并喝水",
+            text: "Let them rest and drink water",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 这些症状需要更积极的处理措施。"
+            feedback: " These symptoms require more active treatment measures."
           }
         ]
       },
       {
-        title: "药物副作用处理",
-        background: "患者服药后出汗减少。",
+        title: "Medication Side Effect Management",
+        background: "Patient shows reduced sweating after taking medication.",
         options: [
           {
-            text: "继续观察",
+            text: "Continue observation",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 需要检查药物是否影响排汗功能。"
+            feedback: " Need to check if medication affects sweating function."
           },
           {
-            text: "检查药物副作用",
+            text: "Check medication side effects",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！某些药物可能抑制排汗，需要评估。"
+            feedback: " Correct! Some medications may suppress sweating, needs evaluation."
           },
           {
-            text: "吃降火食物",
+            text: "Eat cooling foods",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 食物不能解决药物副作用问题。"
+            feedback: " Food cannot solve medication side effect issues."
           }
-        ] 
+        ]
       },
       {
-        title: "夜间温度控制",
-        background: "需要确定安全的夜间室温。",
+        title: "Night Temperature Control",
+        background: "Need to determine safe nighttime room temperature.",
         options: [
           {
             text: "28°C",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 28°C对老年人来说仍然太高。"
+            feedback: " 28°C is still too high for elderly."
           },
           {
             text: "≤24°C",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！夜间温度应保持在24°C以下以确保安全。"
+            feedback: " Correct! Nighttime temperature should be kept below 24°C for safety."
           },
           {
-            text: "只要开风扇就行",
+            text: "Just using fan is enough",
             isCorrect: false,
             isWarning: true,
-            feedback: "⚠️ 仅靠风扇可能不足以维持安全温度。"
+            feedback: " Fan alone may not be sufficient to maintain safe temperature."
           }
         ]
       },
       {
-        title: "严重症状处理",
-        background: "患者出现意识模糊和言语不清。",
+        title: "Severe Symptom Management",
+        background: "Patient shows confusion and unclear speech.",
         options: [
           {
-            text: "强迫他喝水",
+            text: "Force them to drink water",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 意识不清时不宜强行喂水。"
+            feedback: " Forcing water when confused is not advisable."
           },
           {
-            text: "涂抹清凉油",
+            text: "Apply cooling oil",
             isCorrect: false,
             isWarning: false,
-            feedback: "❌ 这些症状需要专业医疗处理。"
+            feedback: " These symptoms require professional medical treatment."
           },
           {
-            text: "立即拨打急救电话",
+            text: "Call emergency services immediately",
             isCorrect: true,
             isWarning: false,
-            feedback: "✅ 正确！这些是严重中暑的神经症状，需要立即就医。"
+            feedback: " Correct! These are neurological symptoms of severe heatstroke, requiring immediate medical attention."
           }
         ]
       }
