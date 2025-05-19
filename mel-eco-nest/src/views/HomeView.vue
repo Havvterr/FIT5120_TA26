@@ -21,7 +21,10 @@ import h7 from '@/assets/h7.jpg'
           style="font-size: 4rem; color: #034c26; margin-bottom: 2rem; margin-top: -1rem"
         ></i>
         <h1>Welcome to <strong>Mel Eco Nest</strong></h1>
-        <p>Join us in shaping a better, more sustainable future for our cities</p>
+        <p>Build greener cities—starting from your balcony.
+          One apartment, One year, Same CO₂ reduction as a flight from Melbourne to Sydney.
+
+          Join us in shaping a cooler, more sustainable future—together.</p>
         <ul class="actions special">
           <li>
             <div class="scroll-indicator">
@@ -74,25 +77,24 @@ import h7 from '@/assets/h7.jpg'
             <div class="heat-island-info">
               <div class="heat-section">
                 <header class="major">
-                  <h2>A Growing Urban Threat</h2>
+                  <h2>Melbourne is heating up—and fast</h2>
                 </header>
                 <p>
-                  Melbourne's Urban Heat Island (UHI) effect is intensifying due to expanding
-                  impervious surfaces and vegetation loss. Combined with climate change, UHI
-                  increases health risks, especially during heatwaves, which are Australia's
-                  deadliest natural hazard.
+                  Paved streets, fewer trees, and climate change
+                  are turning our city into an urban oven. During
+                  heatwaves, Urban Heat Island becomes deadly. It's
+                  not just discomfort—it's a public health risk.
                 </p>
               </div>
 
               <div class="heat-section">
                 <header class="major">
-                  <h2>Spatial and Temporal Variations</h2>
+                  <h2>Not all suburbs feel the heat the same</h2>
                 </header>
                 <p>
-                  UHI impacts vary across Melbourne. Inner-city areas experience elevated night-time
-                  temperatures, while western outer suburbs face intense daytime heat. Differences
-                  in vegetation, urban density, and rainfall patterns contribute to these localised
-                  heat stress conditions.
+                  City centres stay warm overnight, while outer suburbs sizzle
+                  by day. Why? Trees, buildings, rainfall—every detail matters.
+                  UHI doesn’t play fair.
                 </p>
               </div>
 
@@ -104,9 +106,8 @@ import h7 from '@/assets/h7.jpg'
                   Melbourne is expected to add 600,000 dwellings by 2030. Without strategic
                   intervention, new developments will amplify UHI. Projections suggest UHI could
                   raise local temperatures by an additional 1°C per decade on top of global warming.
-                  With Meleconest, even a balcony can cool your room by 2°C—no extra AC, just smarter
-                   planting.Just one apartment, one year—and you’ve saved as much CO₂ as
-                  skipping a flight from Melbourne to Sydney.
+                  With Meleconest, your tiny balcony garden can lower indoor temps by 2°C — no aircon
+                  needed. Just clever planting.
                 </p>
               </div>
             </div>
