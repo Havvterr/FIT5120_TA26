@@ -28,7 +28,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/actions',
@@ -117,6 +117,11 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
   }
+})
+
+// Add global afterEach guard to ensure page scrolls to top after each navigation
+router.afterEach(() => {
+  window.scrollTo(0, 0)
 })
 
 export default router

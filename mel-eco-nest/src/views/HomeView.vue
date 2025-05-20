@@ -1,5 +1,5 @@
 <script setup>
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import h1 from '@/assets/h1.jpg'
 import r1 from '@/assets/r1.jpg'
 import r2 from '@/assets/r2.jpg'
@@ -9,6 +9,13 @@ import r5 from '@/assets/r5.jpg'
 // b1 is used in CSS background-image for section#four
 // import h6 from '@/assets/h6.jpg'
 import h7 from '@/assets/h7.jpg'
+
+const router = useRouter()
+
+const handleNavigation = (path) => {
+  router.push(path)
+  window.scrollTo(0, 0)
+}
 </script>
 
 <template>
@@ -28,8 +35,8 @@ import h7 from '@/assets/h7.jpg'
         </p>
         <ul class="actions special">
           <li>
-            <RouterLink to="/actions/ai-balcony-preview" class="button primary"
-              >Try AI Balcony Preview</RouterLink
+            <a @click="handleNavigation('/actions/ai-balcony-preview')" class="button primary"
+              >Try AI Balcony Preview</a
             >
           </li>
           <li>
@@ -135,7 +142,9 @@ import h7 from '@/assets/h7.jpg'
               <p>Create your own green space to combat urban heat</p>
               <ul class="actions special">
                 <li>
-                  <RouterLink to="/actions/build-micro-oasis" class="button">Explore</RouterLink>
+                  <a @click="handleNavigation('/actions/build-micro-oasis')" class="button"
+                    >Explore</a
+                  >
                 </li>
               </ul>
             </div>
@@ -146,7 +155,9 @@ import h7 from '@/assets/h7.jpg'
               <h3>My Energy Plan</h3>
               <p>Discover your personalized energy saving plan</p>
               <ul class="actions special">
-                <li><RouterLink to="/actions/my-plan" class="button">Explore</RouterLink></li>
+                <li>
+                  <a @click="handleNavigation('/actions/my-plan')" class="button">Explore</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -156,7 +167,9 @@ import h7 from '@/assets/h7.jpg'
               <h3>Goal Tracker</h3>
               <p>Monitor your progress towards sustainability goals</p>
               <ul class="actions special">
-                <li><RouterLink to="/actions/goal-tracker" class="button">Explore</RouterLink></li>
+                <li>
+                  <a @click="handleNavigation('/actions/goal-tracker')" class="button">Explore</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -168,7 +181,9 @@ import h7 from '@/assets/h7.jpg'
               <h3>Melbourne Heat Map</h3>
               <p>View Melbourne's urban heat island effect map</p>
               <ul class="actions special">
-                <li><RouterLink to="/explore/heat-map" class="button">Explore</RouterLink></li>
+                <li>
+                  <a @click="handleNavigation('/explore/heat-map')" class="button">Explore</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -179,7 +194,9 @@ import h7 from '@/assets/h7.jpg'
               <p>Track community energy conservation achievements</p>
               <ul class="actions special">
                 <li>
-                  <RouterLink to="/explore/energy-progress" class="button">Explore</RouterLink>
+                  <a @click="handleNavigation('/explore/energy-progress')" class="button"
+                    >Explore</a
+                  >
                 </li>
               </ul>
             </div>
@@ -191,7 +208,7 @@ import h7 from '@/assets/h7.jpg'
               <p>Stay safe during extreme heat conditions</p>
               <ul class="actions special">
                 <li>
-                  <RouterLink to="/explore/heat-guide" class="button">Explore</RouterLink>
+                  <a @click="handleNavigation('/explore/heat-guide')" class="button">Explore</a>
                 </li>
               </ul>
             </div>
@@ -779,6 +796,7 @@ import h7 from '@/assets/h7.jpg'
 }
 
 .feature-card .button {
+  cursor: pointer;
   align-self: center;
   background-color: #4095bc;
   color: white !important;

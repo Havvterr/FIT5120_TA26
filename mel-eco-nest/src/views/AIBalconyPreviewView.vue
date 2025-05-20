@@ -452,10 +452,10 @@ onUnmounted(() => {
 
 .ai-balcony-preview {
   position: relative;
-  top: 80px;
+  top: 0;
   left: 0;
   width: 100%;
-  height: calc(100vh - 80px);
+  height: 100vh;
   z-index: 1;
   margin: 0;
   padding: 0;
