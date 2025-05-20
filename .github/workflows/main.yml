@@ -1,0 +1,45 @@
+name: Deploy Meleconest Website
+
+on:
+  push:
+    branches: [ main ]  # Triggers deployment on push to main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Build front-end
+      working-directory: ./mel-eco-nest
+      run: |
+        npm install
+        npm run build
+
+    - name: Copy dist folder to VPS
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        source: "mel-eco-nest/dist/*"
+        target: "/tmp/dist"
+
+    - name: SSH and deploy to server
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        script: |
+          rm -rf /var/www/dist
+          mv /tmp/dist /var/www/dist
+          systemctl restart nginx
+          pm2 restart ${{ secrets.PM2_PROCESS_NAME }} || echo "PM2 not configured or app not started yet."
