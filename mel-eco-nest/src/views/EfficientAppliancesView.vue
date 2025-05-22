@@ -256,11 +256,11 @@ export default {
       errorMessage.value = ''
 
       try {
-        // 根据环境确定API基础URL
-        const baseUrl = import.meta.env.MODE === 'production'
-          ? '/api/appliances'  // 生产环境使用相对路径
-          : 'http://localhost:3000/appliances' // 开发环境使用本地服务器
-
+        // Determine API base URL based on environment
+        const baseUrl =
+          import.meta.env.MODE === 'development'
+            ? 'http://localhost:3000/appliances' // Development environment uses local server
+            : '/api/appliances' // Production environment uses relative path
 
         const response = await axios.get(baseUrl)
 

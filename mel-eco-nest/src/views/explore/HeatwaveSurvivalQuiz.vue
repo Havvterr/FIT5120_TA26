@@ -22,7 +22,9 @@
     <div class="scenario-container" v-else-if="!quizCompleted">
       <div class="progress-bar">
         <div class="progress" :style="{ width: progressPercentage + '%' }"></div>
-        <span class="progress-text">Question {{ currentScenario + 1 }} / {{ currentScenarioList.length }}</span>
+        <span class="progress-text"
+          >Question {{ currentScenario + 1 }} / {{ currentScenarioList.length }}</span
+        >
       </div>
 
       <div class="scenario-content">
@@ -35,11 +37,14 @@
           <button
             v-for="(option, index) in currentQuestion.options"
             :key="index"
-            :class="['option-button', {
-              'correct': showFeedback && option.isCorrect,
-              'incorrect': showFeedback && !option.isCorrect && selectedOption === index,
-              'warning': showFeedback && option.isWarning && selectedOption === index
-            }]"
+            :class="[
+              'option-button',
+              {
+                correct: showFeedback && option.isCorrect,
+                incorrect: showFeedback && !option.isCorrect && selectedOption === index,
+                warning: showFeedback && option.isWarning && selectedOption === index,
+              },
+            ]"
             @click="selectOption(index)"
             :disabled="showFeedback"
           >
@@ -55,7 +60,7 @@
             <p>{{ currentQuestion.options[selectedOption].feedback }}</p>
           </div>
           <button class="next-button" @click="nextScenario">
-{{ currentScenario === currentScenarioList.length - 1 ? 'Complete' : 'Next' }}
+            {{ currentScenario === currentScenarioList.length - 1 ? 'Complete' : 'Next' }}
           </button>
         </div>
       </div>
@@ -65,15 +70,9 @@
       <h2>Quiz Completed!</h2>
       <p>You have completed all questions. Score: {{ score }}/{{ currentScenarioList.length }}</p>
       <div class="completion-actions">
-        <router-link to="/explore/heat-guide" class="return-button">
-          Return to Guide
-        </router-link>
-        <button @click="restartQuiz" class="restart-button">
-          Try Again
-        </button>
-        <button @click="returnToQuiz" class="return-quiz-button">
-          Return to Scenarios
-        </button>
+        <router-link to="/explore/heat-guide" class="return-button"> Return to Guide </router-link>
+        <button @click="restartQuiz" class="restart-button">Try Again</button>
+        <button @click="returnToQuiz" class="return-quiz-button">Return to Scenarios</button>
       </div>
     </div>
   </div>
@@ -84,630 +83,653 @@ import { ref, computed } from 'vue'
 
 const scenarioList = [
   {
-    title: "🌞 Heatwave Survival Guide for Elderly",
+    title: '🌞 Heatwave Survival Guide for Elderly',
     scenarios: [
       {
-        title: "Dealing with Indoor Heat at Noon",
-        background: "It's noon in summer, you are a 76-year-old living alone, and the indoor environment feels stuffy.",
+        title: 'Dealing with Indoor Heat at Noon',
+        background:
+          "It's noon in summer, you are a 76-year-old living alone, and the indoor environment feels stuffy.",
         options: [
           {
-            text: "Open all windows for ventilation",
+            text: 'Open all windows for ventilation',
             isCorrect: false,
             isWarning: false,
-            feedback: " Opening windows at noon lets hot air in, which will increase indoor temperature."
+            feedback:
+              'Opening windows at noon lets hot air in, which will increase indoor temperature.',
           },
           {
-            text: "Close windows, draw curtains, turn on fan",
+            text: 'Close windows, draw curtains, turn on fan',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! This effectively blocks radiant heat and promotes air circulation."
+            feedback: 'Correct! This effectively blocks radiant heat and promotes air circulation.',
           },
           {
-            text: "Set air conditioner to 16°C",
+            text: 'Set air conditioner to 16°C',
             isCorrect: false,
             isWarning: true,
-            feedback: " Setting temperature too low may cause discomfort, recommended to maintain 24-26°C."
-          }
-        ]
+            feedback:
+              'Setting temperature too low may cause discomfort, recommended to maintain 24-26°C.',
+          },
+        ],
       },
       {
-        title: "Timing of Water Intake",
+        title: 'Timing of Water Intake',
         background: "At 11 AM, you're sweating but don't feel thirsty.",
         options: [
           {
-            text: "Wait until thirsty to drink water",
+            text: 'Wait until thirsty to drink water',
             isCorrect: false,
             isWarning: false,
-            feedback: " Elderly may have reduced thirst perception, waiting until thirsty is too late."
+            feedback:
+              'Elderly may have reduced thirst perception, waiting until thirsty is too late.',
           },
           {
-            text: "Proactively drink water",
+            text: 'Proactively drink water',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Regular hydration is safer than waiting until thirsty."
+            feedback: 'Correct! Regular hydration is safer than waiting until thirsty.',
           },
           {
-            text: "Eat salty food instead of drinking water",
+            text: 'Eat salty food instead of drinking water',
             isCorrect: false,
             isWarning: true,
-            feedback: " Salty foods increase body's water needs and cannot replace direct water intake."
-          }
-        ]
+            feedback:
+              "Salty foods increase body's water needs and cannot replace direct water intake.",
+          },
+        ],
       },
       {
-        title: "Indoor Temperature Monitoring",
+        title: 'Indoor Temperature Monitoring',
         background: "Before going out, you want to check if your home's temperature is safe.",
         options: [
           {
-            text: "Feel temperature by touching walls or floor",
+            text: 'Feel temperature by touching walls or floor',
             isCorrect: false,
             isWarning: false,
-            feedback: " Subjective feeling is not accurate enough to judge indoor temperature."
+            feedback: 'Subjective feeling is not accurate enough to judge indoor temperature.',
           },
           {
-            text: "Use a thermometer and hygrometer",
+            text: 'Use a thermometer and hygrometer',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Professional equipment accurately monitors indoor temperature and humidity."
+            feedback:
+              'Correct! Professional equipment accurately monitors indoor temperature and humidity.',
           },
           {
-            text: "Judge by observing outdoor sunlight and sky",
+            text: 'Judge by observing outdoor sunlight and sky',
             isCorrect: false,
             isWarning: true,
-            feedback: " Outdoor weather conditions cannot accurately reflect indoor temperature."
-          }
-        ]
+            feedback: 'Outdoor weather conditions cannot accurately reflect indoor temperature.',
+          },
+        ],
       },
       {
-        title: "Heat Stress Symptom Recognition",
-        background: "On a hot afternoon, you feel dizzy and your skin is dry and hot.",
+        title: 'Heat Stress Symptom Recognition',
+        background: 'On a hot afternoon, you feel dizzy and your skin is dry and hot.',
         options: [
           {
-            text: "Might be a cold",
+            text: 'Might be a cold',
             isCorrect: false,
             isWarning: false,
-            feedback: " These symptoms are more likely early signs of heat stress."
+            feedback: 'These symptoms are more likely early signs of heat stress.',
           },
           {
-            text: "These are warning signs of heat stress",
+            text: 'These are warning signs of heat stress',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Dizziness and hot, dry skin are early symptoms of heat stress, requiring immediate cooling measures."
+            feedback:
+              'Correct! Dizziness and hot, dry skin are early symptoms of heat stress, requiring immediate cooling measures.',
           },
           {
-            text: "Just indigestion, observe for a while",
+            text: 'Just indigestion, observe for a while',
             isCorrect: false,
             isWarning: true,
-            feedback: " These symptoms are unrelated to digestion and need immediate attention."
-          }
-        ]
+            feedback: 'These symptoms are unrelated to digestion and need immediate attention.',
+          },
+        ],
       },
       {
-        title: "Emergency Situation Management",
+        title: 'Emergency Situation Management',
         background: "You're alone at home and start feeling confused.",
         options: [
           {
-            text: "Lie down with a wet towel",
+            text: 'Lie down with a wet towel',
             isCorrect: false,
             isWarning: false,
-            feedback: " Confusion is a serious symptom requiring immediate medical attention."
+            feedback: 'Confusion is a serious symptom requiring immediate medical attention.',
           },
           {
-            text: "Call emergency services and start cooling down",
+            text: 'Call emergency services and start cooling down',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Confusion is a severe heat stress symptom requiring immediate medical attention."
+            feedback:
+              'Correct! Confusion is a severe heat stress symptom requiring immediate medical attention.',
           },
           {
-            text: "Drink ice water and wait for improvement",
+            text: 'Drink ice water and wait for improvement',
             isCorrect: false,
             isWarning: true,
-            feedback: " Ice water may irritate the stomach, and self-treatment is not advisable when confused."
-          }
-        ]
-      }
-    ]
+            feedback:
+              'Ice water may irritate the stomach, and self-treatment is not advisable when confused.',
+          },
+        ],
+      },
+    ],
   },
   {
-    title: "👨‍👩‍👧 Family Child Heatwave Protection",
+    title: '👨‍👩‍👧 Family Child Heatwave Protection',
     scenarios: [
       {
         title: "Children's Outdoor Activity Planning",
-        background: "You are taking care of a 9-year-old child during a heatwave. The child wants to play soccer outside.",
+        background:
+          'You are taking care of a 9-year-old child during a heatwave. The child wants to play soccer outside.',
         options: [
           {
-            text: "Give them a bottle of water and let them go",
+            text: 'Give them a bottle of water and let them go',
             isCorrect: false,
             isWarning: false,
-            feedback: " Even with water, exercising in high temperatures can lead to heat stroke."
+            feedback: 'Even with water, exercising in high temperatures can lead to heat stroke.',
           },
           {
-            text: "Suggest waiting until evening",
+            text: 'Suggest waiting until evening',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Evening temperatures are lower and more suitable for outdoor activities."
+            feedback:
+              'Correct! Evening temperatures are lower and more suitable for outdoor activities.',
           },
           {
-            text: "Allow them to go but return in 30 minutes",
+            text: 'Allow them to go but return in 30 minutes',
             isCorrect: false,
             isWarning: true,
-            feedback: " 30 minutes in high heat still poses risks, better to choose a cooler time period."
-          }
-        ]
+            feedback:
+              '30 minutes in high heat still poses risks, better to choose a cooler time period.',
+          },
+        ],
       },
       {
-        title: "Indoor Temperature Management",
-        background: "Indoor temperature has reached 32°C, action needs to be taken.",
+        title: 'Indoor Temperature Management',
+        background: 'Indoor temperature has reached 32°C, action needs to be taken.',
         options: [
           {
-            text: "Open windows for ventilation",
+            text: 'Open windows for ventilation',
             isCorrect: false,
             isWarning: false,
-            feedback: " When outdoor temperature is higher, opening windows lets hot air in."
+            feedback: 'When outdoor temperature is higher, opening windows lets hot air in.',
           },
           {
-            text: "Close windows and draw curtains",
+            text: 'Close windows and draw curtains',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! This blocks hot air and direct sunlight."
+            feedback: 'Correct! This blocks hot air and direct sunlight.',
           },
           {
-            text: "Rely only on natural breeze",
+            text: 'Rely only on natural breeze',
             isCorrect: false,
             isWarning: true,
-            feedback: " During heatwaves, natural breeze can be hot too, more active cooling measures are needed."
-          }
-        ]
+            feedback:
+              'During heatwaves, natural breeze can be hot too, more active cooling measures are needed.',
+          },
+        ],
       },
       {
         title: "Child's Sleep Environment",
-        background: "In an apartment without air conditioning, the child is napping with a thick blanket.",
+        background:
+          'In an apartment without air conditioning, the child is napping with a thick blanket.',
         options: [
           {
-            text: "Switch to a thin sheet",
+            text: 'Switch to a thin sheet',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Using breathable thin sheets is more suitable for hot weather."
+            feedback: 'Correct! Using breathable thin sheets is more suitable for hot weather.',
           },
           {
-            text: "Maintain current situation",
+            text: 'Maintain current situation',
             isCorrect: false,
             isWarning: false,
-            feedback: " Thick blankets increase body temperature and hinder heat dissipation."
+            feedback: 'Thick blankets increase body temperature and hinder heat dissipation.',
           },
           {
-            text: "Point fan directly at the child",
+            text: 'Point fan directly at the child',
             isCorrect: false,
             isWarning: true,
-            feedback: " Directing fan at the child may cause discomfort or catching cold."
-          }
-        ]
+            feedback: 'Directing fan at the child may cause discomfort or catching cold.',
+          },
+        ],
       },
       {
-        title: "Child Heat Stress Symptoms",
-        background: "The child shows symptoms of headache, dry mouth, and irritability.",
+        title: 'Child Heat Stress Symptoms',
+        background: 'The child shows symptoms of headache, dry mouth, and irritability.',
         options: [
           {
-            text: "Give water, rest, and cool down",
+            text: 'Give water, rest, and cool down',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! These are early symptoms of dehydration and heat stress, requiring immediate attention."
+            feedback:
+              'Correct! These are early symptoms of dehydration and heat stress, requiring immediate attention.',
           },
           {
-            text: "Give juice and observe",
+            text: 'Give juice and observe',
             isCorrect: false,
             isWarning: false,
-            feedback: " Juice has high sugar content and is not good for hydration."
+            feedback: 'Juice has high sugar content and is not good for hydration.',
           },
           {
-            text: "Give cold medicine",
+            text: 'Give cold medicine',
             isCorrect: false,
             isWarning: true,
-            feedback: " These symptoms are not related to cold, they are signs of heat stress."
-          }
-        ]
+            feedback: 'These symptoms are not related to cold, they are signs of heat stress.',
+          },
+        ],
       },
       {
-        title: "Outdoor Activity Time Selection",
-        background: "You are planning an outdoor activity.",
+        title: 'Outdoor Activity Time Selection',
+        background: 'You are planning an outdoor activity.',
         options: [
           {
-            text: "Around 12 noon",
+            text: 'Around 12 noon',
             isCorrect: false,
             isWarning: false,
-            feedback: " Noon is the hottest time of day, unsuitable for outdoor activities."
+            feedback: 'Noon is the hottest time of day, unsuitable for outdoor activities.',
           },
           {
-            text: "4 PM",
+            text: '4 PM',
             isCorrect: false,
             isWarning: false,
-            feedback: " Temperature is still high at 4 PM."
+            feedback: 'Temperature is still high at 4 PM.',
           },
           {
-            text: "Between 7-9 AM",
+            text: 'Between 7-9 AM',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Morning has the lowest temperature and UV intensity."
-          }
-        ]
-      }
-    ]
+            feedback: 'Correct! Morning has the lowest temperature and UV intensity.',
+          },
+        ],
+      },
+    ],
   },
   {
-    title: "👷 Outdoor Worker Heat Protection",
+    title: '👷 Outdoor Worker Heat Protection',
     scenarios: [
       {
-        title: "Water Intake Management",
-        background: "You are a road construction worker who needs to work in high temperatures.",
+        title: 'Water Intake Management',
+        background: 'You are a road construction worker who needs to work in high temperatures.',
         options: [
           {
-            text: "Only drink water when thirsty",
+            text: 'Only drink water when thirsty',
             isCorrect: false,
             isWarning: false,
-            feedback: " Waiting until thirsty is too late, you should regularly hydrate."
+            feedback: 'Waiting until thirsty is too late, you should regularly hydrate.',
           },
           {
-            text: "Drink water every hour",
+            text: 'Drink water every hour',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Regular hydration is key to preventing heat stress."
+            feedback: 'Correct! Regular hydration is key to preventing heat stress.',
           },
           {
-            text: "Replace water with energy drinks",
+            text: 'Replace water with energy drinks',
             isCorrect: false,
             isWarning: true,
-            feedback: " Energy drinks may affect water absorption, plain water should be the main choice."
-          }
-        ]
+            feedback:
+              'Energy drinks may affect water absorption, plain water should be the main choice.',
+          },
+        ],
       },
       {
-        title: "Work Attire Selection",
-        background: "You plan to work wearing light-colored long sleeves, a hat, and sunglasses.",
+        title: 'Work Attire Selection',
+        background: 'You plan to work wearing light-colored long sleeves, a hat, and sunglasses.',
         options: [
           {
-            text: "This attire is appropriate",
+            text: 'This attire is appropriate',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! This outfit provides sun protection while maintaining ventilation."
+            feedback: 'Correct! This outfit provides sun protection while maintaining ventilation.',
           },
           {
-            text: "Too hot, should remove shirt",
+            text: 'Too hot, should remove shirt',
             isCorrect: false,
             isWarning: false,
-            feedback: " Exposed skin increases risk of sunburn and heat stress."
+            feedback: 'Exposed skin increases risk of sunburn and heat stress.',
           },
           {
-            text: "Sunglasses are unnecessary",
+            text: 'Sunglasses are unnecessary',
             isCorrect: false,
             isWarning: true,
-            feedback: " Sunglasses protect your eyes and are essential safety equipment."
-          }
-        ]
+            feedback: 'Sunglasses protect your eyes and are essential safety equipment.',
+          },
+        ],
       },
       {
-        title: "Rest Area Selection",
-        background: "You decide to rest in a parked truck.",
+        title: 'Rest Area Selection',
+        background: 'You decide to rest in a parked truck.',
         options: [
           {
-            text: "This is safe",
+            text: 'This is safe',
             isCorrect: false,
             isWarning: false,
-            feedback: " Enclosed vehicle temperatures can exceed 50°C, extremely dangerous."
+            feedback: 'Enclosed vehicle temperatures can exceed 50°C, extremely dangerous.',
           },
           {
-            text: "Unsafe, vehicle temperature can be lethal",
+            text: 'Unsafe, vehicle temperature can be lethal',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Choose a shaded, ventilated area for rest."
+            feedback: 'Correct! Choose a shaded, ventilated area for rest.',
           },
           {
-            text: "Safe if windows are open",
+            text: 'Safe if windows are open',
             isCorrect: false,
             isWarning: true,
-            feedback: " Even with open windows, vehicle temperature can still be dangerously high."
-          }
-        ]
+            feedback: 'Even with open windows, vehicle temperature can still be dangerously high.',
+          },
+        ],
       },
       {
-        title: "Heat Stress Symptom Management",
-        background: "You start feeling dizzy and nauseous.",
+        title: 'Heat Stress Symptom Management',
+        background: 'You start feeling dizzy and nauseous.',
         options: [
           {
-            text: "Continue working",
+            text: 'Continue working',
             isCorrect: false,
             isWarning: false,
-            feedback: " Continuing work may worsen symptoms, leading to serious consequences."
+            feedback: 'Continuing work may worsen symptoms, leading to serious consequences.',
           },
           {
-            text: "Rest immediately, cool down and hydrate",
+            text: 'Rest immediately, cool down and hydrate',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! These are early heat stress symptoms requiring immediate attention."
+            feedback:
+              'Correct! These are early heat stress symptoms requiring immediate attention.',
           },
           {
-            text: "Eat something to feel better",
+            text: 'Eat something to feel better',
             isCorrect: false,
             isWarning: true,
-            feedback: " These symptoms aren't related to hunger, they indicate heat stress."
-          }
-        ]
+            feedback: "These symptoms aren't related to hunger, they indicate heat stress.",
+          },
+        ],
       },
       {
-        title: "Colleague Heat Stress Response",
-        background: "A colleague collapses with hot, dry skin.",
+        title: 'Colleague Heat Stress Response',
+        background: 'A colleague collapses with hot, dry skin.',
         options: [
           {
-            text: "Splash water and try to wake them",
+            text: 'Splash water and try to wake them',
             isCorrect: false,
             isWarning: false,
-            feedback: " These measures are insufficient for severe heat stress."
+            feedback: 'These measures are insufficient for severe heat stress.',
           },
           {
-            text: "Call emergency services and start cooling",
+            text: 'Call emergency services and start cooling',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Severe heat stress requires immediate medical attention and cooling."
+            feedback:
+              'Correct! Severe heat stress requires immediate medical attention and cooling.',
           },
           {
-            text: "Quickly give them water",
+            text: 'Quickly give them water',
             isCorrect: false,
             isWarning: true,
-            feedback: " Don't force water when unconscious, risk of choking."
-          }
-        ]
-      }
-    ]
+            feedback: "Don't force water when unconscious, risk of choking.",
+          },
+        ],
+      },
+    ],
   },
   {
-    title: "🧑‍🏫 School Heatwave Safety Guide",
+    title: '🧑‍🏫 School Heatwave Safety Guide',
     scenarios: [
       {
-        title: "PE Class Scheduling",
-        background: "You are a school teacher who needs to arrange outdoor physical activities.",
+        title: 'PE Class Scheduling',
+        background: 'You are a school teacher who needs to arrange outdoor physical activities.',
         options: [
           {
-            text: "Before 10 AM",
+            text: 'Before 10 AM',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Morning has lower temperature and UV intensity."
+            feedback: 'Correct! Morning has lower temperature and UV intensity.',
           },
           {
-            text: "12 PM noon",
+            text: '12 PM noon',
             isCorrect: false,
             isWarning: false,
-            feedback: " Noon is the hottest time of day, unsuitable for outdoor activities."
+            feedback: 'Noon is the hottest time of day, unsuitable for outdoor activities.',
           },
           {
-            text: "3:30 PM",
+            text: '3:30 PM',
             isCorrect: false,
             isWarning: true,
-            feedback: " Afternoon temperature is still high, earlier time is recommended."
-          }
-        ]
+            feedback: 'Afternoon temperature is still high, earlier time is recommended.',
+          },
+        ],
       },
       {
-        title: "Student Dress Code Advice",
-        background: "Students are wearing standard uniforms and need additional protection advice.",
+        title: 'Student Dress Code Advice',
+        background: 'Students are wearing standard uniforms and need additional protection advice.',
         options: [
           {
-            text: "Wear dark clothes for sun protection",
+            text: 'Wear dark clothes for sun protection',
             isCorrect: false,
             isWarning: false,
-            feedback: " Dark clothes absorb more heat."
+            feedback: 'Dark clothes absorb more heat.',
           },
           {
-            text: "Wear hat and light-colored clothes",
+            text: 'Wear hat and light-colored clothes',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Light-colored clothes reflect heat, and hats provide sun protection."
+            feedback:
+              'Correct! Light-colored clothes reflect heat, and hats provide sun protection.',
           },
           {
-            text: "Drink more soft drinks",
+            text: 'Drink more soft drinks',
             isCorrect: false,
             isWarning: true,
-            feedback: " Soft drinks are high in sugar and not good for hydration."
-          }
-        ]
+            feedback: 'Soft drinks are high in sugar and not good for hydration.',
+          },
+        ],
       },
       {
-        title: "Student Heat Stress Management",
-        background: "A student shows symptoms of headache, flushed face, and rapid heartbeat.",
+        title: 'Student Heat Stress Management',
+        background: 'A student shows symptoms of headache, flushed face, and rapid heartbeat.',
         options: [
           {
-            text: "Have them lie down, cool down, and notify school nurse",
+            text: 'Have them lie down, cool down, and notify school nurse',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! These are heat stress symptoms requiring professional medical attention."
+            feedback:
+              'Correct! These are heat stress symptoms requiring professional medical attention.',
           },
           {
-            text: "Let them rest in classroom",
+            text: 'Let them rest in classroom',
             isCorrect: false,
             isWarning: false,
-            feedback: " These symptoms need immediate attention, not just rest."
+            feedback: 'These symptoms need immediate attention, not just rest.',
           },
           {
-            text: "Call parents to pick up",
+            text: 'Call parents to pick up',
             isCorrect: false,
             isWarning: true,
-            feedback: " Initial treatment should be given before deciding on medical care."
-          }
-        ]
+            feedback: 'Initial treatment should be given before deciding on medical care.',
+          },
+        ],
       },
       {
-        title: "Classroom Safety Measures",
-        background: "Ensuring classroom safety during heatwave.",
+        title: 'Classroom Safety Measures',
+        background: 'Ensuring classroom safety during heatwave.',
         options: [
           {
-            text: "Encourage regular water intake",
+            text: 'Encourage regular water intake',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Regular hydration is more effective than waiting until thirsty."
+            feedback: 'Correct! Regular hydration is more effective than waiting until thirsty.',
           },
           {
-            text: "Distribute ice cream",
+            text: 'Distribute ice cream',
             isCorrect: false,
             isWarning: false,
-            feedback: " Ice cream cannot replace water and may affect appetite."
+            feedback: 'Ice cream cannot replace water and may affect appetite.',
           },
           {
-            text: "Maintain normal teaching pace",
+            text: 'Maintain normal teaching pace',
             isCorrect: false,
             isWarning: true,
-            feedback: " Teaching schedule needs adjustment during heatwave, monitor student condition."
-          }
-        ]
+            feedback:
+              'Teaching schedule needs adjustment during heatwave, monitor student condition.',
+          },
+        ],
       },
       {
-        title: "School Heatwave Adjustments",
-        background: "School receives heatwave warning and needs to make adjustments.",
+        title: 'School Heatwave Adjustments',
+        background: 'School receives heatwave warning and needs to make adjustments.',
         options: [
           {
-            text: "Delay school dismissal time",
+            text: 'Delay school dismissal time',
             isCorrect: false,
             isWarning: false,
-            feedback: " Delaying dismissal may expose students to high temperatures longer."
+            feedback: 'Delaying dismissal may expose students to high temperatures longer.',
           },
           {
-            text: "Reduce outdoor class duration",
+            text: 'Reduce outdoor class duration',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Reducing outdoor activity time lowers heat-related illness risk."
+            feedback: 'Correct! Reducing outdoor activity time lowers heat-related illness risk.',
           },
           {
-            text: "Make no changes",
+            text: 'Make no changes',
             isCorrect: false,
             isWarning: true,
-            feedback: " Preventive measures are needed during heatwave to protect student safety."
-          }
-        ]
-      }
-    ]
+            feedback: 'Preventive measures are needed during heatwave to protect student safety.',
+          },
+        ],
+      },
+    ],
   },
   {
-    title: "🧑‍⚕️ Home Care Heatwave Emergency",
+    title: '🧑‍⚕️ Home Care Heatwave Emergency',
     scenarios: [
       {
-        title: "Diabetic Patient Symptom Recognition",
-        background: "You are a caregiver looking after an elderly diabetic patient.",
+        title: 'Diabetic Patient Symptom Recognition',
+        background: 'You are a caregiver looking after an elderly diabetic patient.',
         options: [
           {
-            text: "Just dehydration",
+            text: 'Just dehydration',
             isCorrect: false,
             isWarning: false,
-            feedback: " These symptoms may indicate more serious heat stress reaction."
+            feedback: 'These symptoms may indicate more serious heat stress reaction.',
           },
           {
-            text: "Possible heatstroke or heat exhaustion",
+            text: 'Possible heatstroke or heat exhaustion',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! These are signs of severe heat stress, requiring immediate cooling measures."
+            feedback:
+              'Correct! These are signs of severe heat stress, requiring immediate cooling measures.',
           },
           {
-            text: "Emotional agitation",
+            text: 'Emotional agitation',
             isCorrect: false,
             isWarning: true,
-            feedback: " These symptoms are not related to emotions, need immediate attention."
-          }
-        ]
+            feedback: 'These symptoms are not related to emotions, need immediate attention.',
+          },
+        ],
       },
       {
-        title: "Emergency Situation Management",
-        background: "Patient shows heat stress symptoms.",
+        title: 'Emergency Situation Management',
+        background: 'Patient shows heat stress symptoms.',
         options: [
           {
-            text: "Open windows for ventilation",
+            text: 'Open windows for ventilation',
             isCorrect: false,
             isWarning: false,
-            feedback: " Ventilation alone is insufficient for heat stress."
+            feedback: 'Ventilation alone is insufficient for heat stress.',
           },
           {
-            text: "Start cooling and check consciousness level",
+            text: 'Start cooling and check consciousness level',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Physical cooling and consciousness check are crucial."
+            feedback: 'Correct! Physical cooling and consciousness check are crucial.',
           },
           {
-            text: "Let them rest and drink water",
+            text: 'Let them rest and drink water',
             isCorrect: false,
             isWarning: true,
-            feedback: " These symptoms require more active treatment measures."
-          }
-        ]
+            feedback: 'These symptoms require more active treatment measures.',
+          },
+        ],
       },
       {
-        title: "Medication Side Effect Management",
-        background: "Patient shows reduced sweating after taking medication.",
+        title: 'Medication Side Effect Management',
+        background: 'Patient shows reduced sweating after taking medication.',
         options: [
           {
-            text: "Continue observation",
+            text: 'Continue observation',
             isCorrect: false,
             isWarning: false,
-            feedback: " Need to check if medication affects sweating function."
+            feedback: 'Need to check if medication affects sweating function.',
           },
           {
-            text: "Check medication side effects",
+            text: 'Check medication side effects',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Some medications may suppress sweating, needs evaluation."
+            feedback: 'Correct! Some medications may suppress sweating, needs evaluation.',
           },
           {
-            text: "Eat cooling foods",
+            text: 'Eat cooling foods',
             isCorrect: false,
             isWarning: true,
-            feedback: " Food cannot solve medication side effect issues."
-          }
-        ]
+            feedback: 'Food cannot solve medication side effect issues.',
+          },
+        ],
       },
       {
-        title: "Night Temperature Control",
-        background: "Need to determine safe nighttime room temperature.",
+        title: 'Night Temperature Control',
+        background: 'Need to determine safe nighttime room temperature.',
         options: [
           {
-            text: "28°C",
+            text: '28°C',
             isCorrect: false,
             isWarning: false,
-            feedback: " 28°C is still too high for elderly."
+            feedback: '28°C is still too high for elderly.',
           },
           {
-            text: "≤24°C",
+            text: 'Below 24°C',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! Nighttime temperature should be kept below 24°C for safety."
+            feedback: 'Correct! Nighttime temperature should be kept below 24°C for safety.',
           },
           {
-            text: "Just using fan is enough",
+            text: 'Just using fan is enough',
             isCorrect: false,
             isWarning: true,
-            feedback: " Fan alone may not be sufficient to maintain safe temperature."
-          }
-        ]
+            feedback: 'Fan alone may not be sufficient to maintain safe temperature.',
+          },
+        ],
       },
       {
-        title: "Severe Symptom Management",
-        background: "Patient shows confusion and unclear speech.",
+        title: 'Severe Symptom Management',
+        background: 'Patient shows confusion and unclear speech.',
         options: [
           {
-            text: "Force them to drink water",
+            text: 'Force them to drink water',
             isCorrect: false,
             isWarning: false,
-            feedback: " Forcing water when confused is not advisable."
+            feedback: 'Forcing water when confused is not advisable.',
           },
           {
-            text: "Apply cooling oil",
+            text: 'Apply cooling oil',
             isCorrect: false,
             isWarning: false,
-            feedback: " These symptoms require professional medical treatment."
+            feedback: 'These symptoms require professional medical treatment.',
           },
           {
-            text: "Call emergency services immediately",
+            text: 'Call emergency services immediately',
             isCorrect: true,
             isWarning: false,
-            feedback: " Correct! These are neurological symptoms of severe heatstroke, requiring immediate medical attention."
-          }
-        ]
-      }
-    ]
-  }
+            feedback:
+              'Correct! These are neurological symptoms of severe heatstroke, requiring immediate medical attention.',
+          },
+        ],
+      },
+    ],
+  },
 ]
 
 const selectedScenario = ref(null)
@@ -717,7 +739,7 @@ const showFeedback = ref(false)
 const quizCompleted = ref(false)
 const score = ref(0)
 
-// 取当前场景的题目数组
+// Get questions array for current scenario
 const currentScenarioList = computed(() => {
   if (selectedScenario.value !== null) {
     return scenarioList[selectedScenario.value].scenarios
@@ -725,7 +747,7 @@ const currentScenarioList = computed(() => {
   return []
 })
 
-// 取当前题目
+// Get current question
 const currentQuestion = computed(() => {
   return currentScenarioList.value[currentScenario.value]
 })

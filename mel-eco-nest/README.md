@@ -1,13 +1,75 @@
-# melb-eco-nest
+# Mel-Eco-Nest
 
-This is a project based on Vue 3 and Vite. Below are the development environment setup and development guidelines.
+Mel-Eco-Nest is a comprehensive web application designed to help Melbourne residents understand and mitigate urban heat island effects. The project provides tools for heat mapping, energy-efficient appliance recommendations, and educational resources about heatwave safety.
+
+## Features
+
+- 🌡️ **Heat Map Visualization**: Interactive map showing temperature variations across Melbourne
+- 🏠 **Energy Efficiency Tools**:
+  - Energy-efficient appliance recommendations
+  - Water usage tracking and reminders
+  - Plant recommendations for urban cooling
+- 📚 **Educational Resources**:
+  - Heatwave survival guides
+  - Interactive quizzes
+  - Planting guides
+- 🔍 **Data Analysis**:
+  - Temperature trend analysis
+  - Energy consumption tracking
+  - Environmental impact assessment
+
+## Tech Stack
+
+- **Frontend**:
+  - Vue 3
+  - Vite
+  - Vue Router
+  - Axios
+  - SCSS
+  - Font Awesome
+- **Backend**:
+  - Node.js
+  - Express
+  - MySQL
+  - JWT Authentication
+- **DevOps**:
+  - Nginx
+  - PM2
+  - SSL/TLS
+
+## Project Structure
+
+```
+mel-eco-nest/
+├── src/                    # Frontend source code
+│   ├── assets/            # Static assets
+│   ├── components/        # Vue components
+│   ├── views/             # Page components
+│   ├── router/            # Vue Router configuration
+│   ├── store/             # Vuex store
+│   └── utils/             # Utility functions
+├── server/                # Backend source code
+│   ├── config/           # Server configuration
+│   ├── controllers/      # Route controllers
+│   ├── models/           # Database models
+│   ├── routes/           # API routes
+│   └── utils/            # Utility functions
+├── public/               # Public static files
+└── tests/               # Test files
+```
 
 ## Development Environment Setup
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- MySQL (v8.0 or higher)
+- npm or yarn
 
 ### 1. Install Node.js
 
 1. Visit [Node.js official website](https://nodejs.org/) to download and install the latest LTS version
-2. After installation, open command line tool to verify the installation:
+2. Verify installation:
    ```sh
    node --version
    npm --version
@@ -15,105 +77,118 @@ This is a project based on Vue 3 and Vite. Below are the development environment
 
 ### 2. IDE Setup
 
-Recommended to use [VSCode](https://code.visualstudio.com/) as the development tool, and install the following plugins:
+Recommended to use [VSCode](https://code.visualstudio.com/) with these plugins:
 
-- [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (please disable Vetur)
+- [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
 - [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
 ## Quick Start Guide
 
-### 1. Start Backend Server
+### 1. Clone the Repository
 
 ```sh
+git clone https://github.com/your-username/mel-eco-nest.git
 cd mel-eco-nest
+```
+
+### 2. Install Dependencies
+
+```sh
+# Install frontend dependencies
+npm install
+
+# Install backend dependencies
 cd server
 npm install
-node server.js
+cd ..
 ```
 
-### 2. Start Frontend Development Server
-
-Open a new terminal, then:
-
-```sh
-cd mel-eco-nest
-npm install
-npm run dev
-```
-
-## Detailed Project Setup
-
-### 1. Environment Configuration
+### 3. Environment Configuration
 
 1. Frontend Configuration
 
-   - Create a new `.env` file in the project root directory
-   - Update the environment variables in `.env` according to your needs
+   - Create `.env` in project root:
+     ```
+     VITE_API_BASE_URL=http://localhost:3000
+     ```
 
 2. Backend Configuration
-   - Navigate to the `server` directory
-   - Copy `.env.example` to create a new `.env` file
-   - Configure the following environment variables in the server's `.env` file:
+   - Create `.env` in server directory:
      ```
      PORT=3000
      DB_HOST=localhost
      DB_USER=your_username
      DB_PASSWORD=your_password
-     DB_NAME=your_database_name
+     DB_NAME=mel_eco_nest
+     OPENWEATHERMAP_API_KEY=your_api_key
      ```
-   - Ask Ruifeng(rlia0025@student.monash.edu) for the database connection information
 
-### 2. Production Build
+### 4. Database Setup
 
-Build for production:
+1. Create MySQL database:
 
-```sh
-npm run build
-```
+   ```sql
+   CREATE DATABASE mel_eco_nest;
+   ```
 
-### 3. Unit Tests
+2. Run database migrations:
+   ```sh
+   cd server
+   npm run migrate
+   ```
 
-Run unit tests:
+### 5. Start Development Servers
 
-```sh
-npm run test:unit
-```
+1. Start backend server:
 
-### 4. Code Linting
+   ```sh
+   cd server
+   npm run dev
+   ```
 
-Run ESLint check:
+2. Start frontend development server (in new terminal):
+   ```sh
+   npm run dev
+   ```
 
-```sh
-npm run lint
-```
+## Available Scripts
 
-## Deployment Guide
+- `npm run dev` - Start frontend development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm run test:unit` - Run unit tests
+- `npm run test:e2e` - Run end-to-end tests
+
+## Deployment
 
 ### 1. Frontend Deployment
 
-1. Build the frontend for production:
+1. Build the frontend:
+
    ```sh
    npm run build
    ```
+
 2. The built files will be in the `dist` directory.
 
 ### 2. Backend Deployment
 
-1. Ensure Node.js is installed on your server.
-2. Copy the `server` directory to your deployment server.
-3. Install dependencies:
+1. Install PM2 globally:
+
+   ```sh
+   npm install -g pm2
+   ```
+
+2. Start the server with PM2:
    ```sh
    cd server
-   npm install
-   ```
-4. Start the backend server:
-   ```sh
-   npm start
+   pm2 start server.js --name mel-eco-nest
    ```
 
 ### 3. Nginx Configuration
-
-Here's a sample Nginx configuration for deploying the application:
 
 ```nginx
 server {
@@ -124,7 +199,6 @@ server {
     ssl_certificate_key /etc/ssl/meleconest_me.key;
     ssl_trusted_certificate /etc/ssl/meleconest_me.ca-bundle;
 
-    # Proxy /api/ to internal HTTP API service
     location /api/ {
         proxy_pass http://127.0.0.1:3000/;
         proxy_set_header Host $host;
@@ -133,7 +207,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
-    # Serve frontend
     location / {
         root /var/www/dist;
         index index.html index.htm;
@@ -148,55 +221,48 @@ server {
 }
 ```
 
-## Configuration Reference
+## Contributing
 
-For more configuration information, please refer to [Vite Configuration Reference](https://vitejs.dev/config/).
-
-# Database Configuration for Efficient Appliances
-
-## Setup Instructions
-
-1. **Create a MySQL Database**:
-
-   ```sql
-   CREATE DATABASE mel_eco_nest;
-   ```
-
-2. **Configure Environment Variables**:
-   Create a file named `.env` in the server directory with the following content:
-
-   ```
-   # Database Configuration
-   DB_HOST=localhost
-   DB_PORT=3306
-   DB_USER=your_mysql_username
-   DB_PASSWORD=your_mysql_password
-   DB_DATABASE=mel_eco_nest
-
-   # API Keys
-   OPENWEATHERMAP_API_KEY=your_api_key_here
-
-   # Server Configuration
-   PORT=3000
-   NODE_ENV=development
-   ```
-
-3. **Install Dependencies**:
-
-   ```bash
-   cd server
-   npm install
-   ```
-
-4. **Start the Server**:
-   ```bash
-   node server.js
-   ```
-
-The server will automatically create the necessary `appliance` table and populate it with sample data when started for the first time.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## Troubleshooting
 
-- If you encounter database connection issues, ensure MySQL is running and accessible
-- Verify credentials in the `.env` file are correct
-- Check console for specific error messages
+### Common Issues
+
+1. **Database Connection Issues**
+
+   - Verify MySQL service is running
+   - Check database credentials in `.env`
+   - Ensure database exists
+
+2. **API Connection Issues**
+
+   - Verify backend server is running
+   - Check API base URL in frontend `.env`
+   - Check network connectivity
+
+3. **Build Issues**
+   - Clear node_modules and reinstall
+   - Check Node.js version compatibility
+   - Verify all environment variables
+
+## Support
+
+For support, please contact:
+
+- Technical Support: [support@meleconest.me](mailto:support@meleconest.me)
+- Database Support: [rlia0025@student.monash.edu](mailto:rlia0025@student.monash.edu)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Melbourne City Council for data support
+- Monash University for research collaboration
+- OpenWeatherMap for weather data API

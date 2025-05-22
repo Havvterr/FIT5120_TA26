@@ -131,7 +131,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 0.2rem;
-  padding-right: 4rem;
+  padding-right: 3.5rem;
 }
 
 .navbar-scrolled {

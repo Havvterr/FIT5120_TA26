@@ -34,14 +34,6 @@
               </div>
             </div>
           </div>
-          <button
-            @click="confirmSearch"
-            class="confirm-button"
-            :disabled="!searchQuery || isLoading"
-          >
-            <span v-if="isLoading">Loading...</span>
-            <span v-else>Confirm</span>
-          </button>
         </div>
       </div>
 
@@ -131,13 +123,12 @@ export default {
     // Fetch all plants from the database
     const fetchPlants = async () => {
       try {
-        const baseUrl = import.meta.env.MODE === 'development'
-          ? 'http://localhost:3000/plants'
-          : '/api/plants'
+        const baseUrl =
+          import.meta.env.MODE === 'development' ? 'http://localhost:3000/plants' : '/api/plants'
         const response = await axios.get(baseUrl)
         plants.value = response.data
 
-        // 如果URL中有plant参数，自动搜索该植物
+        // If plant parameter exists in URL, automatically search for that plant
         const plantFromUrl = route.query.plant
         if (plantFromUrl) {
           searchQuery.value = plantFromUrl
@@ -186,12 +177,9 @@ export default {
           selectedPlant.value = localPlant
         } else {
           // If not found locally, try to fetch from server
-          const baseUrl = import.meta.env.MODE === 'development'
-            ? 'http://localhost:3000/plants'
-            : '/api/plants'
-          const response = await axios.get(
-            `${baseUrl}/${encodeURIComponent(searchQuery.value)}`
-          )
+          const baseUrl =
+            import.meta.env.MODE === 'development' ? 'http://localhost:3000/plants' : '/api/plants'
+          const response = await axios.get(`${baseUrl}/${encodeURIComponent(searchQuery.value)}`)
           selectedPlant.value = response.data
         }
       } catch (error) {
@@ -207,6 +195,7 @@ export default {
       }
     }
 
+    // Handle page click
     const handlePageClick = () => {
       showSuggestions.value = false
     }
@@ -277,7 +266,6 @@ export default {
 .search-wrapper {
   display: flex;
   width: 100%;
-  gap: 1rem;
   align-items: center;
 }
 
@@ -300,34 +288,6 @@ export default {
 .search-input:focus {
   border-color: #034c26;
   box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
-}
-
-.confirm-button {
-  padding: 0.9rem 2.5rem;
-  background-color: #429bbc;
-  color: white;
-  border: none;
-  border-radius: 40px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 10px rgba(30, 106, 147, 0.3);
-  white-space: nowrap;
-  height: 100%;
-  min-height: 3.2rem;
-}
-
-.confirm-button:hover {
-  background-color: #034c26;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
-}
-
-.confirm-button:disabled {
-  background-color: #bfbfbf;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
 }
 
 .error-message {

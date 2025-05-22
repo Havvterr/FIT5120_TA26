@@ -62,21 +62,21 @@ const plantNames = ref([])
 
 const reminder = ref({
   plantName: '',
-  frequency: 'daily', // 默认每天浇水
+  frequency: 'daily', // Default to daily watering
   startDate: new Date().toISOString().split('T')[0],
-  timeOfDay: '09:00', // 默认早上9点
+  timeOfDay: '09:00', // Default to 9 AM
   notes: '',
 })
 
 onMounted(() => {
-  // 设置默认开始日期为今天
+  // Set default start date to today
   const today = new Date()
   const year = today.getFullYear()
   const month = String(today.getMonth() + 1).padStart(2, '0')
   const day = String(today.getDate()).padStart(2, '0')
   reminder.value.startDate = `${year}-${month}-${day}`
 
-  // 从路由参数获取植物名称
+  // Get plant name from route parameters
   if (route.query.plants) {
     plantNames.value = route.query.plants.split(',')
     reminder.value.plantName = plantNames.value.join(', ')

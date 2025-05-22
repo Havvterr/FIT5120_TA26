@@ -15,7 +15,7 @@ const error = ref(null)
 const selectedPlants = ref([])
 const showReminderTooltip = ref(false)
 
-// 保存状态到 localStorage
+// Save state to localStorage
 const saveState = () => {
   const state = {
     sunlight: sunlight.value,
@@ -28,7 +28,7 @@ const saveState = () => {
   localStorage.setItem('plantRecommendationState', JSON.stringify(state))
 }
 
-// 从 localStorage 恢复状态
+// Restore state from localStorage
 const restoreState = () => {
   const savedState = localStorage.getItem('plantRecommendationState')
   if (savedState) {
@@ -42,7 +42,7 @@ const restoreState = () => {
   }
 }
 
-// 清除保存的状态
+// Clear saved state
 const clearState = () => {
   localStorage.removeItem('plantRecommendationState')
 }
@@ -146,7 +146,7 @@ const getRecommendations = async () => {
       showGuide: false,
     }))
     showRecommendations.value = true
-    // 保存状态
+    // Save state
     saveState()
   } catch (e) {
     error.value = 'Failed to get plant recommendations. Please try again later.'
@@ -156,7 +156,7 @@ const getRecommendations = async () => {
   }
 }
 
-// 在组件挂载时恢复状态
+// Restore state when component is mounted
 onMounted(() => {
   restoreState()
 })
@@ -306,8 +306,11 @@ onMounted(() => {
       </p>
     </div>
   </div>
-  <!-- 右下角固定圆形按钮，选中植物时显示 -->
-  <div v-if="selectedPlants.length > 0" style="position: fixed; right: 40px; bottom: 40px; z-index: 10000;">
+  <!-- Fixed circular button in bottom right corner, shown when plant is selected -->
+  <div
+    v-if="selectedPlants.length > 0"
+    style="position: fixed; right: 40px; bottom: 40px; z-index: 10000"
+  >
     <button
       class="create-plan-button fixed-create-plan-button"
       @click="createPlan"
@@ -315,7 +318,11 @@ onMounted(() => {
       @mouseleave="showReminderTooltip = false"
       title="Create Planting Plan"
     >
-      <img :src="createIcon" alt="create" style="width:32px;height:32px;display:block;margin:auto;" />
+      <img
+        :src="createIcon"
+        alt="create"
+        style="width: 32px; height: 32px; display: block; margin: auto"
+      />
     </button>
     <div v-if="showReminderTooltip" class="reminder-tooltip">Set Reminder</div>
   </div>
@@ -675,15 +682,18 @@ label {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   border: none;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
   animation: float 3s ease-in-out infinite;
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translatey(0px);
   }
   50% {
@@ -701,7 +711,7 @@ label {
   border-radius: 6px;
   font-size: 1rem;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 10001;
   pointer-events: none;
 }
