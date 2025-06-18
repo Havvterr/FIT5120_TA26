@@ -34,7 +34,7 @@
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.3",
     "mailgun-js": "^0.22.0",
-    "mapbox-gl": "^3.7.0",
+    "mapbox-gl": "^3.12.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "postmark": "^4.0.5",
